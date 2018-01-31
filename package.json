@@ -1,0 +1,96 @@
+{
+  "name": "html5-player",
+  "version": "0.1.0",
+  "main": "libs/player.js",
+  "dependencies": {
+    "add-dom-event-listener": "^1.0.2",
+    "axios": "^0.17.1",
+    "classnames": "^2.2.5",
+    "flv.js": "^1.4.0",
+    "global": "^4.3.2",
+    "hls.js": "^0.8.9",
+    "lodash": "^4.17.4",
+    "prop-types": "^15.6.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-saga-model": "^0.2.21"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "cross-env": "^5.1.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
+    "preact": "^8.2.6",
+    "preact-compat": "^3.17.0",
+    "react": "^15.5.4",
+    "react-boilerplate-app-scripts": "^0.2.5",
+    "react-dom": "^15.5.4",
+    "react-router-controller": "^0.1.9",
+    "react-router-controller-cli": "^0.0.1"
+  },
+  "scripts": {
+    "build-css":
+      "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
+    "build-demo": "node ./scripts/build-demo.js",
+    "build": "node ./scripts/build-umd.js",
+    "cover": "react-boilerplate-app-scripts cover",
+    "serve-demo-build": "react-boilerplate-app-scripts serve-build",
+    "serve-umd-build": "serve ./dist -o",
+    "start": "node ./scripts/start.js",
+    "use": "react-boilerplate-app-scripts use",
+    "create-i18n-excel": "react-router-controller-cli create-i18n-excel",
+    "create-i18n-list": "react-router-controller-cli create-i18n-list",
+    "build-publish": "npm run build-css && npm run transform && npm publish",
+    "transform":
+      "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
+    "transform-es": "cross-env BABEL_ENV=es babel ./src -d es",
+    "transform-es-watch": "cross-env BABEL_ENV=es babel ./src -d es -w",
+    "transform-default": "cross-env BABEL_ENV=default babel ./src -d libs",
+    "transform-default-watch":
+      "cross-env BABEL_ENV=default babel ./src -d libs -w"
+  },
+  "react-boilerplate-app-scripts": {
+    "basename": "nan-player/demo/build",
+    "appSrcPath": "demo/src",
+    "appPublicPath": "demo/public"
+  },
+  "babel": {
+    "presets": [
+      "react",
+      [
+        "es2015",
+        {
+          "modules": false
+        }
+      ],
+      "stage-0"
+    ],
+    "plugins": ["transform-decorators-legacy", "transform-runtime"],
+    "env": {
+      "development": {
+        "plugins": ["react-hot-loader/babel"]
+      },
+      "default": {
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
+        "presets": ["react", "es2015", "stage-0"]
+      },
+      "es": {
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
+        "presets": [
+          "react",
+          [
+            "es2015",
+            {
+              "modules": false
+            }
+          ],
+          "stage-0"
+        ]
+      }
+    }
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  }
+}

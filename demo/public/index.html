@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <link rel="icon" href="<%= htmlWebpackPlugin.options.basename %>/logo.png">
+    <title>H5 Player</title>
+    <style>
+      html,body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      #root {
+        height: 100%;
+      }
+      #init-loading-con {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        background-color: rgb(242, 242, 242);
+        z-index: 999;
+      }
+      #init-loading-con .ant-spin {
+        width: 100%;
+        color: #108ee9;
+        vertical-align: middle;
+        text-align: center;
+        -webkit-transition: -webkit-transform .3s cubic-bezier(.78,.14,.15,.86);
+        transition: -webkit-transform .3s cubic-bezier(.78,.14,.15,.86);
+        transition: transform .3s cubic-bezier(.78,.14,.15,.86);
+        transition: transform .3s cubic-bezier(.78,.14,.15,.86),-webkit-transform .3s cubic-bezier(.78,.14,.15,.86);
+        font-size: 14px;
+        display: inline-block;
+        position: absolute;
+        top: 40%;
+        margin-top: -80px;
+      }
+      #init-loading-con .ant-spin-dot {
+        display: inline-block;
+        width: 45px;
+        height: 45px;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+        -webkit-animation: antRotate 1.2s infinite linear;
+        animation: antRotate 1.2s infinite linear;
+      }
+      #init-loading-con .ant-spin-dot i {
+        width: 22px;
+        height: 22px;
+        border-radius: 100%;
+        background-color: #108ee9;
+        -webkit-transform: scale(.75);
+        -ms-transform: scale(.75);
+        transform: scale(.75);
+        display: block;
+        position: absolute;
+        opacity: .3;
+        -webkit-animation: antSpinMove 1s infinite linear alternate;
+        animation: antSpinMove 1s infinite linear alternate;
+        -webkit-transform-origin: 50% 50%;
+        -ms-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+      }
+      #init-loading-con .ant-spin-dot i:first-child {
+        left: 0;
+        top: 0;
+      }
+      #init-loading-con .ant-spin-dot i:nth-child(2) {
+        right: 0;
+        top: 0;
+        -webkit-animation-delay: .4s;
+        animation-delay: .4s;
+      }
+      #init-loading-con .ant-spin-dot i:nth-child(3) {
+        right: 0;
+        bottom: 0;
+        -webkit-animation-delay: .8s;
+        animation-delay: .8s;
+      }
+      #init-loading-con .ant-spin-dot i:nth-child(4) {
+        left: 0;
+        bottom: 0;
+        -webkit-animation-delay: 1.2s;
+        animation-delay: 1.2s;
+      }
+      #init-loading-con .ant-spin .ant-spin-text {
+        display: block;
+        padding-top: 6px;
+      }
+      #init-loading-con .browser-error {
+        color: red;
+      }
+      @keyframes antSpinMove{
+        to {
+          opacity:1
+        }
+      }
+      @keyframes antRotate {
+        to {
+          -webkit-transform:rotate(405deg);
+          transform:rotate(405deg)
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div id="app">
+        <!--init-loading-tip will be repalce by app contents.-->
+        <div id="init-loading-con">
+          <div class="ant-spin ant-spin-spinning">
+            <span class="ant-spin-dot">
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+            <div class="ant-spin-text">
+              载入中...
+              <br/>
+              <br/>
+              <!--[if lt IE 9]>
+              <span class="browser-error">
+                当前IE版本低于IE9，请使用IE9以上版本！
+                <br/>
+                <br/>
+                建议使用谷歌、火狐等主流浏览器。
+              </span>
+              <![endif]-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%= htmlWebpackPlugin.options.dllScirpts %>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+.navbar-nav {
+  margin: 0;
+}
+.navbar-inverse {
+  border-radius: 0;
+  padding: 0px 0px;
+  margin: 0;
+}
+.navbar-header {
+  float: left;
+}
+.navbar-nav > li > a {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.navbar-header li {
+  float: left;
+}
+.breadcrumb {
+  margin: 0;
+}
+.main-contents {
+  width: 800px;
+  margin: auto;
+}
+.logo-con {
+  width: 54px;
+}
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40px;
+  margin: -10px 0 0 -10px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.player-container {
+  height: 450px;
+  width: 100%;
+}
+.code-url-container {
+  margin: 16px 0;
+}
+pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+}
+input {
+  position: relative;
+  display: inline-block;
+  padding: 4px 7px;
+  width: 100%;
+  height: 28px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  &:hover {
+    border-color: #7ac7ff;
+  }
+}
+.url-input {
+  margin-bottom: 16px;
+}
+/**custom**/
+.arrow-up(@background-color: #fff,@rotate: 0) {
+  animation: fadeIn 0.5s;
+  transform: rotate(@rotate);
+  width: 40px;
+  height: 40px;
+  position: relative;
+  display: inline-block;
+  margin: 10px 10px;
+  &:before,
+  &:after {
+    content: '';
+    border-color: transparent;
+    border-style: solid;
+    position: absolute;
+  }
+  &:before {
+    border: none;
+    background-color: @background-color;
+    height: 50%;
+    width: 30%;
+    top: 50%;
+    left: 35%;
+  }
+  &:after {
+    left: 7px;
+    top: -50%;
+    border-width: 20px 13px;
+    border-bottom-color: @background-color;
+  }
+}
+.camera-control {
+  @bg: #108ee9;
+  &-container {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    cursor: default;
+    display: flex;
+    flex-flow: column;
+    > div {
+      flex: 1;
+      display: flex;
+      > div {
+        cursor: pointer;
+        position: relative;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  &-top-left {
+    &:hover > span {
+      .arrow-up(@bg,-45deg);
+    }
+  }
+  &-top-middle {
+    &:hover > span {
+      .arrow-up(@bg,0deg);
+    }
+  }
+  &-top-right {
+    &:hover > span {
+      .arrow-up(@bg,45deg);
+    }
+  }
+  &-middle-left {
+    &:hover > span {
+      .arrow-up(@bg,-90deg);
+    }
+  }
+  &-middle-middle&-middle-middle {
+    cursor: pointer;
+    > svg {
+      display: none;
+      color: @bg;
+    }
+    &:hover > svg {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+  }
+  &-middle-right {
+    &:hover > span {
+      .arrow-up(@bg,90deg);
+    }
+  }
+  &-bottom-left {
+    &:hover > span {
+      .arrow-up(@bg,-135deg);
+    }
+  }
+  &-bottom-middle {
+    &:hover > span {
+      .arrow-up(@bg,-180deg);
+    }
+  }
+  &-bottom-right {
+    &:hover > span {
+      .arrow-up(@bg,135deg);
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <link rel="icon" href="/logo.png">
+    <title>H5 Player</title>
+    <style>
+      html,body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      #root {
+        height: 400px;
+      }
+    </style>
+    <script type="text/javascript" src="/nanPlayer.js"></script>
+  </head>
+  <body>
+    <div id="root" class="fl"> </div>
+    <script>
+      //nanPlayer实例化返回的是promise对象。
+      nanPlayer({
+        id: 'root',
+        file: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
+        autoplay: true,
+        //可以直接使用React
+        title: React.createElement('div',{ },"这里是标题"),
+      }).then(function(player){
+        //player.remove()
+      });
+    </script>
+  </body>
+</html>
