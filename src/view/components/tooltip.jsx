@@ -197,10 +197,10 @@ export default class Tooltip extends React.Component {
         }}
         ref="tooltip-container"
         className={classnames(
-          'nan-tooltip-content-container',
+          'html5-player-tooltip-content-container',
           {
-            'nan-hide': !show,
-            'nan-show': show,
+            'html5-player-hide': !show,
+            'html5-player-show': show,
           },
           className
         )}

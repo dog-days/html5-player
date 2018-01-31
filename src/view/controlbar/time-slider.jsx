@@ -71,7 +71,7 @@ export default class TimeSlider extends React.Component {
         percent={fragment.percent || percent}
         padding="0 10px"
         className={classnames({
-          'nan-track-history-slider': hasFragment,
+          'html5-player-track-history-slider': hasFragment,
         })}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
@@ -86,9 +86,9 @@ export default class TimeSlider extends React.Component {
               left,
               width,
             };
-            return <div key={k} className="nan-broken" style={style} />;
+            return <div key={k} className="html5-player-broken" style={style} />;
           })}
-        <div className="nan-buffer" style={bufferStyle} />
+        <div className="html5-player-buffer" style={bufferStyle} />
         <TimeTooltip timeSliderShowFormat={timeSliderShowFormat} />
       </Slider>
     );

@@ -33,10 +33,10 @@ export default class PlaybackRateList extends React.Component {
     const { playbackRates = DEFAULT_PLAYBACKRATES, onBackEvent } = this.props;
     const locale = this.getLocale();
     return (
-      <ul className="nan-rate-container">
+      <ul className="html5-player-rate-container">
         {onBackEvent && (
-          <li className="nan-rate-title" onClick={onBackEvent}>
-            <svg className="nan-icon nan-left-icon" aria-hidden="true">
+          <li className="html5-player-rate-title" onClick={onBackEvent}>
+            <svg className="html5-player-icon html5-player-left-icon" aria-hidden="true">
               <use xlinkHref="#icon-left" />
             </svg>
             {locale.speed}
@@ -45,11 +45,11 @@ export default class PlaybackRateList extends React.Component {
         {playbackRates &&
           playbackRates.map((v, k) => {
             const className = classnames({
-              'nan-rate-selected': playbackRate === v,
+              'html5-player-rate-selected': playbackRate === v,
             });
             return (
               <li onClick={this.onRateSelect(v)} key={k} className={className}>
-                <span className="nan-rate">{v + locale.speed}</span>
+                <span className="html5-player-rate">{v + locale.speed}</span>
               </li>
             );
           })}

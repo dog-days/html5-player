@@ -51,7 +51,7 @@
       "cross-env BABEL_ENV=default babel ./src -d libs -w"
   },
   "react-boilerplate-app-scripts": {
-    "basename": "nan-player/demo/build",
+    "basename": "demo/html5-player",
     "appSrcPath": "demo/src",
     "appPublicPath": "demo/public"
   },

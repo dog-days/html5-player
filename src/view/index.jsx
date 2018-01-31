@@ -329,16 +329,16 @@ export default class View extends React.Component {
       >
         <div
           key={file}
-          className={classnames('nan-player-container', className, {
+          className={classnames('html5-player-container', className, {
             // 'cursor-none': !userActive,
           })}
           style={containerStyle}
           onMouseMove={this.onMouseMove}
         >
-          {!ready && <span className="nan-init-text">播放器加载中...</span>}
+          {!ready && <span className="html5-player-init-text">播放器加载中...</span>}
           <video
             loop={loop}
-            className={classnames('nan-player-tag', {
+            className={classnames('html5-player-tag', {
               // 'cursor-none': !userActive,
             })}
             ref="video"
@@ -347,14 +347,14 @@ export default class View extends React.Component {
           {ready && (
             <span>
               {isString(logo) && (
-                <img className="nan-logo-container" alt="" src={logo} />
+                <img className="html5-player-logo-container" alt="" src={logo} />
               )}
               {React.isValidElement(logo) && (
-                <div className="nan-logo-container">{logo}</div>
+                <div className="html5-player-logo-container">{logo}</div>
               )}
               {isPlainObject(logo) && (
                 <a
-                  className="nan-logo-container"
+                  className="html5-player-logo-container"
                   href={logo.link || ''}
                   target={logo.target || '__blank'}
                 >

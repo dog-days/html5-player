@@ -36,13 +36,13 @@ export default class FullOffScreen extends React.Component {
     const { isfull } = this.props;
     return (
       <button
-        className="nan-small-button float-right"
+        className="html5-player-small-button float-right"
         onClick={this.onFullStateChange}
       >
         <svg
-          className={classnames('nan-icon', {
-            'nan-icon-fullscreen': !isfull,
-            'nan-icon-fullscreen-off': isfull,
+          className={classnames('html5-player-icon', {
+            'html5-player-icon-fullscreen': !isfull,
+            'html5-player-icon-fullscreen-off': isfull,
           })}
           aria-hidden="true"
         >

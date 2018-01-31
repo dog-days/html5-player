@@ -83,7 +83,7 @@ export default class Controlbar extends React.Component {
       buttonJSX.push(
         cloneElement(button, {
           className: classnames(
-            'nan-small-button',
+            'html5-player-small-button',
             getChildProps(button).className
           ),
           key: i,
@@ -138,9 +138,9 @@ export default class Controlbar extends React.Component {
     } = controls;
     return (
       <div
-        className={classnames('nan-controlbar', {
-          'nan-hide': !show,
-          'nan-show': show,
+        className={classnames('html5-player-controlbar', {
+          'html5-player-hide': !show,
+          'html5-player-show': show,
         })}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
@@ -154,7 +154,7 @@ export default class Controlbar extends React.Component {
               timeSliderShowFormat={timeSliderShowFormat}
             />
           )}
-        <div className="nan-button-container">
+        <div className="html5-player-button-container">
           {playPause && <PlayPause living={living} />}
           {volume && (
             <Volume
@@ -165,8 +165,8 @@ export default class Controlbar extends React.Component {
           )}
           {ready && !living && time && <Time />}
           {living && (
-            <button className="nan-small-button cursor-default">
-              <svg className="nan-icon nan-live-icon" aria-hidden="true">
+            <button className="html5-player-small-button cursor-default">
+              <svg className="html5-player-icon html5-player-live-icon" aria-hidden="true">
                 <use xlinkHref="#icon-live" />
               </svg>
             </button>

@@ -63,9 +63,9 @@ export default class Captions extends React.Component {
     }
     return (
       <span
-        className={classnames('nan-captions-text', {
-          'nan-captions-text-user-active': userActive,
-          'nan-captions-text-user-inactive': !userActive,
+        className={classnames('html5-player-captions-text', {
+          'html5-player-captions-text-user-active': userActive,
+          'html5-player-captions-text-user-inactive': !userActive,
         })}
       >
         {textArray.map((v, k) => {

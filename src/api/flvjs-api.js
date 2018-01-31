@@ -38,8 +38,6 @@ export default class flvAPI extends API {
         {
           type: 'flv',
           url: file,
-          //设置直播的
-          duration: Infinity,
         },
         {
           ...this.flvConfig,

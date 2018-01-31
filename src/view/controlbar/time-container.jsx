@@ -31,9 +31,9 @@ export default class Time extends React.Component {
     //一般都用不到fragment，如果存在fragment就优先使用fragment的duration
     const { time: { elapse, duration }, fragment } = this.props;
     return (
-      <span className="nan-time-container">
+      <span className="html5-player-time-container">
         <span>{elapse}</span>
-        <span className="nan-time-separater">/</span>
+        <span className="html5-player-time-separater">/</span>
         <span>{(fragment && fragment.timeDuration) || duration}</span>
       </span>
     );

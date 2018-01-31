@@ -37,7 +37,7 @@ export default class End extends React.Component {
     }
     return (
       <div
-        className="nan-cover-view nan-end-view"
+        className="html5-player-cover-view html5-player-end-view"
         onDoubleClick={e => {
           e.stopPropagation();
         }}
@@ -45,8 +45,8 @@ export default class End extends React.Component {
           e.stopPropagation();
         }}
       >
-        <button className="nan-middle-button" onClick={this.replay}>
-          <svg className="nan-icon nan-replay-icon" aria-hidden="true">
+        <button className="html5-player-middle-button" onClick={this.replay}>
+          <svg className="html5-player-icon html5-player-replay-icon" aria-hidden="true">
             <use xlinkHref="#icon-replay" />
           </svg>
         </button>

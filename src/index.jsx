@@ -13,7 +13,7 @@ let root;
  *                           也可以使用promise获取
  *@return {promise} 播放器实例
  */
-function nanPlayer(props, callback) {
+function player(props, callback) {
   const { id, children, ...other } = props;
   return new Promise(resolve => {
     root = ReactDOM.render(
@@ -38,4 +38,4 @@ function nanPlayer(props, callback) {
   });
 }
 
-export default nanPlayer;
+export default player;

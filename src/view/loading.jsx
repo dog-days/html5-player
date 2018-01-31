@@ -30,7 +30,7 @@ export default class Loading extends React.Component {
     }
     return (
       <div
-        className="nan-cover-view  nan-loading-view"
+        className="html5-player-cover-view  html5-player-loading-view"
         onDoubleClick={e => {
           e.stopPropagation();
         }}
@@ -39,7 +39,7 @@ export default class Loading extends React.Component {
         }}
       >
         <svg
-          className="nan-icon nan-middle-button nan-loading-icon"
+          className="html5-player-icon html5-player-middle-button html5-player-loading-icon"
           aria-hidden="true"
         >
           <use xlinkHref="#icon-loading" />

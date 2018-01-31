@@ -65,7 +65,7 @@ button {
 .display-inline-block {
   display: inline-block;
 }
-.nan-icon {
+.html5-player-icon {
   width: 1em;
   height: 1em;
   vertical-align: -0.15em;
@@ -73,50 +73,50 @@ button {
   overflow: hidden;
   pointer-events: none;
 }
-.nan-tooltip-content-container {
+.html5-player-tooltip-content-container {
   position: absolute;
   bottom: 0px;
   left: 0;
   z-index: 1000000;
   white-space: nowrap;
 }
-.nan-slider-container {
+.html5-player-slider-container {
   cursor: pointer;
   height: 100%;
 }
-.nan-slider-vertical-container {
+.html5-player-slider-vertical-container {
   padding: 0 8px;
 }
-.nan-slider-horizontal-container {
+.html5-player-slider-horizontal-container {
   padding: 8px 0px;
   max-width: 100%;
   width: 100%;
   height: auto;
 }
-.nan-slider-rail {
+.html5-player-slider-rail {
   position: relative;
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.4);
 }
-.nan-slider-horizontal-rail {
+.html5-player-slider-horizontal-rail {
   width: 100%;
   height: 6px;
 }
-.nan-slider-vertical-rail {
+.html5-player-slider-vertical-rail {
   width: 6px;
   height: 100%;
 }
-.nan-slider-track {
+.html5-player-slider-track {
   height: 100%;
   width: 100%;
   position: absolute;
   background-color: #108ee9;
   bottom: 0;
 }
-.nan-slider-rail:active .nan-slider-circle {
+.html5-player-slider-rail:active .html5-player-slider-circle {
   box-shadow: 0 0 26px rgba(0, 0, 0, 0.2), 0 0 10px rgba(0, 0, 0, 0.4), 0 0 0 6px rgba(16, 142, 233, 0.3);
 }
-.nan-slider-circle {
+.html5-player-slider-circle {
   position: relative;
   z-index: 100;
   height: 14px;
@@ -128,45 +128,45 @@ button {
   /*transition: 150ms cubic-bezier(0, -0.25, .25, 1);*/
   /*transition-property: opacity,transform;*/
 }
-.nan-slider-vertical-circle {
+.html5-player-slider-vertical-circle {
   top: 0;
   margin-top: -7px;
   left: -4px;
   /*transform: translate(-50%, -50%);*/
 }
-.nan-slider-horizontal-circle {
+.html5-player-slider-horizontal-circle {
   right: 0;
   margin-left: -7px;
   top: -4px;
   /*transform: translate(-50%, -50%);*/
 }
-.nan-slider-onenter-rail {
+.html5-player-slider-onenter-rail {
   transform: scaleY(0.6);
 }
-.nan-slider-onenter-rail .nan-slider-circle {
+.html5-player-slider-onenter-rail .html5-player-slider-circle {
   display: none;
   animation: zoomOut 0.2s;
 }
-.nan-slider-onenter-rail:hover {
+.html5-player-slider-onenter-rail:hover {
   transform: none;
 }
-.nan-slider-onenter-rail:hover .nan-slider-circle {
+.html5-player-slider-onenter-rail:hover .html5-player-slider-circle {
   display: block;
   animation: zoomIn 0.2s;
 }
-.nan-fade-in {
+.html5-player-fade-in {
   animation: fadeIn 0.9s;
 }
-.nan-fade-out {
+.html5-player-fade-out {
   animation: fadeOut 0.9s;
 }
-.nan-show.nan-show {
+.html5-player-show.html5-player-show {
   visibility: visible;
 }
-.nan-hide.nan-hide {
+.html5-player-hide.html5-player-hide {
   visibility: hidden;
 }
-.nan-player-container {
+.html5-player-container {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: subpixel-antialiased;
   line-height: 1;
@@ -179,17 +179,17 @@ button {
   color: rgba(255, 255, 255, 0.8);
   background-color: #000000;
 }
-.nan-player-tag {
+.html5-player-tag {
   width: 100%;
   height: 100%;
 }
-.nan-init-text {
+.html5-player-init-text {
   position: absolute;
   top: calc(50% - 12px);
   width: 100%;
   text-align: center;
 }
-.nan-middle-button {
+.html5-player-middle-button {
   font-size: 80px;
   cursor: pointer;
   position: absolute;
@@ -200,10 +200,10 @@ button {
   z-index: 1000;
   color: rgba(255, 255, 255, 0.8);
 }
-.nan-middle-button:hover {
+.html5-player-middle-button:hover {
   color: #fff;
 }
-.nan-small-button {
+.html5-player-small-button {
   text-align: center;
   font-size: 24px;
   cursor: pointer;
@@ -212,18 +212,18 @@ button {
   -webkit-font-smoothing: subpixel-antialiased;
   color: rgba(255, 255, 255, 0.8);
 }
-.nan-small-button:hover {
+.html5-player-small-button:hover {
   color: #fff;
 }
-.nan-loading-icon {
+.html5-player-loading-icon {
   animation: spin 1.5s linear infinite;
   cursor: default;
   color: rgba(255, 255, 255, 0.8);
 }
-.nan-end-view {
+.html5-player-end-view {
   background-color: #000;
 }
-.nan-cover-view {
+.html5-player-cover-view {
   cursor: default;
   width: 100%;
   height: 100%;
@@ -231,7 +231,7 @@ button {
   top: 0;
   left: 0;
 }
-.nan-controlbar {
+.html5-player-controlbar {
   cursor: default;
   color: rgba(255, 255, 255, 0.8);
   text-align: left;
@@ -242,50 +242,50 @@ button {
   display: flex;
   flex-flow: row wrap;
 }
-.nan-button-container {
+.html5-player-button-container {
   flex: 1 1 auto;
   width: 100%;
   padding: 0px 10px;
 }
-.nan-button-container a {
+.html5-player-button-container a {
   color: rgba(255, 255, 255, 0.8);
 }
-.nan-button-container a:hover,
-.nan-button-container a:focus {
+.html5-player-button-container a:hover,
+.html5-player-button-container a:focus {
   color: rgba(255, 255, 255, 0.8);
 }
-.nan-volume-icon {
+.html5-player-volume-icon {
   cursor: pointer;
   position: relative;
   z-index: 10000;
 }
-.nan-volume-slider-container {
+.html5-player-volume-slider-container {
   height: 100px;
 }
-.nan-volume-slider-container .nan-slider-rail {
+.html5-player-volume-slider-container .html5-player-slider-rail {
   background: rgba(255, 255, 255, 0.6);
 }
-.nan-setting-icon {
+.html5-player-setting-icon {
   position: relative;
   z-index: 10000;
 }
-.nan-time-container {
+.html5-player-time-container {
   cursor: default;
   color: #fff;
   vertical-align: 3px;
   margin: 0 8px;
   font-family: Arial, Helvetica, sans-serif;
 }
-.nan-time-separater {
+.html5-player-time-separater {
   padding: 0px 5px;
 }
-.nan-live-icon {
+.html5-player-live-icon {
   font-weight: bold;
 }
-.nan-full-off-screen-icon {
+.html5-player-full-off-screen-icon {
   margin-right: 10px;
 }
-.nan-buffer {
+.html5-player-buffer {
   position: absolute;
   left: 0;
   height: 0;
@@ -293,10 +293,10 @@ button {
   width: 0%;
   background-color: rgba(255, 255, 255, 0.6);
 }
-.nan-error-message-view {
+.html5-player-error-message-view {
   background-color: #000;
 }
-.nan-error-message-container {
+.html5-player-error-message-container {
   top: 50%;
   left: 50%;
   position: absolute;
@@ -306,11 +306,11 @@ button {
   transform: translate(-50%, -50%);
   font: 600 14px/1.35 Arial, Helvetica, sans-serif;
 }
-.nan-reload {
+.html5-player-reload {
   cursor: pointer;
   font-size: 64px;
 }
-.nan-for-tooltip {
+.html5-player-for-tooltip {
   position: absolute;
   z-index: 10000;
   width: 100%;
@@ -319,14 +319,14 @@ button {
   top: -12px;
   padding: 12px 0px;
 }
-.nan-time-tooltip-content {
+.html5-player-time-tooltip-content {
   background: #ffffff;
   padding: 5px 5px;
   font-family: Arial, Helvetica, sans-serif;
   color: #000;
   animation: zoomIn 0.2s;
 }
-.nan-captions-text {
+.html5-player-captions-text {
   position: absolute;
   bottom: 0;
   line-height: 1.5;
@@ -339,42 +339,42 @@ button {
   text-align: center;
   word-wrap: normal;
 }
-.nan-captions-text > span {
+.html5-player-captions-text > span {
   background: rgba(0, 0, 0, 0.7);
   border-radius: 2px;
   font-size: 16px;
   color: #fff;
   font-family: 'YouTube Noto', Roboto, 'Arial Unicode Ms', Arial, Helvetica, Verdana, 'PT Sans Caption', sans-serif;
 }
-.nan-captions-text-user-active {
+.html5-player-captions-text-user-active {
   bottom: 60px;
 }
-.nan-captions-text-user-inactive {
+.html5-player-captions-text-user-inactive {
   bottom: 25px;
 }
-.nan-broken {
+.html5-player-broken {
   position: absolute;
   z-index: 10000;
   background-color: #656565;
   width: 0%;
   height: 100%;
 }
-.nan-track-history-slider .nan-slider-circle,
-.nan-track-history-slider .nan-buffer {
+.html5-player-track-history-slider .html5-player-slider-circle,
+.html5-player-track-history-slider .html5-player-buffer {
   display: none;
 }
-.nan-track-history-slider .nan-slider-onenter-rail:hover .nan-slider-circle {
+.html5-player-track-history-slider .html5-player-slider-onenter-rail:hover .html5-player-slider-circle {
   display: none;
 }
-.nan-track-history-slider .nan-slider-rail {
+.html5-player-track-history-slider .html5-player-slider-rail {
   height: 20px;
   background-color: #7ec2f3;
   transform: scaleY(1);
 }
-.nan-track-history-slider .nan-for-tooltip {
+.html5-player-track-history-slider .html5-player-for-tooltip {
   padding: 18px 0px;
 }
-.nan-player-title {
+.html5-player-title {
   position: absolute;
   /*background-color: fade(#000,80%);*/
   top: 0;
@@ -385,63 +385,63 @@ button {
   z-index: 1000;
   color: #fff;
 }
-.nan-setting-container {
+.html5-player-setting-container {
   padding: 10px 0;
 }
-.nan-setting-container,
-.nan-list-container,
-.nan-rate-container {
+.html5-player-setting-container,
+.html5-player-list-container,
+.html5-player-rate-container {
   font-size: 12px;
   text-align: left;
   background-color: #191919;
 }
-.nan-setting-container li,
-.nan-list-container li,
-.nan-rate-container li {
+.html5-player-setting-container li,
+.html5-player-list-container li,
+.html5-player-rate-container li {
   height: 30px;
   line-height: 30px;
   padding: 0px 10px;
   color: rgba(255, 255, 255, 0.8);
 }
-.nan-setting-container li:hover,
-.nan-list-container li:hover,
-.nan-rate-container li:hover {
+.html5-player-setting-container li:hover,
+.html5-player-list-container li:hover,
+.html5-player-rate-container li:hover {
   background-color: #303030;
 }
-.nan-setting-container li.nan-rate-title,
-.nan-list-container li.nan-rate-title,
-.nan-rate-container li.nan-rate-title {
+.html5-player-setting-container li.html5-player-rate-title,
+.html5-player-list-container li.html5-player-rate-title,
+.html5-player-rate-container li.html5-player-rate-title {
   height: 35px;
   line-height: 35px;
   border-bottom: 1px solid rgba(204, 204, 204, 0.2);
   margin-bottom: 5px;
 }
-.nan-setting-container li.nan-rate-title:hover,
-.nan-list-container li.nan-rate-title:hover,
-.nan-rate-container li.nan-rate-title:hover {
+.html5-player-setting-container li.html5-player-rate-title:hover,
+.html5-player-list-container li.html5-player-rate-title:hover,
+.html5-player-rate-container li.html5-player-rate-title:hover {
   background-color: rgba(25, 25, 25, 0.8);
 }
-.nan-rate-selected {
+.html5-player-rate-selected {
   background-color: #303030;
 }
-.nan-setting {
+.html5-player-setting {
   width: 200px;
   margin-left: -80px;
 }
-.nan-setting .nan-right-icon {
+.html5-player-setting .html5-player-right-icon {
   font-size: 12px;
   margin-left: 5px;
 }
-.nan-rate-container {
+.html5-player-rate-container {
   width: 70px;
   text-align: center;
 }
-.nan-rate-container .nan-left-icon {
+.html5-player-rate-container .html5-player-left-icon {
   margin-right: 5px;
   font-size: 12px;
   margin-left: -5px;
 }
-.nan-rate-button {
+.html5-player-rate-button {
   vertical-align: unset;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 5px;
@@ -450,24 +450,24 @@ button {
   margin: 8px;
   margin-top: 8px;
 }
-.nan-logo-container {
+.html5-player-logo-container {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 100;
   width: 64px;
 }
-.nan-logo-container img {
+.html5-player-logo-container img {
   width: 100%;
 }
-.nan-thumbnail {
+.html5-player-thumbnail {
   background: #fff;
   position: relative;
 }
-.nan-thumbnail-tooltip-content {
+.html5-player-thumbnail-tooltip-content {
   padding: 0;
 }
-.nan-thumbnail-time {
+.html5-player-thumbnail-time {
   background: #000;
   position: absolute;
   bottom: 0px;

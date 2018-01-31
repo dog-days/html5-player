@@ -63,7 +63,7 @@ var config = {
     maxAssetSize: 505000,
   },
   entry: {
-    nanPlayer: [
+    html5Player: [
       require.resolve(
         util.pathResolve('config/polyfills.js', scriptsPackagename)
       ),
@@ -79,7 +79,7 @@ var config = {
     filename: '[name].js',
     chunkFilename: '[name].[hash].js',
     sourceMapFilename: '[name].[hash].map',
-    library: 'nanPlayer',
+    library: 'html5Player',
     libraryExport: 'default',
     libraryTarget: 'window',
     pathinfo: true,

@@ -30,7 +30,7 @@ export default class NotAutoPlay extends React.Component {
     }
     return (
       <div
-        className="nan-cover-view nan-play-view"
+        className="html5-player-cover-view html5-player-play-view"
         onDoubleClick={e => {
           e.stopPropagation();
         }}
@@ -39,7 +39,7 @@ export default class NotAutoPlay extends React.Component {
         }}
       >
         <button
-          className="nan-middle-button"
+          className="html5-player-middle-button"
           onClick={e => {
             e.stopPropagation();
             this.dispatch({
@@ -47,7 +47,7 @@ export default class NotAutoPlay extends React.Component {
             });
           }}
         >
-          <svg className="nan-icon nan-play-big-icon" aria-hidden="true">
+          <svg className="html5-player-icon html5-player-play-big-icon" aria-hidden="true">
             <use xlinkHref="#icon-play" />
           </svg>
         </button>

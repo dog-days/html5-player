@@ -112,7 +112,7 @@ export default class Volume extends React.Component {
   renderContent() {
     const { volume } = this.props;
     return (
-      <div className="nan-volume-slider-container">
+      <div className="html5-player-volume-slider-container">
         <Slider
           vertical
           onChange={this.onSliderChange}
@@ -136,8 +136,8 @@ export default class Volume extends React.Component {
         toTargetGap={toTargetGap}
       >
         <span className="display-inline-block">
-          <button className="nan-small-button" onClick={this.onMuteStateChange}>
-            <svg className="nan-icon nan-volume-icon" aria-hidden="true">
+          <button className="html5-player-small-button" onClick={this.onMuteStateChange}>
+            <svg className="html5-player-icon html5-player-volume-icon" aria-hidden="true">
               <use
                 xlinkHref={classnames({
                   '#icon-volume-full': volume === 100 && !muted,

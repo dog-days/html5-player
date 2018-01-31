@@ -189,7 +189,7 @@ controls 默认为 true。
           <use xlinkHref="#icon-download" />
         </svg>
       </a>
-    ),
+    )
   }}
 />
 ```

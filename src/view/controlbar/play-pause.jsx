@@ -45,13 +45,13 @@ export default class PlayPause extends React.Component {
     }
     return (
       <button
-        className="nan-small-button"
+        className="html5-player-small-button"
         onClick={playing ? this.pause : this.play}
       >
         <svg
-          className={classnames('nan-icon', {
-            'nan-icon-pause': playing,
-            'nan-icon-play': !playing,
+          className={classnames('html5-player-icon', {
+            'html5-player-icon-pause': playing,
+            'html5-player-icon-play': !playing,
           })}
           aria-hidden="true"
         >

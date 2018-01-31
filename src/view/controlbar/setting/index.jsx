@@ -71,14 +71,14 @@ export default class Setting extends React.Component {
     const { showrateSelect, showSetting } = this.state;
     const locale = this.getLocale();
     return (
-      <div className="nan-setting-container">
+      <div className="html5-player-setting-container">
         {showSetting && (
-          <ul className="nan-setting">
+          <ul className="html5-player-setting">
             <li onClick={this.onRateClickEvent}>
               <span className="float-left">{locale.speed}</span>
               <span className="float-right">
                 <span>{playbackRate + locale.speed}</span>
-                <svg className="nan-icon nan-right-icon" aria-hidden="true">
+                <svg className="html5-player-icon html5-player-right-icon" aria-hidden="true">
                   <use xlinkHref="#icon-right" />
                 </svg>
               </span>
@@ -108,8 +108,8 @@ export default class Setting extends React.Component {
         toTargetGap={living ? 5 : 10}
       >
         <span className="display-inline-block float-right cursor-pointer">
-          <button className="nan-small-button" onClick={this.onMuteStateChange}>
-            <svg className="nan-icon nan-volume-icon" aria-hidden="true">
+          <button className="html5-player-small-button" onClick={this.onMuteStateChange}>
+            <svg className="html5-player-icon html5-player-volume-icon" aria-hidden="true">
               <use xlinkHref="#icon-setting" />
             </svg>
           </button>

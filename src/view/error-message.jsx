@@ -36,7 +36,7 @@ export default class ErrorMessage extends React.Component {
     }
     return (
       <div
-        className="nan-cover-view nan-error-message-view"
+        className="html5-player-cover-view html5-player-error-message-view"
         onDoubleClick={e => {
           e.stopPropagation();
         }}
@@ -44,10 +44,10 @@ export default class ErrorMessage extends React.Component {
           e.stopPropagation();
         }}
       >
-        <div className="nan-error-message-container">
+        <div className="html5-player-error-message-container">
           <button onClick={this.reload}>
             <svg
-              className="nan-icon nan-replay-icon nan-reload "
+              className="html5-player-icon html5-player-replay-icon html5-player-reload "
               aria-hidden="true"
             >
               <use xlinkHref="#icon-replay" />

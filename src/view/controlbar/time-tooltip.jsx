@@ -69,17 +69,17 @@ export default class TimeTooltip extends React.Component {
       });
       return (
         <div
-          className={classnames('nan-time-tooltip-content', {
-            'nan-thumbnail-tooltip-content': thumbnails,
+          className={classnames('html5-player-time-tooltip-content', {
+            'html5-player-thumbnail-tooltip-content': thumbnails,
           })}
         >
-          <div className="nan-thumbnail" style={style} />
-          <span className="nan-thumbnail-time">{hms(percent * duration)}</span>
+          <div className="html5-player-thumbnail" style={style} />
+          <span className="html5-player-thumbnail-time">{hms(percent * duration)}</span>
         </div>
       );
     } else {
       return (
-        <div className="nan-time-tooltip-content">
+        <div className="html5-player-time-tooltip-content">
           {(!videoBeginDateTime || timeSliderShowFormat === 'time') &&
             hms(percent * duration)}
           {videoBeginDateTime &&
@@ -95,14 +95,14 @@ export default class TimeTooltip extends React.Component {
   render() {
     return (
       <Tooltip
-        className="nan-time-tooltip"
+        className="html5-player-time-tooltip"
         content={this.renderContent()}
         type="move"
         onChange={this.onChange}
         percent={this.state.percent}
         isAnimateActive={false}
       >
-        <div className="nan-for-tooltip" />
+        <div className="html5-player-for-tooltip" />
       </Tooltip>
     );
   }

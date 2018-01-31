@@ -12,7 +12,7 @@ export default class ContextMenu extends React.Component {
     const { content, className, ...other } = this.props;
     if (content === true) {
       return (
-        <ul className={classnames('nan-list-container', className)} {...other}>
+        <ul className={classnames('html5-player-list-container', className)} {...other}>
           {process.NANPLAERVERSION && (
             <li>Nan Player v{process.NANPLAERVERSION}</li>
           )}
@@ -23,7 +23,7 @@ export default class ContextMenu extends React.Component {
       return content;
     } else if (isArray(content)) {
       return (
-        <ul className={classnames('nan-list-container', className)} {...other}>
+        <ul className={classnames('html5-player-list-container', className)} {...other}>
           {content.map((v, k) => {
             return <li key={k}>{v}</li>;
           })}

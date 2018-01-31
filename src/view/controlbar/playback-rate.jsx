@@ -39,7 +39,7 @@ export default class PlaybackRate extends React.Component {
         content={this.renderContent()}
         toTargetGap={20}
       >
-        <span className="float-right cursor-pointer nan-rate-button">
+        <span className="float-right cursor-pointer html5-player-rate-button">
           {playbackRate + locale.speed}
         </span>
       </Tooltip>

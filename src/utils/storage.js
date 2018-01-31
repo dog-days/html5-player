@@ -1,5 +1,5 @@
 let storage;
-const namespace = 'nan-player-';
+const namespace = 'html5-player-';
 try {
   storage = window.localStorage;
 } catch (e) {

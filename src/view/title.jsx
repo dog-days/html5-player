@@ -23,9 +23,9 @@ export default class Title extends React.Component {
   render() {
     const { userActive, title } = this.props;
     return <div className={
-      classnames("nan-player-title",
+      classnames("html5-player-title",
       {
-        'nan-hide': !userActive || !title
+        'html5-player-hide': !userActive || !title
       })
     }>{title}</div>;
   }

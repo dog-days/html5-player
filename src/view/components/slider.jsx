@@ -169,10 +169,10 @@ export default class Slider extends React.Component {
       <div
         style={containerStyle}
         className={classnames(
-          'nan-slider-container',
+          'html5-player-slider-container',
           {
-            'nan-slider-vertical-container': vertical,
-            'nan-slider-horizontal-container': !vertical,
+            'html5-player-slider-vertical-container': vertical,
+            'html5-player-slider-horizontal-container': !vertical,
           },
           className
         )}
@@ -187,25 +187,25 @@ export default class Slider extends React.Component {
       >
         <div
           ref="slider"
-          className={classnames('nan-slider-rail', {
-            'nan-slider-vertical-rail': vertical,
-            'nan-slider-horizontal-rail': !vertical,
-            'nan-slider-onenter-rail': onlyShowCircleOnEnter,
+          className={classnames('html5-player-slider-rail', {
+            'html5-player-slider-vertical-rail': vertical,
+            'html5-player-slider-horizontal-rail': !vertical,
+            'html5-player-slider-onenter-rail': onlyShowCircleOnEnter,
           })}
         >
           {children}
           <div
             style={trackStyle}
-            className={classnames('nan-slider-track', {
-              'nan-slider-vertical-track': vertical,
-              'nan-slider-horizontal-track': !vertical,
+            className={classnames('html5-player-slider-track', {
+              'html5-player-slider-vertical-track': vertical,
+              'html5-player-slider-horizontal-track': !vertical,
             })}
           />
           <div
             style={circleStyle}
-            className={classnames('nan-slider-circle', {
-              'nan-slider-vertical-circle': vertical,
-              'nan-slider-horizontal-circle': !vertical,
+            className={classnames('html5-player-slider-circle', {
+              'html5-player-slider-vertical-circle': vertical,
+              'html5-player-slider-horizontal-circle': !vertical,
             })}
           />
         </div>

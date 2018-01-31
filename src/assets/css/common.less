@@ -27,7 +27,7 @@ button {
   display: inline-block;
 }
 //公共部分
-.nan {
+.html5-player {
   &-icon {
     width: 1em;
     height: 1em;
@@ -113,13 +113,13 @@ button {
   }
   &-slider-onenter-rail {
     transform: scaleY(0.6);
-    .nan-slider-circle {
+    .html5-player-slider-circle {
       display: none;
       animation: zoomOut 0.2s;
     }
     &:hover {
       transform: none;
-      .nan-slider-circle {
+      .html5-player-slider-circle {
         display: block;
         animation: zoomIn 0.2s;
       }
@@ -127,7 +127,7 @@ button {
   }
   //end----slider
 }
-.nan {
+.html5-player {
   &-fade-in {
     animation: fadeIn 0.9s;
   }
@@ -140,7 +140,7 @@ button {
   &-hide&-hide {
     visibility: hidden;
   }
-  &-player-container {
+  &-container {
     font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: subpixel-antialiased;
     line-height: 1;
@@ -153,7 +153,7 @@ button {
     color: @text-color;
     .black-bg();
   }
-  &-player-tag {
+  &-tag {
     width: 100%;
     height: 100%;
   }
@@ -236,7 +236,7 @@ button {
   }
   &-volume-slider-container {
     height: 100px;
-    .nan-slider-rail {
+    .html5-player-slider-rail {
       background: @slider-buffer-color;
     }
   }
@@ -338,25 +338,25 @@ button {
     height: 100%;
   }
   &-track-history-slider {
-    .nan-slider-circle,
-    .nan-buffer {
+    .html5-player-slider-circle,
+    .html5-player-buffer {
       display: none;
     }
-    .nan-slider-onenter-rail:hover {
-      .nan-slider-circle {
+    .html5-player-slider-onenter-rail:hover {
+      .html5-player-slider-circle {
         display: none;
       }
     }
-    .nan-slider-rail {
+    .html5-player-slider-rail {
       height: 20px;
       background-color: @slider-history-rail-color;
       transform: scaleY(1);
     }
-    .nan-for-tooltip {
+    .html5-player-for-tooltip {
       padding: 18px 0px;
     }
   }
-  &-player-title {
+  &-title {
     position: absolute;
     /*background-color: fade(#000,80%);*/
     top: 0;
@@ -385,7 +385,7 @@ button {
         background-color: fade(@item-hover-color, 100%);
       }
     }
-    li.nan-rate-title {
+    li.html5-player-rate-title {
       height: 35px;
       line-height: 35px;
       border-bottom: 1px solid fade(#ccc, 20%);
@@ -401,7 +401,7 @@ button {
   &-setting {
     width: 200px;
     margin-left: -80px;
-    .nan-right-icon {
+    .html5-player-right-icon {
       font-size: 12px;
       margin-left: 5px;
     }
@@ -409,7 +409,7 @@ button {
   &-rate-container {
     width: 70px;
     text-align: center;
-    .nan-left-icon {
+    .html5-player-left-icon {
       margin-right: 5px;
       font-size: 12px;
       margin-left: -5px;
