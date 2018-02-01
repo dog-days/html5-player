@@ -41,7 +41,7 @@ import { namespace as livingNamespace } from '../model/living';
   };
 })
 //播放器删除，卸载后，还原所有state状态，异常事件监控等。
-//每个组件都有详情的clearDecorator
+//只要用到redux，每个组件基本都有相应的clearDecorator
 @clearDecorator([videoNamespace])
 export default class View extends React.Component {
   //这里的配置参考jw-player的api
@@ -335,7 +335,9 @@ export default class View extends React.Component {
           style={containerStyle}
           onMouseMove={this.onMouseMove}
         >
-          {!ready && <span className="html5-player-init-text">播放器加载中...</span>}
+          {!ready && (
+            <span className="html5-player-init-text">播放器加载中...</span>
+          )}
           <video
             loop={loop}
             className={classnames('html5-player-tag', {
@@ -344,10 +346,18 @@ export default class View extends React.Component {
             ref="video"
             {...videoProps}
           />
+          <div
+            //视频保护色，纯白的需要保护色
+            className="html5-player-pretect-bg"
+          />
           {ready && (
             <span>
               {isString(logo) && (
-                <img className="html5-player-logo-container" alt="" src={logo} />
+                <img
+                  className="html5-player-logo-container"
+                  alt=""
+                  src={logo}
+                />
               )}
               {React.isValidElement(logo) && (
                 <div className="html5-player-logo-container">{logo}</div>
