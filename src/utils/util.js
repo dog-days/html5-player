@@ -28,13 +28,34 @@ export function shouldUseHlsjs(file, forceOpenHls = false) {
   }
   return hlsjs;
 }
-//是否应该使用hls.js
+//是否应该使用flv.js
 export function shouldUseFlvjs(file) {
   let flvjs = false;
   if (~file.indexOf('.flv') && !videoUtil.canPlayType('video/x-flv')) {
     flvjs = true;
   }
   return flvjs;
+}
+//当前浏览器视频支持视频播放
+export function isH5VideoSupported(file) {
+  const suffix = file.match(/.*\.(.*)$/)[1];
+  if (!suffix) {
+    console.warn(`当前浏览器不支持此视频格式。`);
+    return true;
+  }
+  //以下视频容器格式都是chrome支持的
+  const container = {
+    mp4: 'video/mp4',
+    f4v: 'video/mp4',
+    m4v: 'video/mp4',
+    mov: 'video/mp4',
+    ogv: 'video/ogg',
+    ogg: 'video/ogg',
+    oga: 'video/ogg',
+    vorbis: 'video/ogg',
+    webm: 'video/webm',
+  };
+  return !!videoUtil.canPlayType(container[suffix]);
 }
 //是否是手机触摸事件
 export function isNotTouchEvent(e) {

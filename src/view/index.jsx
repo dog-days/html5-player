@@ -116,6 +116,11 @@ export default class View extends React.Component {
     }
     let hlsjs = util.shouldUseHlsjs(file, forceOpenHls);
     let flvjs = util.shouldUseFlvjs(file);
+    let videoNotSupport = false;
+    if (!hlsjs && !flvjs && !util.isH5VideoSupported(file)) {
+      //通过后缀名判断，没有后缀名不作处理，如果不支持原生的浏览器video格式，需要提示。
+      videoNotSupport = true;
+    }
     //end----强制所有浏览器使用hls.js 或者 浏览器不支持hls，启用hls.js
     loader({ hlsjs, flvjs, videoDOM, file, ...other }).then(provider => {
       //首先统一清理，可能会存在上一个的播放状态。
@@ -129,6 +134,7 @@ export default class View extends React.Component {
           config: {
             isHls: hlsjs,
             isFlv: flvjs,
+            videoNotSupport,
             ...other,
           },
           api: provider.api,

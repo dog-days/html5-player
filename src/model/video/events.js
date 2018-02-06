@@ -261,6 +261,9 @@ class Events {
       if (!message) {
         message = locale.fileCouldNotPlay;
       }
+      if (this.config.videoNotSupport) {
+        message = locale.videoNotSupport;
+      }
       dispatch({
         type: `${namespace}/errorMessage`,
         payload: {

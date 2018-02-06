@@ -5,4 +5,5 @@ export default {
   timeout: '视频加载超时',
   speed: '倍速',
   normalSpeed: '正常',
+  videoNotSupport: '当前浏览器不支持此视频格式',
 };
