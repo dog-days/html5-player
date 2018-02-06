@@ -22,6 +22,7 @@ import {
   SHOW_LOADING_LAZY_TIME,
   SHOW_ERROR_MESSAGE_LAZY_TIME,
   VIDEO_TIMEOUT,
+  RETRY_TIMES,
 } from '../../utils/const';
 import fullscreenHelper from '../../utils/dom/fullscreen';
 import * as storage from '../../utils/storage';
@@ -73,11 +74,6 @@ export default function() {
           //错误不展示loading，但是可以隐藏loading。
           return;
         }
-        if (payload) {
-          logger.info('Loading Video:', 'video is not enough to be played');
-        } else {
-          logger.info('Hide Loading:', 'video is enough to be played');
-        }
         clearTimeout(loadingTimeout);
         if (payload) {
           loadingTimeout = setTimeout(() => {
@@ -87,6 +83,7 @@ export default function() {
               type: `${loadingNamespace}/setLoadingStateSaga`,
               payload,
             });
+            logger.info('Loading Video:', 'video is not enough to be played');
             _api.trigger('loading', payload);
           }, showLoadingLazyTime);
         } else {
@@ -94,6 +91,7 @@ export default function() {
             type: `${loadingNamespace}/setLoadingStateSaga`,
             payload,
           });
+          logger.info('Hide Loading:', 'video is enough to be played');
           _api.trigger('loading', payload);
         }
         if (_api.isError) {
@@ -126,7 +124,11 @@ export default function() {
         if (_api.isError) {
           return;
         }
-        const { timeout = VIDEO_TIMEOUT, autoplay } = _config;
+        const {
+          timeout = VIDEO_TIMEOUT,
+          autoplay,
+          retryTimes = RETRY_TIMES,
+        } = _config;
         if (!clearIntervalForPlay && !_api.isError && !autoplay) {
           //处理autoplay=false时，hls ts文件500，然后点击播放后无提示问题。
           const locale = localization || _api.localization;
@@ -137,7 +139,8 @@ export default function() {
                 message: locale.timeout,
               },
             });
-          }, timeout);
+            //让timeout时间跟尝试重连的timeout保持最小时间一致。
+          }, timeout * retryTimes);
         }
         logger.info('Play Action', 'start playing');
         if (!_api.notAutoPlayViewHide) {
