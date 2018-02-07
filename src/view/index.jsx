@@ -132,9 +132,10 @@ export default class View extends React.Component {
         payload: {
           dispatch: this.dispatch,
           config: {
-            isHls: hlsjs,
-            isFlv: flvjs,
+            isHls: util.isM3u8File(file),
+            isFlv: util.isFlvFile(file),
             videoNotSupport,
+            file,
             ...other,
           },
           api: provider.api,

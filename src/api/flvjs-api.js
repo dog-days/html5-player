@@ -10,7 +10,6 @@ export default class flvAPI extends API {
       flvjs.LoggingControl.enableDebug = false;
       flvjs.LoggingControl.enableVerbose = false;
       this.flvjs = flvjs;
-      this.loadSource.bind(this)(file);
     }
     return _this;
   }

@@ -4,7 +4,6 @@ import * as logger from '../utils/logger';
 export default class html5API extends API {
   constructor(videoDOM, file) {
     let _this = super(videoDOM, file);
-    this.loadSource.bind(this)(file);
     return _this;
   }
   loadSource(file) {

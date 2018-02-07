@@ -659,6 +659,7 @@ export default function() {
           autoplay,
           showLoadingLazyTime: loadingLazyTime,
           showErrorMessageLazyTime: errorMessageLazyTime,
+          file,
         } = config;
 
         if (loadingLazyTime) {
@@ -670,6 +671,7 @@ export default function() {
         _api = api;
         _dispatch = dispatch;
         _config = config;
+        _api.loadSource(file);
         //初始化loading状态
         if (autoplay) {
           logger.info('Autoplay:', 'set the video to play automatically');

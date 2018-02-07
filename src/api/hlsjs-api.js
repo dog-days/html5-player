@@ -20,7 +20,6 @@ export default class hlsAPI extends API {
         fragLoadingTimeOut: 25000,
         enableWorker: true,
       });
-      this.loadSource.bind(this)(file);
     }
     return _this;
   }

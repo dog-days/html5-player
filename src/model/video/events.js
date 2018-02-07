@@ -147,6 +147,11 @@ class Events {
     const dispatch = this.dispatch;
     let { livingMaxBuffer = LIVING_MAXBUFFER_TIME, isHls } = this.config;
     api.on('timeupdate', () => {
+      //直播延时变大处理
+      //safari原生的hls，在直播延时处理失效，还没有解决办法，不过hls本来的延时就大，影响不大。
+      //使用的hls.js和flv.js延时处理是正常的。
+      //edge原生的hls的也正常，不过经常会卡，然后就触发了重载，然后就正常了。
+      //正常网络下hls处理延时变大会很少的，flv才可能频繁一点，flv的实时性要求高。
       if (api.living && api.buffered.length > 0 && api.currentTime) {
         if (isHls) {
           //hls需要的直播需要特殊对待。
@@ -162,6 +167,7 @@ class Events {
               reduceBuffer = 1;
             }
           }
+          //浏览器原生的hls，在直播状态设置currentTime失效。
           api.currentTime = api.bufferTime - reduceBuffer;
           logger.log(
             'Delay Reduce',
