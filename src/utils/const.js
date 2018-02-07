@@ -24,7 +24,7 @@ export const ASPECT_RATIO = '16:9';
 export const CONTROLBAR_TIMEOUT = 2000;
 export const DEFAULT_PLAYBACKRATES = [1, 1.25, 1.5, 1.75, 2];
 //直播最大缓存
-export const LIVING_MAXBUFFER_TIME = 1.5;
+export const LIVING_MAXBUFFER_TIME = 2;
 //延时展示loading的时间
 export const SHOW_LOADING_LAZY_TIME = 500;
 //延时展示错误信息的时间
