@@ -270,11 +270,6 @@ class Events {
           message,
         },
       });
-      dispatch({
-        type: `${namespace}/controlbar`,
-        payload: true,
-        onControlbarEnter: false,
-      });
     });
   }
   ended() {

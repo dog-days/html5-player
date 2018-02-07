@@ -142,7 +142,6 @@ export default function() {
             //让timeout时间跟尝试重连的timeout保持最小时间一致。
           }, timeout * retryTimes);
         }
-        logger.info('Play Action', 'start playing');
         if (!_api.notAutoPlayViewHide) {
           //当autoplay为false，播放后，需要隐藏not-autoplay页面
           yield put({
@@ -169,6 +168,7 @@ export default function() {
           _api.trigger('replay');
         }
         _api.play();
+        logger.info('Play Action', 'start playing');
         if (_api.playing) {
           yield put({
             type: `${playPauseNamespace}/playPauseSaga`,
@@ -537,8 +537,10 @@ export default function() {
         }
         if (flag) {
           if (payload) {
+            _api.controlbarShow = true;
             logger.info('Controlbar show');
           } else {
+            _api.controlbarShow = false;
             logger.info('Controlbar hide');
           }
           yield put({
@@ -556,19 +558,19 @@ export default function() {
           return;
         }
         const error = () => {
-          if (_api.loading) {
+          if (!_api.controlbarShow) {
             _dispatch({
-              type: `${namespace}/loading`,
-              payload: false,
+              type: `${namespace}/controlbar`,
+              payload: true,
+              onControlbarEnter: false,
             });
           }
-          _dispatch({
-            type: `${namespace}/controlbar`,
-            payload: true,
-          });
-          _dispatch({
-            type: `${namespace}/hideNotAutoPlayView`,
-          });
+          if (!_api.notAutoPlayViewHide) {
+            //如果not-autoplay页面没关闭
+            _dispatch({
+              type: `${namespace}/hideNotAutoPlayView`,
+            });
+          }
           _dispatch({
             type: `${errorMessageNamespace}/errorMessageSaga`,
             payload,
@@ -584,6 +586,13 @@ export default function() {
             //使用setTimeout是为了防止视频很快就可以播放的情况，就不用展示loading。
             //否则就会对用户造成卡顿假像。
             logger.info('Error message show');
+            if (_api.loading) {
+              //如果还有loading，需要隐藏
+              _dispatch({
+                type: `${namespace}/loading`,
+                payload: false,
+              });
+            }
             error();
           }, showErrorMessageLazyTime);
         } else {
@@ -593,6 +602,7 @@ export default function() {
       },
       *reload({ payload }, { put }) {
         logger.info('Reload Video');
+        _api.trigger('reload');
         //重置
         _api.reset();
         _videoEvents && _videoEvents.reset();
@@ -604,7 +614,6 @@ export default function() {
           _api.currentTime = tempCurrentTime;
         }
         _api.isError = false;
-        _api.trigger('reload');
         yield put({
           type: `loading`,
           payload: true,
