@@ -20,7 +20,7 @@ class MainLayout extends React.Component {
   }
   render() {
     const { children, params } = this.props;
-    const codeUrl = `https://github.com/dog-days/nan-player/tree/master/demo/src/view/${params.controllerId}/${params.viewId}/index.jsx`;
+    const codeUrl = `https://github.com/dog-days/html5-player/tree/master/demo/src/view/${params.controllerId}/${params.viewId}/index.jsx`;
     return (
       <div className="layout-container">
         <nav className="navbar navbar-inverse">

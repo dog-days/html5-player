@@ -1,8 +1,11 @@
 import React from 'react';
-import NanPlayer from 'nan-player';
+import Html5Player from 'html5-player';
 
 class View extends React.Component {
-  state = {};
+  state = {
+    value: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
+    changeFile: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
+  };
   onInputChange = e => {
     this.setState({
       value: e.target.value,
@@ -10,14 +13,15 @@ class View extends React.Component {
   };
   onKeyDown = e => {
     if (e.keyCode === 13) {
-      const { value = `${process.env.basename}/test.mp4` } = this.state;
+      const { value } = this.state;
       this.setState({
-        file: value,
+        changeFile: value,
       });
     }
   };
   render() {
-    const file = this.state.file || `${process.env.basename}/test.mp4`;
+    const { changeFile, value } = this.state;
+    const file = changeFile;
     return (
       <div className="demo-container">
         <div className="player-container">
@@ -25,17 +29,9 @@ class View extends React.Component {
             onChange={this.onInputChange}
             onKeyDown={this.onKeyDown}
             className="url-input"
-            value={
-              this.state.value ||
-              `${location.origin}${process.env.basename}/test.mp4`
-            }
+            value={value}
           />
-          <NanPlayer
-            flvConfig={
-              {
-                // enableWorker: true,
-              }
-            }
+          <Html5Player
             controls={{
               dowload: (
                 <a
@@ -44,7 +40,7 @@ class View extends React.Component {
                   target="_blank"
                   download={file}
                 >
-                  <svg className="nan-icon" aria-hidden="true">
+                  <svg className="html5-player-icon" aria-hidden="true">
                     <use xlinkHref="#icon-download" />
                   </svg>
                 </a>
@@ -57,7 +53,7 @@ class View extends React.Component {
             //logo支持string，React Element和plainObject
             logo={{
               image: `${process.env.basename}/logo.png`,
-              link: 'https://github.com/dog-days/nan-player',
+              link: 'https://github.com/dog-days/html5-player',
             }}
           />
         </div>
