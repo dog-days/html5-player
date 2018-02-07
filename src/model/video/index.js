@@ -598,6 +598,8 @@ export default function() {
         } else {
           logger.info('Error message hide');
           error();
+          //如果非错误，需要设置_api.isError为false
+          _api.isError = false;
         }
       },
       *reload({ payload }, { put }) {

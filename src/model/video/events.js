@@ -30,6 +30,7 @@ class Events {
     logger.info('Listening:', 'listening on h5 video events.');
   }
   reset() {
+    this.currentTime = 0;
     clearTimeout(this.videoTimeout);
   }
   loadeddata() {
@@ -146,10 +147,6 @@ class Events {
     const dispatch = this.dispatch;
     let { livingMaxBuffer = LIVING_MAXBUFFER_TIME, isHls } = this.config;
     api.on('timeupdate', () => {
-      // if (api.readyState < 1) {
-      //   return;
-      // }
-      // logger.log('Timeupdate currentTime:', this.currentTime, api.currentTime);
       if (api.living && api.buffered.length > 0 && api.currentTime) {
         if (isHls) {
           //hls需要的直播需要特殊对待。
@@ -210,8 +207,8 @@ class Events {
             });
           }
           //end----处理loading状态
-        } else if (api.loading) {
-          //直播状态播放中如果发现loading，直接隐藏。
+        } else if (api.loading && this.currentTime !== api.currentTime) {
+          //直播状态正在播放中如果发现loading，直接隐藏。
           dispatch({
             type: `${namespace}/loading`,
             payload: false,
@@ -251,7 +248,7 @@ class Events {
     const dispatch = this.dispatch;
     const locale = localization || api.localization;
     api.on('error', data => {
-      clearTimeout(this.videoTimeout);
+      this.reset();
       //有message和type的是hls.js等事件的错误
       api.isError = true;
       let message = data.message;
