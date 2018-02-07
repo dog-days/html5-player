@@ -16,22 +16,30 @@ export function standardReducer(state, { payload }) {
     ...payload,
   };
 }
+//根据.m3u判断
+export function isM3u8File(file = '') {
+  return !!~file.indexOf('.m3u');
+}
 //是否应该使用hls.js
 export function shouldUseHlsjs(file, forceOpenHls = false) {
   let hlsjs = false;
   if (
     forceOpenHls ||
-    (~file.indexOf('.m3u') &&
+    (isM3u8File(file) &&
       !videoUtil.canPlayType('application/vnd.apple.mpegurl'))
   ) {
     hlsjs = true;
   }
   return hlsjs;
 }
+//根据.m3u判断
+export function isFlvFile(file = '') {
+  return !!~file.indexOf('.flv');
+}
 //是否应该使用flv.js
 export function shouldUseFlvjs(file) {
   let flvjs = false;
-  if (~file.indexOf('.flv') && !videoUtil.canPlayType('video/x-flv')) {
+  if (isFlvFile(file) && !videoUtil.canPlayType('video/x-flv')) {
     flvjs = true;
   }
   return flvjs;
