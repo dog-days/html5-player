@@ -103,14 +103,11 @@ export default function() {
           };
         }
       },
-      *hideNotAutoPlayView({ payload }, { put }) {
-        logger.info('Hide Not Auto Play View');
-        yield put({
-          type: `${notAutoPlayNamespace}/notAutoPlayStateSaga`,
-          payload: false,
-        });
-        _api.notAutoPlayViewHide = true;
-        if (!_api.playing && !_api.isError) {
+      *playAfterNotAutoplay({ payload }, { put }) {
+        if (!_api.playing) {
+          if (!_config.preload) {
+            _api.loadSource(_config.file);
+          }
           yield put({
             type: `controlbar`,
             payload: true,
@@ -119,6 +116,17 @@ export default function() {
             type: `play`,
           });
         }
+        yield put({
+          type: `hideNotAutoPlayView`,
+        });
+      },
+      *hideNotAutoPlayView({ payload }, { put }) {
+        logger.info('Hide Not Auto Play View');
+        yield put({
+          type: `${notAutoPlayNamespace}/notAutoPlayStateSaga`,
+          payload: false,
+        });
+        _api.notAutoPlayViewHide = true;
       },
       *play({ payload }, { put }) {
         if (_api.isError) {
@@ -660,6 +668,7 @@ export default function() {
           showLoadingLazyTime: loadingLazyTime,
           showErrorMessageLazyTime: errorMessageLazyTime,
           file,
+          preload = true,
         } = config;
 
         if (loadingLazyTime) {
@@ -671,9 +680,9 @@ export default function() {
         _api = api;
         _dispatch = dispatch;
         _config = config;
-        _api.loadSource(file);
         //初始化loading状态
         if (autoplay) {
+          _api.loadSource(file);
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
@@ -691,6 +700,9 @@ export default function() {
           //当autoplay=true初始化controlbar默认为显示
           _api.trigger('controlbar', true);
         } else {
+          if (preload) {
+            _api.loadSource(file);
+          }
           _api.trigger('loading', false);
           _api.loading = false;
         }

@@ -43,11 +43,14 @@ export default class NotAutoPlay extends React.Component {
           onClick={e => {
             e.stopPropagation();
             this.dispatch({
-              type: `${videoNamespace}/hideNotAutoPlayView`,
+              type: `${videoNamespace}/playAfterNotAutoplay`,
             });
           }}
         >
-          <svg className="html5-player-icon html5-player-play-big-icon" aria-hidden="true">
+          <svg
+            className="html5-player-icon html5-player-play-big-icon"
+            aria-hidden="true"
+          >
             <use xlinkHref="#icon-play" />
           </svg>
         </button>

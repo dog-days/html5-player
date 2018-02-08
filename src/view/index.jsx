@@ -56,6 +56,9 @@ export default class View extends React.Component {
     /**---begin Behavior**/
     //静音
     muted: PropTypes.bool,
+    //preload=true，提前加载视频，false为不提前加载视频
+    //autoplay优先与preload
+    preload: PropTypes.bool,
     //自动播放
     autoplay: PropTypes.bool,
     //播完重复播放
