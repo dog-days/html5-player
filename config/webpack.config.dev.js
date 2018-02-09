@@ -74,7 +74,7 @@ var config = {
     maxAssetSize: 505000,
   },
   entry: {
-    nanPlayer: entry,
+    html5Player: entry,
   },
   output: {
     filename: '[name].js',

@@ -19,21 +19,30 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "cross-env": "^5.1.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-15": "^1.0.5",
+    "enzyme-to-json": "^3.3.1",
+    "jest": "^22.2.1",
+    "jest-localstorage-mock": "^2.2.0",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "preact": "^8.2.6",
     "preact-compat": "^3.17.0",
     "react": "^15.5.4",
-    "react-boilerplate-app-scripts": "^0.2.5",
+    "react-boilerplate-app-scripts": "^0.2.10",
     "react-dom": "^15.5.4",
     "react-router-controller": "^0.1.9",
-    "react-router-controller-cli": "^0.0.1"
+    "react-router-controller-cli": "^0.0.1",
+    "react-test-renderer": "^16.2.0",
+    "sinon": "^4.2.2"
   },
   "scripts": {
     "build-css":
       "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
     "build-demo": "node ./scripts/build-demo.js",
     "build": "node ./scripts/build-umd.js",
+    "test": "cross-env BABEL_ENV=default jest --coverage",
+    "updateTestSnapshot": "jest --updateSnapshot",
     "cover": "react-boilerplate-app-scripts cover",
     "serve-demo-build": "react-boilerplate-app-scripts serve-build",
     "serve-umd-build": "serve ./dist -o",
@@ -46,7 +55,7 @@
       "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
     "transform-es": "cross-env BABEL_ENV=es babel ./src -d es",
     "transform-es-watch": "cross-env BABEL_ENV=es babel ./src -d es -w",
-    "transform-default": "cross-env BABEL_ENV=default babel ./src -d libs",
+    "transform-default": "cross-env BABEL_ENV=production babel ./src -d libs",
     "transform-default-watch":
       "cross-env BABEL_ENV=default babel ./src -d libs -w"
   },
@@ -56,22 +65,25 @@
     "appPublicPath": "demo/public"
   },
   "babel": {
-    "presets": [
-      "react",
-      [
-        "es2015",
-        {
-          "modules": false
-        }
-      ],
-      "stage-0"
-    ],
-    "plugins": ["transform-decorators-legacy", "transform-runtime"],
     "env": {
       "development": {
-        "plugins": ["react-hot-loader/babel"]
+        "presets": [
+          "react",
+          [
+            "es2015",
+            {
+              "modules": false
+            }
+          ],
+          "stage-0"
+        ],
+        "plugins": [
+          "transform-decorators-legacy",
+          "transform-runtime",
+          "react-hot-loader/babel"
+        ]
       },
-      "default": {
+      "production": {
         "plugins": ["transform-decorators-legacy", "transform-runtime"],
         "presets": ["react", "es2015", "stage-0"]
       },
@@ -92,5 +104,26 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "jest": {
+    "setupFiles": ["./tests/setup.js", "jest-localstorage-mock"],
+    "browser": true,
+    "moduleFileExtensions": ["js", "jsx"],
+    "coverageDirectory": "./src",
+    "testMatch": ["**/?(*.)(spec|test).js?(x)"],
+    "coveragePathIgnorePatterns": ["/node_modules/", "/src/assets/"],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/src/assets/",
+      "/libs/",
+      "/es/",
+      "/dist/",
+      "/scripts/",
+      "/config/",
+      "/public/",
+      "/.cache/",
+      "/demo/"
+    ],
+    "snapshotSerializers": ["enzyme-to-json/serializer"]
   }
 }

@@ -1,8 +1,8 @@
-# Nan Player
+# Html5 Player
 
-本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react，打包后的 js 文件 gzip 后的大小为**77KB**左右（hls 和 flv 的代码是会根据视频类型动态加载的，视频类型根据文件后缀名判别）。
+本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react，打包后的 js 文件 gzip 后的大小为**80KB**左右（hls 和 flv 的代码是会根据视频类型动态加载的，视频类型根据文件后缀名判别）。
 
-> **不使用 react 的项目一样可以使用 nan-player，不过打包后的代码包含了react相关代码，如果使用jsx语法，那么用法大部分基本一致。当然建议使用react更好，如果使用react、redux、redux-saga，除开这些依赖代码，nan-player的代码，包括图片样式，gzip后在20KB以内。**
+> **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了react相关代码，如果使用jsx语法，那么用法大部分基本一致。当然建议使用react更好，如果使用react、redux、redux-saga，除开这些依赖代码，html5-player的代码，包括图片样式，gzip后在20KB以内。**
 
 ## 功能
 
@@ -22,14 +22,16 @@
 
 > 目前只支持 PC 端，暂不支持移动端。
 
+**由于flv直播状态兼容性问题，需要通过设置isLiving=true来强制设置为直播状态。**
+
 ## 入门使用
 
 ### 安装
 
-首先安装`nan-player`
+首先安装`html5-player`
 
 ```sh
-npm i nan-player -S
+npm i html5-player -S
 ```
 
 或者 clone 本项目，运行下面的命令
@@ -43,29 +45,29 @@ npm run build
 #npm run serve-demo-build 可以启动服务查看项目demo
 ```
 
-构建后的 js 文件生成在`dist`目录下，直接使用 dist 目录下的 nanPlayer.js，然后调用全局变量 window.nanPlayer 使用即可。
+构建后的 js 文件生成在`dist`目录下，直接使用 dist 目录下的Html5Player.js，然后调用全局变量 window.Html5Player 使用即可。
 
 ### 使用
 
 在 react 中的使用，react 版本要求是 v15.x 以上，还需要引入样式：
 
 ```js
-import 'nan-player/libs/assets/css/style.css';
+import 'html5-player/libs/assets/css/style.css';
 ```
 
 ```jsx
 import React from 'react';
-import NanPlayer from 'nan-player';
+import Html5Player from 'html5-player';
 class View extends React.Component {
   render() {
     return (
-      <NanPlayer
+      <Html5Player
         title="这里是标题"
         file="/test.mp4"
         //logo支持string，React Element和plainObject
         logo={{
           image: '/logo.png',
-          link: 'https://github.com/dog-days/nan-player',
+          link: 'https://github.com/dog-days/html5-player',
         }}
         videoCallback={palyer => {
           //player参数是实例化后的播放器，详情请看后续API
@@ -76,17 +78,17 @@ class View extends React.Component {
 }
 ```
 
-如果使用的是打包后的 nanPlayer.js，使用如下：
+如果使用的是打包后的 Html5Player.js，使用如下：
 
 ```html
-<script src="/nanPlayer.js"></script>
+<script src="/html5Player.js"></script>
 ...
 <div id="test"></div>
 <script>
-  //nanPlayer是全局变量
+  //html5Player是全局变量
   //返回的是promise对象。
-  //打包后的nan-player，window.React可以直接使用。
-  nanPlayer({
+  //打包后的html5-player，window.React可以直接使用。
+  html5Player({
     //比react的props要多一个id
     //元素id
     id: 'test',
@@ -95,9 +97,9 @@ class View extends React.Component {
     //logo支持string，React Element和plainObject
     logo: {
       image: '/logo.png',
-      link: 'https://github.com/dog-days/nan-player',
+      link: 'https://github.com/dog-days/html5-player',
     },
-    //打包后的nan-player，window.React可以直接使用。
+    //打包后的html5-player，window.React可以直接使用。
     children: React.createElement('div',{},"这里是标题"),
   }).then(player=>{
     //player参数是实例化后的播放器，详情请看后续API
@@ -109,14 +111,14 @@ class View extends React.Component {
 **如果使用 flv 直播，需要设置 enableWorker，可以减少延时到 1 秒左右。 但是如果不是直播，不可以设置，否则会报错。**
 
 ```jsx
-<NanPlayer
+<html5Player
   flvConfig={{ enableWorker: true }}
   title="这里是标题"
   file="/test.mp4"
   //logo支持string，React Element和plainObject
   logo={{
     image: '/logo.png',
-    link: 'https://github.com/dog-days/nan-player',
+    link: 'https://github.com/dog-days/html5-player',
   }}
 />
 ```
@@ -127,38 +129,40 @@ class View extends React.Component {
 
 ```jsx
 //react jsx用法
-<Napplayer {...props} />
-//umd用法 nanPlayer(props)
+<Html5Player {...props} />
+//umd用法 html5Player(props)
 ```
 
 参数如下：
 
-| props                    | 类型                                    | 说明                                       | 默认值                     | 是否必填 |
-| ------------------------ | ------------------------------------- | ---------------------------------------- | ----------------------- | ---- |
-| file                     | sting                                 | 视频文件路径                                   | 无                       | 是    |
-| isLiving                 | boolean                               | 强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。   | false                   | 否    |
-| height                   | string <br />number                   | 播放器高度，不设置高度时，父元素的高度需要设置。                 | 100%                    | 否    |
-| width                    | string <br />number                   | 播放器宽度                                    | 100%                    | 否    |
-| title                    | string<br />React.element             | 标题                                       | 无                       | 否    |
-| logo                     | string<br />React.element<br />object | logo                                     | 无                       | 否    |
-| poster                   | string                                | video 的 poster，海报图                       | 无                       | 否    |
-| aspectratio              | string                                | 播放器纵横比，<br />只有设置了width才有效<br />，格式为`x:y` | 16:9                    | 否    |
-| muted                    | boolean                               | 是否静音                                     | false                   | 否    |
-| loop                     | boolean                               | 是否循环播放                                   | false                   | 否    |
-| autoplay                 | boolean                               | 是否自动播放                                   | false                   | 否    |
-| controls                 | boolean<br />object                   | 是否展示 controllerbar                       | true                    | 否    |
-| localization             | object                                | 多语言设置                                    | 查看后面说明                  | 否    |
-| tracks                   | object                                | 各种 track 设置                              | 无                       | 否    |
-| fragment                 | string                                | 视频断片功能                                   | 无                       | 否    |
-| timeSliderShowFormat     | string                                | tootip展示的时间格式，值为`time`和`date`，date只有在fragment设置情况下生效。 | time                    | 否    |
-| playbackRates            | array                                 | video 的 playebackRates 设置                | [1, 1.25, 1.5, 1.75, 2] | 否    |
-| playbackRateControls     | boolean                               | 是否开启 playebackRate 控制                    | true                    | 否    |
-| videoCallback            | function                              | 打包的 js 没有这个属性，详细看后面播放器实例化 API            | 无                       | 否    |
-| showLoadingLazyTime      | number                                | 延时展示loading的时间（毫秒）                       | 500                     | 否    |
-| showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                          | 1000                    | 否    |
-| contextMenu              | boolean<br />array<br />React Element | 鼠标右击菜单                                   | 展示一行默认信息                | 否    |
-| timeout                  | number                                | 视频超时设置，5000ms后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 5000                    | 否    |
-| retryTimes               | number                                | 网络差时，timeout后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差5秒左右。 | 2                       | 否    |
+| props                    | 类型                                  | 说明                                                         | 默认值                  | 是否必填 |
+| ------------------------ | ------------------------------------- | ------------------------------------------------------------ | ----------------------- | -------- |
+| file                     | sting                                 | 视频文件路径                                                 | 无                      | 是       |
+| isLiving                 | boolean                               | 强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。 | false                   | 否       |
+| livingMaxBuffer          | float                                 | 直播最大缓存时间（秒），如果卡设置大一定的值，理论上是越小延时越小。(hls需要而外加上15秒) | 2                       | 否       |
+| height                   | string <br />number                   | 播放器高度，不设置高度时，父元素的高度需要设置。             | 100%                    | 否       |
+| width                    | string <br />number                   | 播放器宽度                                                   | 100%                    | 否       |
+| title                    | string<br />React.element             | 标题                                                         | 无                      | 否       |
+| logo                     | string<br />React.element<br />object | logo                                                         | 无                      | 否       |
+| poster                   | string                                | video 的 poster，海报图                                      | 无                      | 否       |
+| aspectratio              | string                                | 播放器纵横比，<br />只有设置了width才有效<br />，格式为`x:y` | 16:9                    | 否       |
+| muted                    | boolean                               | 是否静音                                                     | false                   | 否       |
+| loop                     | boolean                               | 是否循环播放                                                 | false                   | 否       |
+| preload                  | boolean                               | 视频是否预加载，`autoplay=false`才会生效                     | true                    | 否       |
+| autoplay                 | boolean                               | 是否自动播放                                                 | false                   | 否       |
+| controls                 | boolean<br />object                   | 是否展示 controllerbar                                       | true                    | 否       |
+| localization             | object                                | 多语言设置                                                   | 查看后面说明            | 否       |
+| tracks                   | object                                | 各种 track 设置                                              | 无                      | 否       |
+| fragment                 | string                                | 视频断片功能                                                 | 无                      | 否       |
+| timeSliderShowFormat     | string                                | tootip展示的时间格式，值为`time`和`date`，date只有在fragment设置情况下生效。 | time                    | 否       |
+| playbackRates            | array                                 | video 的 playebackRates 设置                                 | [1, 1.25, 1.5, 1.75, 2] | 否       |
+| playbackRateControls     | boolean                               | 是否开启 playebackRate 控制                                  | true                    | 否       |
+| videoCallback            | function                              | 打包的 js 没有这个属性，详细看后面播放器实例化 API           | 无                      | 否       |
+| showLoadingLazyTime      | number                                | 延时展示loading的时间（毫秒）                                | 500                     | 否       |
+| showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                               | 1000                    | 否       |
+| contextMenu              | boolean<br />array<br />React Element | 鼠标右击菜单                                                 | 展示一行默认信息        | 否       |
+| timeout                  | number                                | 视频超时设置，5000ms后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 5000                    | 否       |
+| retryTimes               | number                                | 网络差时，timeout后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差5秒左右。 | 2                       | 否       |
 
 #### props.controls
 
@@ -180,7 +184,7 @@ controls 默认为 true。
 **controls 还可以自定义 controlbar 按钮**，例如自定义下载按钮：
 
 ```jsx
-<NanPlayer
+<Html5Player
   file="https://media.w3.org/2010/05/sintel/trailer.mp4"
   controls={{
     dowload: (
@@ -199,7 +203,7 @@ controls 默认为 true。
 * 字幕
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     tracks={[
       {
@@ -213,7 +217,7 @@ controls 默认为 true。
 * 缩略图
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     tracks={[
       {
@@ -229,7 +233,7 @@ controls 默认为 true。
 视频断片功能，比较特殊的一个功能，这种情况比较少用。**最适合用在m3u8，因为m3u8是文本，可以很简单的合并分段的视频。**
 
 ```jsx
-<NanPlayer
+<Html5Player
   file="https://media.w3.org/2010/05/sintel/movie.m3u8"
   fragment='/fragment.json'
 />
@@ -274,7 +278,7 @@ fragment定义如下：
   这种情况，点击 logo 无跳转。
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     logo="/logo.png"
   />
@@ -285,11 +289,11 @@ fragment定义如下：
   这种情况，点击 logo 无跳转。
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     logo={{
       image: '/logo.png',
-      link: 'https://github.com/dog-days/nan-player',
+      link: 'https://github.com/dog-days/html5-player',
     }}
   />
   ```
@@ -299,10 +303,10 @@ fragment定义如下：
   这种情况，点击 logo 无跳转。
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     logo={
-      <a href="https://github.com/dog-days/nan-player">
+      <a href="https://github.com/dog-days/html5-player">
         <img src="/logo.png" />
       </a>
     }
@@ -317,11 +321,12 @@ fragment定义如下：
 //异步加载hls或flv代码，才会提示播放器加载中。
 {
   loadingPlayerText: '播放器加载中...',
-  unknownError: '发生了未知错误',
+  unknownError: '视频加载出错',
   fileCouldNotPlay: '视频加载出错',
   timeout: '视频加载超时',
   speed: '倍速',
   normalSpeed: '正常',
+  videoNotSupport: '当前浏览器不支持此视频格式',
 }
 ```
 
@@ -332,7 +337,7 @@ fragment定义如下：
   是否展示contextMenu，`true`是，展示默认的contextMenu。
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     contextMenu={false}
   />
@@ -343,7 +348,7 @@ fragment定义如下：
   这种情况，适合用于展示多个，展示样式也是用默认的。
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     contextMenu={[
       <a href="#demo">demo</a>,
@@ -357,7 +362,7 @@ fragment定义如下：
   可以进行自定义结构和样式。
 
   ```jsx
-  <NanPlayer
+  <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     contextMenu={
       <ul>
@@ -373,7 +378,7 @@ fragment定义如下：
 react 在 props.videoCallback 返回播放器实例
 
 ```jsx
-<NanPlayer
+<Html5Player
   file="/test.mp4"
   videoCallback={palyer => {
     //player参数是实例化后的播放器
@@ -384,7 +389,7 @@ react 在 props.videoCallback 返回播放器实例
 umd 打包后在 primse 对象中返回播放器实例。
 
 ```js
-nanPlayer({
+html5Player({
   id: 'test',
   file: '/test.mp4',
 }).then(player => {
@@ -481,7 +486,7 @@ nanPlayer({
 
 * on(type, callback)
 
-  事件监控，这里可以继承所有[video DOM 事件](https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events)（用 addEventlisener 绑定事件一样），同时也可以监听`nan-player`的自定义事件。
+  事件监控，这里可以继承所有[video DOM 事件](https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Media_events)（用 addEventlisener 绑定事件一样），同时也可以监听`html5-player`的自定义事件。
 
   ```js
   /**
@@ -504,9 +509,6 @@ nanPlayer({
   off(type) {}
   ```
 
-* trigger(name, ...params)
-
-  触发自定义事件。
 
 ### 自定义事件列表
 

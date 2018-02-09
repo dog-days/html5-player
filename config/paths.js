@@ -28,7 +28,8 @@ var paths = {
   //程序打包目录，根据prefixURL变化
   appBuild: path.join(
     process.cwd(),
-    'demo/build'
+    'demo/build',
+    cwdPackageJsonConfig.basename
   ),
   umdBuild: path.resolve(process.cwd(), 'dist'),
   //app 程序目录

@@ -74,6 +74,7 @@ webpack(config).run(function(err, stats) {
         var fileContents = fs.readFileSync(
           path.resolve(paths.appBuild, v.name)
         );
+        console.log(paths.appBuild, v.name);
         sizeAfterGzip = gzipSize(fileContents);
       }
       table.push([

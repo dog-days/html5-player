@@ -154,8 +154,8 @@ var config = {
   resolve: {
     alias: {
       src: paths.src,
-      react: 'preact-compat',
-      'react-dom': 'preact-compat',
+      // react: 'preact-compat',
+      // 'react-dom': 'preact-compat',
       'html5-player': path.resolve(process.cwd(), 'src/player.jsx'),
     },
     //不可留空字符串
