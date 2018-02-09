@@ -36,7 +36,6 @@ class OutsideApi {
     const outSideApi = {
       on: api.on.bind(api),
       off: api.off.bind(api),
-      trigger: api.trigger.bind(api),
     };
     this.getSagaFunction(outSideApi);
     this.getProperty(outSideApi);
