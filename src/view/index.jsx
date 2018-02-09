@@ -320,6 +320,7 @@ export default class View extends React.Component {
       fragment,
       isLiving,
       timeSliderShowFormat = 'time',
+      living,
       children,
     } = this.props;
     const containerStyle = this.getContainerStyle();
@@ -340,7 +341,7 @@ export default class View extends React.Component {
         <div
           key={file}
           className={classnames('html5-player-container', className, {
-            // 'cursor-none': !userActive,
+            'cursor-none': !userActive,
           })}
           style={containerStyle}
           onMouseMove={this.onMouseMove}
@@ -351,7 +352,8 @@ export default class View extends React.Component {
           <video
             loop={loop}
             className={classnames('html5-player-tag', {
-              // 'cursor-none': !userActive,
+              'cursor-none': !userActive,
+              'cursor-pointer': !(isLiving || living),
             })}
             ref="video"
             {...videoProps}
