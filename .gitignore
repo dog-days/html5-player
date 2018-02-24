@@ -20,3 +20,5 @@ yarn-debug.log*
 yarn-error.log*
 console_html.tar.gz
 /console/
+/coverage/
+TESTS-*.xml

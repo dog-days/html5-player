@@ -40,8 +40,7 @@ export default class ModelProvider extends React.Component {
       models = [],
       middlewares = [],
       plugins = [],
-      prefix,
-      production = true
+      production = true,
     } = this.props;
     const sagaModel = getSagaModel(
       reducers,
@@ -49,8 +48,7 @@ export default class ModelProvider extends React.Component {
       models,
       middlewares,
       plugins,
-      !production,
-      prefix
+      !production
     );
     const store = sagaModel.store();
     return store;
@@ -58,7 +56,7 @@ export default class ModelProvider extends React.Component {
 
   render() {
     const { children, production } = this.props;
-    if(!this.store) {
+    if (!this.store) {
       this.store = this.getStore();
     }
     return (

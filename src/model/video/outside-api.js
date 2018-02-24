@@ -1,16 +1,16 @@
 import { namespace } from './index';
 //忽略的saga名，不忽略的saga名注意不要跟下面的properties重复
-const outSideIgnoreSagas = [
-  'loading',
-  'hideNotAutoPlayView',
-  'end',
-  'time',
-  'historyTrack',
-  'seekingState',
-  'controlbarClearTimeout',
-  'reload',
-  'living',
-  'init',
+const outSideSagas = [
+  'play',
+  'pause',
+  'volume',
+  'muted',
+  'replay',
+  'seeking',
+  'fullscreen',
+  'controlbar',
+  'errorMessage',
+  'playbackRate',
 ];
 
 const oustSidePropertyList = [
@@ -46,7 +46,7 @@ class OutsideApi {
     const dispatch = this.dispatch;
     for (let k in this.sagas) {
       const sagaName = k.replace(`${namespace}/`, '');
-      if (!~outSideIgnoreSagas.indexOf(sagaName)) {
+      if (!!~outSideSagas.indexOf(sagaName)) {
         let funcName;
         switch (sagaName) {
           case 'volume':
@@ -60,6 +60,9 @@ class OutsideApi {
             break;
           case 'errorMessage':
             funcName = 'showErrorMessage';
+            break;
+          case 'playbackRate':
+            funcName = 'setPlaybackRate';
             break;
           default:
             funcName = sagaName;

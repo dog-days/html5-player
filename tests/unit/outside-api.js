@@ -1,0 +1,31 @@
+export default function(player) {
+  describe('External Api', function() {
+    it(`External Api should be equaled.`, function() {
+      const api = [
+        'on',
+        'off',
+        'play',
+        'pause',
+        'setVolume',
+        'setMuted',
+        'replay',
+        'setSeeking',
+        'fullscreen',
+        'controlbar',
+        'showErrorMessage',
+        'setPlaybackRate',
+        'playing',
+        'ended',
+        'loading',
+        'bufferTime',
+        'seeking',
+        'currentTime',
+        'duration',
+        'isError',
+      ];
+      api.forEach(v => {
+        expect(api[Object.keys(player).indexOf(v)]).to.equal(v);
+      });
+    });
+  });
+}

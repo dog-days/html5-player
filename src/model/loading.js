@@ -4,10 +4,10 @@ export default function() {
     namespace,
     state: false,
     reducers: {
-      loadingStateReducer: function(state, { payload }){
+      loadingStateReducer: function(state, { payload }) {
         return payload;
       },
-      clear: function(state, { payload }){
+      clear: function(state, { payload }) {
         return this.state;
       },
     },
