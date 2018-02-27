@@ -32,7 +32,9 @@ export default class ErrorMessage extends React.Component {
   render() {
     const { message } = this.props.errorInfo;
     if (!message) {
-      return false;
+      return (
+        <div className="html5-player-error-message-view html5-player-hide" />
+      );
     }
     return (
       <div

@@ -40,10 +40,13 @@ export default class FullOffScreen extends React.Component {
         onClick={this.onFullStateChange}
       >
         <svg
-          className={classnames('html5-player-icon', {
-            'html5-player-icon-fullscreen': !isfull,
-            'html5-player-icon-fullscreen-off': isfull,
-          })}
+          className={classnames(
+            'html5-player-icon html5-player-screen-full-off-icon',
+            {
+              'html5-player-fullscreen-icon': !isfull,
+              'html5-player-fullscreen-off-icon': isfull,
+            }
+          )}
           aria-hidden="true"
         >
           <use

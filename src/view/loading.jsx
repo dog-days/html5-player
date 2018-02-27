@@ -26,11 +26,12 @@ export default class Loading extends React.Component {
   render() {
     const { loading } = this.props;
     if (!loading) {
-      return false;
+      //这里不return false 是为了方便单元测试判断。
+      return <div className="html5-player-loading-view html5-player-hide" />;
     }
     return (
       <div
-        className="html5-player-cover-view  html5-player-loading-view"
+        className="html5-player-cover-view html5-player-loading-view"
         onDoubleClick={e => {
           e.stopPropagation();
         }}

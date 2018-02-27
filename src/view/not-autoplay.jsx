@@ -26,7 +26,8 @@ export default class NotAutoPlay extends React.Component {
   render() {
     const { show } = this.props;
     if (!show) {
-      return false;
+      //这里不return false 是为了方便单元测试判断。
+      return <div className="html5-player-play-view html5-player-hide" />;
     }
     return (
       <div
@@ -38,22 +39,24 @@ export default class NotAutoPlay extends React.Component {
           e.stopPropagation();
         }}
       >
-        <button
-          className="html5-player-middle-button"
-          onClick={e => {
-            e.stopPropagation();
-            this.dispatch({
-              type: `${videoNamespace}/playAfterNotAutoplay`,
-            });
-          }}
-        >
-          <svg
-            className="html5-player-icon html5-player-play-big-icon"
-            aria-hidden="true"
+        {show && (
+          <button
+            className="html5-player-middle-button"
+            onClick={e => {
+              e.stopPropagation();
+              this.dispatch({
+                type: `${videoNamespace}/playAfterNotAutoplay`,
+              });
+            }}
           >
-            <use xlinkHref="#icon-play" />
-          </svg>
-        </button>
+            <svg
+              className="html5-player-icon html5-player-play-big-icon"
+              aria-hidden="true"
+            >
+              <use xlinkHref="#icon-play" />
+            </svg>
+          </button>
+        )}
       </div>
     );
   }

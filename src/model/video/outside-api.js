@@ -36,6 +36,9 @@ class OutsideApi {
     const outSideApi = {
       on: api.on.bind(api),
       off: api.off.bind(api),
+      setCurrentTime: currentTime => {
+        this.api.currentTime = currentTime;
+      },
     };
     this.getSagaFunction(outSideApi);
     this.getProperty(outSideApi);

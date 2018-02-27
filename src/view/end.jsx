@@ -33,7 +33,7 @@ export default class End extends React.Component {
   render() {
     const { end } = this.props;
     if (!end) {
-      return false;
+      return <div className="html5-player-end-view html5-player-hide" />;
     }
     return (
       <div
@@ -46,7 +46,10 @@ export default class End extends React.Component {
         }}
       >
         <button className="html5-player-middle-button" onClick={this.replay}>
-          <svg className="html5-player-icon html5-player-replay-icon" aria-hidden="true">
+          <svg
+            className="html5-player-icon html5-player-replay-icon"
+            aria-hidden="true"
+          >
             <use xlinkHref="#icon-replay" />
           </svg>
         </button>

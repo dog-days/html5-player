@@ -116,9 +116,6 @@ export default function() {
             type: `play`,
           });
         }
-        yield put({
-          type: `hideNotAutoPlayView`,
-        });
       },
       *hideNotAutoPlayView({ payload }, { put }) {
         logger.info('Hide Not Auto Play View');
@@ -152,6 +149,7 @@ export default function() {
         }
         if (!_api.notAutoPlayViewHide) {
           //当autoplay为false，播放后，需要隐藏not-autoplay页面
+          //这里是防止这个页面没被隐藏。
           yield put({
             type: `hideNotAutoPlayView`,
           });

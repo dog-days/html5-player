@@ -49,10 +49,13 @@ export default class PlayPause extends React.Component {
         onClick={playing ? this.pause : this.play}
       >
         <svg
-          className={classnames('html5-player-icon', {
-            'html5-player-icon-pause': playing,
-            'html5-player-icon-play': !playing,
-          })}
+          className={classnames(
+            'html5-player-icon html5-player-play-pause-icon',
+            {
+              'html5-player-pause-icon': playing,
+              'html5-player-play-icon': !playing,
+            }
+          )}
           aria-hidden="true"
         >
           <use

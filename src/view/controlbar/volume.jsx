@@ -136,8 +136,22 @@ export default class Volume extends React.Component {
         toTargetGap={toTargetGap}
       >
         <span className="display-inline-block">
-          <button className="html5-player-small-button" onClick={this.onMuteStateChange}>
-            <svg className="html5-player-icon html5-player-volume-icon" aria-hidden="true">
+          <button
+            className="html5-player-small-button"
+            onClick={this.onMuteStateChange}
+          >
+            <svg
+              className={classnames(
+                'html5-player-icon html5-player-volume-icon',
+                {
+                  'html5-player-volume-full-icon': volume === 100 && !muted,
+                  'html5-player-volume-x-icon': volume === 0 || muted,
+                  'html5-player-volume-part-icon':
+                    volume > 0 && volume < 100 && !muted,
+                }
+              )}
+              aria-hidden="true"
+            >
               <use
                 xlinkHref={classnames({
                   '#icon-volume-full': volume === 100 && !muted,

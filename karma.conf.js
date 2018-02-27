@@ -20,6 +20,10 @@ webpackConfig.module.rules = rules.concat(webpackConfig.module.rules || []);
 
 module.exports = function(config) {
   config.set({
+    client: {
+      useIframe: false,
+      runInParent: true,
+    },
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
@@ -65,18 +69,17 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: true,
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
-      // 'PhantomJS',
       'Chrome',
       // 'Safari', // experiencing issues with safari-launcher@1.0.0 and Safari 9.1.1
-      // 'Firefox',
+      'Firefox',
     ],
     coverageIstanbulReporter: {
       reports: ['text-summary', 'html'],
