@@ -4,6 +4,7 @@ export default function(player) {
       const api = [
         'on',
         'off',
+        'setCurrentTime',
         'play',
         'pause',
         'setVolume',
@@ -24,7 +25,7 @@ export default function(player) {
         'isError',
       ];
       api.forEach(v => {
-        expect(api[Object.keys(player).indexOf(v)]).to.equal(v);
+        expect(!!~Object.keys(player).indexOf(v)).to.equal(true);
       });
     });
   });

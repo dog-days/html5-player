@@ -9,6 +9,7 @@ import View from 'src/view';
 import 'src/assets/icon/iconfont';
 
 import outsideApi from '../unit/outside-api';
+import * as autostartFalseVideo from '../unit/model/autostart-false-video.js';
 const unit = [];
 
 class ModelRegister extends React.Component {
@@ -22,15 +23,18 @@ class ModelRegister extends React.Component {
       const model = require(`src/model/${modelId}.js`).default;
       return { model, modelId };
     });
+    const store = this.context.sagaStore;
     return Promise.all(allModelPromise)
       .then(models => {
         models.forEach(m => {
           let model = m.model();
           switch (m.modelId) {
             case 'video/index':
-              require(`../unit/model/video.js`).getModelObject(
+              autostartFalseVideo.getModelObject(
                 model,
-                this.context.sagaStore.dispatch
+                this.props,
+                store.dispatch,
+                store
               );
               break;
             default:
@@ -43,7 +47,7 @@ class ModelRegister extends React.Component {
         models.forEach(m => {
           switch (m.modelId) {
             case 'video/index':
-              unit.push(require(`../unit/model/video.js`).default);
+              unit.push(autostartFalseVideo.default);
               break;
             default:
           }
@@ -78,7 +82,7 @@ export default function player(props) {
         },
       ]}
     >
-      <ModelRegister>
+      <ModelRegister {...props}>
         <View
           {...props}
           videoCallback={function(player) {
