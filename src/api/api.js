@@ -47,54 +47,55 @@ export default class API {
           Object.prototype.toString.apply(videoDOM[k]) === '[object Function]'
         ) {
           let oldKey = k;
-          if (this[k]) {
+          if (_this[k]) {
             //如果API中定义了该属性，则添加前缀
             k = '_' + k;
           }
           this[k] = function(...param) {
             videoDOM[oldKey](...param);
           };
-        }
-        //属性处理
-        if (this[k]) {
-          //如果API中定义了该属性，则添加前缀
-          k = '_' + k;
-        }
-        _this = Object.create(_this, {
-          [k]: {
-            get: function() {
-              return videoDOM[k];
-            },
-            set: function(val) {
-              videoDOM[k] = val;
-            },
-          },
-        });
-        //自定义新属性
-        switch (k) {
-          case 'paused':
-            _this = Object.create(_this, {
-              playing: {
-                get: function() {
-                  return !videoDOM[k];
-                },
-                set: function(val) {
-                  videoDOM[k] = !val;
-                },
+        } else {
+          //属性处理
+          if (_this[k]) {
+            //如果API中定义了该属性，则添加前缀
+            k = '_' + k;
+          }
+          _this = Object.create(_this, {
+            [k]: {
+              get: function() {
+                return videoDOM[k];
               },
-            });
-            break;
-          case 'buffered':
-            _this = Object.create(_this, {
-              bufferTime: {
-                // eslint-disable-next-line
-                get: function() {
-                  return _this.getBufferTime();
-                },
+              set: function(val) {
+                videoDOM[k] = val;
               },
-            });
-            break;
-          default:
+            },
+          });
+          //自定义新属性
+          switch (k) {
+            case 'paused':
+              _this = Object.create(_this, {
+                playing: {
+                  get: function() {
+                    return !videoDOM[k];
+                  },
+                  set: function(val) {
+                    videoDOM[k] = !val;
+                  },
+                },
+              });
+              break;
+            case 'buffered':
+              _this = Object.create(_this, {
+                bufferTime: {
+                  // eslint-disable-next-line
+                  get: function() {
+                    return _this.getBufferTime();
+                  },
+                },
+              });
+              break;
+            default:
+          }
         }
       }
     } catch (e) {

@@ -48,7 +48,7 @@ export function shouldUseFlvjs(file) {
 export function isH5VideoSupported(file) {
   const suffix = file.match(/.*\.(.*)$/)[1];
   if (!suffix) {
-    console.warn(`当前浏览器不支持此视频格式。`);
+    //无后缀名的直接通过。
     return true;
   }
   //以下视频容器格式都是chrome支持的
@@ -63,6 +63,11 @@ export function isH5VideoSupported(file) {
     vorbis: 'video/ogg',
     webm: 'video/webm',
   };
+  if (!videoUtil.canPlayType) {
+    //如果canPlayType不存在，返回true，做兼容。
+    //测试中PhantomJS不支持canPlayType。
+    return true;
+  }
   return !!videoUtil.canPlayType(container[suffix]);
 }
 //是否是手机触摸事件
