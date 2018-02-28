@@ -79,7 +79,7 @@ module.exports = function(config) {
     browsers: [
       // 'PhantomJS',
       'Chrome',
-      'Firefox',
+      // 'Firefox',
     ],
     coverageIstanbulReporter: {
       reports: ['text-summary', 'html'],
