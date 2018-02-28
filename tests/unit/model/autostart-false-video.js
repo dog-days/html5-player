@@ -170,9 +170,6 @@ export default function(player) {
       attributesChangeObserver('.html5-player-volume-icon', function() {
         //初始化会默认自动设置是否静音（根据localStorage） + 设置为0的一次
         expect(spyObj.muted.callCount).to.equal(2);
-        let sliderTrackDom = document.querySelector(
-          '.html5-player-slider-track'
-        );
         expect(sliderTrackDom.style.height).to.equal('0%');
         //icon展示也要想要改变
         let volumeIconDom = document.querySelector(

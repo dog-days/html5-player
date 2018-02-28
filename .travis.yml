@@ -1,3 +1,4 @@
+os: OS X
 sudo: required
 #启用chrome
 addons:
