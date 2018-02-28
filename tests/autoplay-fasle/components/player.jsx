@@ -3,13 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 //内部依赖包
 import Provider from 'src/libs/provider/saga-model-provider';
-import modelList from './model-list';
+import modelList from 'src/model-list';
 import View from 'src/view';
 //icon的js
 import 'src/assets/icon/iconfont';
 
 import outsideApi from '../unit/outside-api';
-import * as autostartFalseVideo from '../unit/model/autostart-false-video.js';
+import * as videoUnit from '../unit/model/video.js';
 const unit = [];
 
 class ModelRegister extends React.Component {
@@ -30,7 +30,7 @@ class ModelRegister extends React.Component {
           let model = m.model();
           switch (m.modelId) {
             case 'video/index':
-              autostartFalseVideo.getModelObject(
+              videoUnit.getModelObject(
                 model,
                 this.props,
                 store.dispatch,
@@ -47,7 +47,7 @@ class ModelRegister extends React.Component {
         models.forEach(m => {
           switch (m.modelId) {
             case 'video/index':
-              unit.push(autostartFalseVideo.default);
+              unit.push(videoUnit.default);
               break;
             default:
           }

@@ -1,10 +1,13 @@
+/**
+ * 可能会受网络的影响，测试也会不通过的，所有需要保证网络没问题。
+ */
 import sinon from 'sinon';
 import {
   childListChangeObserver,
   shouldChildNotEmptyObserver,
   shouldChildEmptyObserver,
   attributesChangeObserver,
-} from '../../util';
+} from '../../../util';
 
 const spyObj = {};
 let _model;
@@ -55,7 +58,8 @@ export default function(player) {
     if (!_config.autoplay) {
       it(`Play view should be shown when player config autoplay is set to false or undefined.`, function() {
         const playViewDom = document.querySelector('.html5-player-play-view');
-        expect(!!playViewDom.innerHTML).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!playViewDom.innerHTML).to.be.true;
       });
     }
     it(sagaItTitle('init'), function() {
@@ -84,7 +88,8 @@ export default function(player) {
         expect(spyObj.pause.callCount).to.equal(1);
         //controlbar中的暂停icon对应要切换为播放icon
         const iconPlayDom = document.querySelector('.html5-player-play-icon');
-        expect(!!iconPlayDom).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!iconPlayDom).to.be.true;
         done();
       });
       dispatch('pause');
@@ -110,7 +115,8 @@ export default function(player) {
         expect(spyObj.play.callCount).to.equal(2);
         //controlbar中的播放icon对应要切换为暂停icon
         const iconPauseDom = document.querySelector('.html5-player-pause-icon');
-        expect(!!iconPauseDom).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!iconPauseDom).to.be.true;
         //这个函数与当前unit无关。
         setSliderTrackDom();
         done();
@@ -128,7 +134,8 @@ export default function(player) {
         let volumeIconDom = document.querySelector(
           '.html5-player-volume-x-icon'
         );
-        expect(!!volumeIconDom).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!volumeIconDom).to.be.true;
         done();
       });
       dispatch('volume', 0);
@@ -144,7 +151,8 @@ export default function(player) {
         let volumeIconDom = document.querySelector(
           '.html5-player-volume-part-icon'
         );
-        expect(!!volumeIconDom).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!volumeIconDom).to.be.true;
         done();
       });
       dispatch('volume', 50);
@@ -160,7 +168,8 @@ export default function(player) {
         let volumeIconDom = document.querySelector(
           '.html5-player-volume-full-icon'
         );
-        expect(!!volumeIconDom).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!volumeIconDom).to.be.true;
         done();
       });
       dispatch('volume', 100);
@@ -175,7 +184,8 @@ export default function(player) {
         let volumeIconDom = document.querySelector(
           '.html5-player-volume-x-icon'
         );
-        expect(!!volumeIconDom).to.equal(true);
+        //eslint-disable-next-line
+        expect(!!volumeIconDom).to.be.true;
         done();
       });
       dispatch('muted', true);
@@ -201,7 +211,8 @@ export default function(player) {
     });
     it(sagaItTitle('time'), function() {
       //虽然不知道具体数，但是大于2这个是100%了，除非视频播放出错了，那这个测试上面的就通不过了。
-      expect(spyObj.time.callCount > 2).to.equal(true);
+      //eslint-disable-next-line
+      expect(spyObj.time.callCount > 2).to.be.true;
     });
     it(sagaItTitle('seekingState'), function() {
       dispatch('seekingState', true);
@@ -212,9 +223,8 @@ export default function(player) {
       dispatch('seeking', { percent });
       expect(spyObj.seeking.callCount).to.equal(1);
       // console.log(videoDom.currentTime, videoDom.duration * percent);
-      expect(videoDom.currentTime === videoDom.duration * percent).to.equal(
-        true
-      );
+      //eslint-disable-next-line
+      expect(videoDom.currentTime === videoDom.duration * percent).to.be.true;
     });
     it(sagaItTitle('fullscreen'), function() {
       //测试中浏览器全屏功能失效
@@ -223,11 +233,13 @@ export default function(player) {
     });
     it(sagaItTitle('controlbarClearTimeout'), function() {
       //会运行多次
-      expect(spyObj.controlbarClearTimeout.callCount > 1).to.equal(true);
+      //eslint-disable-next-line
+      expect(spyObj.controlbarClearTimeout.callCount > 1).to.be.true;
     });
     it(sagaItTitle('controlbar'), function() {
       //会运行多次
-      expect(spyObj.controlbar.callCount > 1).to.equal(true);
+      //eslint-disable-next-line
+      expect(spyObj.controlbar.callCount > 1).to.be.true;
     });
     it(
       sagaItTitle('errorMessage').replace(
@@ -257,20 +269,25 @@ export default function(player) {
       dispatch('reload');
       expect(spyObj.reload.callCount).to.equal(1);
     });
-    it(sagaItTitle('living'), function(done) {
-      //reload后video标签中src属性会被改变（加上随机数，确保跟上一个的url不相等）。
-      childListChangeObserver('.html5-player-controlbar', function() {
-        //html5-player-time-slider
-        //直播无time-slider
-        expect(!!document.querySelector('.html5-player-time-slider')).to.equal(
-          false
-        );
-        done();
-      });
-      dispatch('living', { duration: Infinity });
-      //初始化默认会触发一次
-      expect(spyObj.living.callCount).to.equal(2);
-    });
+    it(
+      sagaItTitle('living').replace(
+        '.',
+        ' when swiching the video to live status.'
+      ),
+      function(done) {
+        childListChangeObserver('.html5-player-controlbar', function() {
+          //html5-player-time-slider
+          //直播无time-slider
+          expect(
+            !!document.querySelector('.html5-player-time-slider')
+          ).to.equal(false);
+          done();
+        });
+        dispatch('living', { duration: Infinity });
+        //初始化默认会触发一次
+        expect(spyObj.living.callCount).to.equal(2);
+      }
+    );
     it(sagaItTitle('playbackRate'), function(done) {
       childListChangeObserver('.html5-player-rate-container', done());
       dispatch('playbackRate', 1.5);
