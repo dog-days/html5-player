@@ -5,9 +5,6 @@ import {
   shouldChildEmptyObserver,
   attributesChangeObserver,
 } from '../../util';
-//设定默认值，防止被运行后，再次运行默认值改变
-localStorage.setItem('html5-player-volume', 20);
-localStorage.setItem('html5-player-muted', false);
 
 const spyObj = {};
 let _model;
@@ -92,12 +89,30 @@ export default function(player) {
       });
       dispatch('pause');
     });
+    //这里执行在异步的test之前。
+    let sliderTrackDomAll;
+    let sliderTrackDom;
+    function setSliderTrackDom() {
+      //目前播放器有两个slider，声音和录像slider
+      //这里需要判断视频两个slider都显示了。
+      //播放状态改变后才controlbar才会显示。
+      sliderTrackDomAll = document.querySelectorAll(
+        '.html5-player-slider-track'
+      );
+      if (sliderTrackDomAll[1]) {
+        sliderTrackDom = sliderTrackDomAll[1];
+      } else {
+        sliderTrackDom = sliderTrackDomAll[0];
+      }
+    }
     it(sagaItTitle('play'), function(done) {
       attributesChangeObserver('.html5-player-play-pause-icon', function() {
         expect(spyObj.play.callCount).to.equal(2);
         //controlbar中的播放icon对应要切换为暂停icon
         const iconPauseDom = document.querySelector('.html5-player-pause-icon');
         expect(!!iconPauseDom).to.equal(true);
+        //这个函数与当前unit无关。
+        setSliderTrackDom();
         done();
       });
       dispatch('play');
@@ -108,9 +123,6 @@ export default function(player) {
       attributesChangeObserver('.html5-player-volume-icon', function() {
         //初始化会默认自动设置一次声音大小 + 设置为0的一次
         expect(spyObj.volume.callCount).to.equal(2);
-        let sliderTrackDom = document.querySelector(
-          '.html5-player-slider-track'
-        );
         expect(sliderTrackDom.style.height).to.equal('0%');
         //icon展示也要想要改变
         let volumeIconDom = document.querySelector(
@@ -127,9 +139,6 @@ export default function(player) {
       attributesChangeObserver('.html5-player-volume-icon', function() {
         //2 + 1
         expect(spyObj.volume.callCount).to.equal(3);
-        let sliderTrackDom = document.querySelector(
-          '.html5-player-slider-track'
-        );
         expect(sliderTrackDom.style.height).to.equal('50%');
         //icon展示也要想要改变
         let volumeIconDom = document.querySelector(
@@ -146,9 +155,6 @@ export default function(player) {
       attributesChangeObserver('.html5-player-volume-icon', function() {
         //3 + 1
         expect(spyObj.volume.callCount).to.equal(4);
-        let sliderTrackDom = document.querySelector(
-          '.html5-player-slider-track'
-        );
         expect(sliderTrackDom.style.height).to.equal('100%');
         //icon展示也要想要改变
         let volumeIconDom = document.querySelector(
