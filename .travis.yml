@@ -1,10 +1,12 @@
 sudo: required
+#启用chrome
 addons:
   chrome: stable
 language: node_js
 node_js:
   - "6.0.0"
 before_install:
+  #启用火狐
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 script: "npm run build && npm run build-demo && npm run test"
