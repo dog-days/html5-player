@@ -56,7 +56,7 @@ export default function(player) {
   const videoDom = document.querySelector('.html5-player-tag');
   describe('Autoplay = false', function() {
     if (!_config.autoplay) {
-      it(`Play view should be shown when player config autoplay is set to false.`, function() {
+      it(`Play view should be shown when player config autoplay is set to false or undefined.`, function() {
         const playViewDom = document.querySelector('.html5-player-play-view');
         expect(!!playViewDom.innerHTML).to.equal(true);
       });

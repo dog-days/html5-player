@@ -11,7 +11,7 @@ const rules = [
   {
     enforce: 'post',
     test: /\.js[x]$/,
-    include: /(src)\/(js)\//,
+    include: /src/,
     loader: 'istanbul-instrumenter-loader',
   },
 ];
@@ -52,7 +52,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha', 'coverage-istanbul', 'junit'],
+    reporters: ['mocha', 'coverage-istanbul'],
 
     // web server port
     port: 9876,
