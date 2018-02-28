@@ -80,12 +80,7 @@ export default function(player) {
       //playAfterNotAutoplay会触发hideNotAutoPlayView执行。
       expect(spyObj.hideNotAutoPlayView.callCount).to.equal(1);
     });
-    it(sagaItTitle('play'), function() {
-      expect(spyObj.play.callCount).to.equal(1);
-      //controlbar中的播放icon对应要切换为暂停icon
-      const iconPauseDom = document.querySelector('.html5-player-pause-icon');
-      expect(!!iconPauseDom).to.equal(true);
-    });
+
     it(sagaItTitle('pause'), function(done) {
       //监听事件要放在dispatch前面
       attributesChangeObserver('.html5-player-play-pause-icon', function() {
@@ -96,6 +91,16 @@ export default function(player) {
         done();
       });
       dispatch('pause');
+    });
+    it(sagaItTitle('play'), function(done) {
+      attributesChangeObserver('.html5-player-play-pause-icon', function() {
+        expect(spyObj.play.callCount).to.equal(2);
+        //controlbar中的播放icon对应要切换为暂停icon
+        const iconPauseDom = document.querySelector('.html5-player-pause-icon');
+        expect(!!iconPauseDom).to.equal(true);
+        done();
+      });
+      dispatch('play');
     });
     it(sagaItTitle('volume').replace('.', ' when the volume is 0.'), function(
       done
