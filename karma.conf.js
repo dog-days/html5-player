@@ -77,9 +77,9 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
+      // 'PhantomJS',
       'Chrome',
-      // 'Safari', // experiencing issues with safari-launcher@1.0.0 and Safari 9.1.1
-      'Firefox',
+      // 'Firefox',
     ],
     coverageIstanbulReporter: {
       reports: ['text-summary', 'html'],
