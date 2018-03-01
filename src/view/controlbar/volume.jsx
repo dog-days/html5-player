@@ -32,8 +32,7 @@ export default class Volume extends React.Component {
   dispatch = this.props.dispatch;
   componentDidMount() {
     const { autoMuted } = this.props;
-    const isMuted = this.setMutedFromLocalStorage();
-    if (!isMuted && !autoMuted) {
+    if (!autoMuted) {
       this.setVolumeFromLocalStorage();
     }
   }
@@ -50,23 +49,6 @@ export default class Volume extends React.Component {
       type: `${videoNamespace}/volume`,
       payload: _volume,
     });
-  }
-  setMutedFromLocalStorage() {
-    const { autoMuted } = this.props;
-    if (autoMuted) {
-      this.dispatch({
-        type: `${videoNamespace}/muted`,
-        payload: true,
-        autoMuted,
-      });
-      return;
-    }
-    const _muted = !!storage.get('muted');
-    this.dispatch({
-      type: `${videoNamespace}/muted`,
-      payload: _muted,
-    });
-    return _muted;
   }
   onMuteStateChange = e => {
     e.stopPropagation();

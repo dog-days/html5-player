@@ -36,7 +36,10 @@ export default class PlaybackRateList extends React.Component {
       <ul className="html5-player-rate-container">
         {onBackEvent && (
           <li className="html5-player-rate-title" onClick={onBackEvent}>
-            <svg className="html5-player-icon html5-player-left-icon" aria-hidden="true">
+            <svg
+              className="html5-player-icon html5-player-left-icon"
+              aria-hidden="true"
+            >
               <use xlinkHref="#icon-left" />
             </svg>
             {locale.speed}

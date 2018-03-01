@@ -128,14 +128,6 @@ export default function() {
       *play({ payload }, { put }) {
         if (_api.isError) {
           return;
-        } else {
-          //防止没关闭
-          yield put({
-            type: `errorMessage`,
-            payload: {
-              message: null,
-            },
-          });
         }
         const {
           timeout = VIDEO_TIMEOUT,
@@ -676,6 +668,7 @@ export default function() {
           showErrorMessageLazyTime: errorMessageLazyTime,
           file,
           preload = true,
+          muted,
         } = config;
 
         if (loadingLazyTime) {
@@ -712,6 +705,13 @@ export default function() {
           }
           _api.trigger('loading', false);
           _api.loading = false;
+        }
+        if (muted) {
+          yield put({
+            type: `muted`,
+            payload: true,
+            autoMuted: true,
+          });
         }
         //防止事件没移除
         _api.off();
