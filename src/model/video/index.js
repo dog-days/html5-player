@@ -128,6 +128,14 @@ export default function() {
       *play({ payload }, { put }) {
         if (_api.isError) {
           return;
+        } else {
+          //防止没关闭
+          yield put({
+            type: `errorMessage`,
+            payload: {
+              message: null,
+            },
+          });
         }
         const {
           timeout = VIDEO_TIMEOUT,
@@ -589,6 +597,7 @@ export default function() {
         };
         if (payload.message) {
           errorMessageTimeout = setTimeout(() => {
+            _api.isError = true;
             //使用setTimeout是为了防止视频很快就可以播放的情况，就不用展示loading。
             //否则就会对用户造成卡顿假像。
             logger.info('Error message show');
