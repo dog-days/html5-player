@@ -326,7 +326,7 @@ export default function() {
       },
       *time({ payload }, { put, select }) {
         clearInterval(clearIntervalForPlay);
-        if (_api.isError) {
+        if (!_api.isError) {
           yield put({
             type: `errorMessage`,
             payload: {
