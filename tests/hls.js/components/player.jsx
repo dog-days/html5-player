@@ -8,8 +8,8 @@ import View from 'src/view';
 //icon的js
 import 'src/assets/icon/iconfont';
 
-import outsideApi from '../unit/outside-api';
 import * as videoUnit from '../unit/model/video.js';
+import { childListChangeObserver } from '../../util';
 const unit = [];
 
 class ModelRegister extends React.Component {
@@ -86,9 +86,11 @@ export default function player(props) {
         <View
           {...props}
           videoCallback={function(player) {
-            outsideApi(player);
-            unit.forEach(v => {
-              v(player);
+            childListChangeObserver('.html5-player-container', function() {
+              //确保运行了，model/vidoe中的init saga
+              unit.forEach(v => {
+                v(player, props.resolve);
+              });
             });
           }}
         />

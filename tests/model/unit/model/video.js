@@ -7,6 +7,7 @@ import {
   shouldChildNotEmptyObserver,
   shouldChildEmptyObserver,
   attributesChangeObserver,
+  q,
 } from '../../../util';
 
 const spyObj = {};
@@ -45,6 +46,8 @@ export function getModelObject(model, config, dispatch, store) {
     spyObj[v] = sinon.spy(model.sagas[v]);
     model.sagas[v] = spyObj[v];
   });
+  spyObj.clear = sinon.spy(model.reducers.clear);
+  model.reducers.clear = spyObj.clear;
 }
 function sagaItTitle(sagaName) {
   return `model/video/index "${sagaName}" saga should be executed correctly.`;
@@ -52,16 +55,9 @@ function sagaItTitle(sagaName) {
 function dispatch(name, payload = {}) {
   _dispatch({ type: `${_model.namespace}/${name}`, payload });
 }
-export default function(player) {
-  const videoDom = document.querySelector('.html5-player-tag');
-  describe('Autoplay = false', function() {
-    if (!_config.autoplay) {
-      it(`Play view should be shown when player config autoplay is set to false or undefined.`, function() {
-        const playViewDom = document.querySelector('.html5-player-play-view');
-        //eslint-disable-next-line
-        expect(!!playViewDom.innerHTML).to.be.true;
-      });
-    }
+export default function(player, resolve) {
+  const videoDom = q('.html5-player-tag');
+  describe('Model', function() {
     it(sagaItTitle('init'), function() {
       expect(spyObj.init.callCount).to.equal(1);
     });
@@ -87,12 +83,23 @@ export default function(player) {
       attributesChangeObserver('.html5-player-play-pause-icon', function() {
         expect(spyObj.pause.callCount).to.equal(1);
         //controlbar中的暂停icon对应要切换为播放icon
-        const iconPlayDom = document.querySelector('.html5-player-play-icon');
+        const iconPlayDom = q('.html5-player-play-icon');
         //eslint-disable-next-line
         expect(!!iconPlayDom).to.be.true;
         done();
       });
       dispatch('pause');
+    });
+    it(sagaItTitle('play'), function(done) {
+      attributesChangeObserver('.html5-player-play-pause-icon', function() {
+        expect(spyObj.play.callCount).to.equal(2);
+        //controlbar中的播放icon对应要切换为暂停icon
+        const iconPauseDom = q('.html5-player-pause-icon');
+        //eslint-disable-next-line
+        expect(!!iconPauseDom).to.be.true;
+        done();
+      });
+      dispatch('play');
     });
     //这里执行在异步的test之前。
     let sliderTrackDomAll;
@@ -110,30 +117,16 @@ export default function(player) {
         sliderTrackDom = sliderTrackDomAll[0];
       }
     }
-    it(sagaItTitle('play'), function(done) {
-      attributesChangeObserver('.html5-player-play-pause-icon', function() {
-        expect(spyObj.play.callCount).to.equal(2);
-        //controlbar中的播放icon对应要切换为暂停icon
-        const iconPauseDom = document.querySelector('.html5-player-pause-icon');
-        //eslint-disable-next-line
-        expect(!!iconPauseDom).to.be.true;
-        //这个函数与当前unit无关。
-        setSliderTrackDom();
-        done();
-      });
-      dispatch('play');
-    });
     it(sagaItTitle('volume').replace('.', ' when the volume is 0.'), function(
       done
     ) {
       attributesChangeObserver('.html5-player-volume-icon', function() {
+        setSliderTrackDom();
         //初始化会默认自动设置一次声音大小 + 设置为0的一次
         expect(spyObj.volume.callCount).to.equal(2);
         expect(sliderTrackDom.style.height).to.equal('0%');
         //icon展示也要想要改变
-        let volumeIconDom = document.querySelector(
-          '.html5-player-volume-x-icon'
-        );
+        let volumeIconDom = q('.html5-player-volume-x-icon');
         //eslint-disable-next-line
         expect(!!volumeIconDom).to.be.true;
         done();
@@ -148,9 +141,7 @@ export default function(player) {
         expect(spyObj.volume.callCount).to.equal(3);
         expect(sliderTrackDom.style.height).to.equal('50%');
         //icon展示也要想要改变
-        let volumeIconDom = document.querySelector(
-          '.html5-player-volume-part-icon'
-        );
+        let volumeIconDom = q('.html5-player-volume-part-icon');
         //eslint-disable-next-line
         expect(!!volumeIconDom).to.be.true;
         done();
@@ -165,9 +156,7 @@ export default function(player) {
         expect(spyObj.volume.callCount).to.equal(4);
         expect(sliderTrackDom.style.height).to.equal('100%');
         //icon展示也要想要改变
-        let volumeIconDom = document.querySelector(
-          '.html5-player-volume-full-icon'
-        );
+        let volumeIconDom = q('.html5-player-volume-full-icon');
         //eslint-disable-next-line
         expect(!!volumeIconDom).to.be.true;
         done();
@@ -178,12 +167,10 @@ export default function(player) {
     it(sagaItTitle('muted'), function(done) {
       attributesChangeObserver('.html5-player-volume-icon', function() {
         //初始化会默认自动设置是否静音（根据localStorage） + 设置为0的一次
-        expect(spyObj.muted.callCount).to.equal(2);
+        expect(spyObj.muted.callCount).to.equal(1);
         expect(sliderTrackDom.style.height).to.equal('0%');
         //icon展示也要想要改变
-        let volumeIconDom = document.querySelector(
-          '.html5-player-volume-x-icon'
-        );
+        let volumeIconDom = q('.html5-player-volume-x-icon');
         //eslint-disable-next-line
         expect(!!volumeIconDom).to.be.true;
         done();
@@ -247,7 +234,7 @@ export default function(player) {
         ' when there is an error message.'
       ),
       function(done) {
-        shouldChildNotEmptyObserver('.html5-player-error-message-view', done());
+        shouldChildNotEmptyObserver('.html5-player-error-message-view', done);
         dispatch('errorMessage', { message: 'test' });
         expect(spyObj.errorMessage.callCount).to.equal(1);
       }
@@ -258,17 +245,25 @@ export default function(player) {
         ' when there is no error message.'
       ),
       function(done) {
-        shouldChildEmptyObserver('.html5-player-error-message-view', done());
-        dispatch('errorMessage', { message: 'test' });
+        shouldChildEmptyObserver('.html5-player-error-message-view', done);
+        dispatch('errorMessage', { message: null });
         expect(spyObj.errorMessage.callCount).to.equal(2);
       }
     );
-    it(sagaItTitle('reload'), function(done) {
-      //reload后video标签中src属性会被改变（加上随机数，确保跟上一个的url不相等）。
-      attributesChangeObserver('.html5-player-tag', done());
-      dispatch('reload');
-      expect(spyObj.reload.callCount).to.equal(1);
+
+    it(sagaItTitle('playbackRate'), function(done) {
+      //要在living saga之前，因为living为true时，speed的dom会被移除。
+      attributesChangeObserver('.html5-player-rate-selected', function() {
+        expect(q('.html5-player-rate-selected').children[0].innerHTML).to.equal(
+          '1.5倍速'
+        );
+        done();
+      });
+      dispatch('playbackRate', 1.5);
+      expect(spyObj.playbackRate.callCount).to.equal(1);
+      expect(videoDom.playbackRate).to.equal(1.5);
     });
+
     it(
       sagaItTitle('living').replace(
         '.',
@@ -278,9 +273,7 @@ export default function(player) {
         childListChangeObserver('.html5-player-controlbar', function() {
           //html5-player-time-slider
           //直播无time-slider
-          expect(
-            !!document.querySelector('.html5-player-time-slider')
-          ).to.equal(false);
+          expect(!!q('.html5-player-time-slider')).to.equal(false);
           done();
         });
         dispatch('living', { duration: Infinity });
@@ -288,11 +281,19 @@ export default function(player) {
         expect(spyObj.living.callCount).to.equal(2);
       }
     );
-    it(sagaItTitle('playbackRate'), function(done) {
-      childListChangeObserver('.html5-player-rate-container', done());
-      dispatch('playbackRate', 1.5);
-      expect(spyObj.playbackRate.callCount).to.equal(1);
-      expect(videoDom.playbackRate).to.equal(1.5);
+    it(sagaItTitle('reload'), function(done) {
+      //reload后video标签中src属性会被改变（加上随机数，确保跟上一个的url不相等）。
+      attributesChangeObserver('.html5-player-tag', function() {
+        expect(spyObj.clear.callCount).to.equal(1);
+        resolve({
+          lastModel: _model,
+          lastDispatch: _dispatch,
+          lastSpyObj: spyObj,
+        });
+        done();
+      });
+      dispatch('reload');
+      expect(spyObj.reload.callCount).to.equal(1);
     });
   });
 }

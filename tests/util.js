@@ -1,3 +1,6 @@
+export function q(query) {
+  return document.querySelector(query);
+}
 // Firefox和Chrome早期版本中带有前缀
 const MutationObserver =
   window.MutationObserver ||
@@ -9,7 +12,7 @@ export function childListChangeObserver(selector, done) {
     observer.disconnect();
   }
   // 选择目标节点
-  let target = document.querySelector(selector);
+  let target = q(selector);
   // 创建观察者对象
   observer = new MutationObserver(function(mutations) {
     // 停止观察
@@ -18,7 +21,7 @@ export function childListChangeObserver(selector, done) {
     done();
   });
   // 配置观察选项:
-  let config = { childList: true };
+  let config = { childList: true, subtree: true };
   // 传入目标节点和观察选项
   observer.observe(target, config);
 }
@@ -27,13 +30,13 @@ export function shouldChildNotEmptyObserver(selector, done) {
     observer.disconnect();
   }
   // 选择目标节点
-  let target = document.querySelector(selector);
+  let target = q(selector);
   // 创建观察者对象
   observer = new MutationObserver(function(mutations) {
     // 停止观察
     observer.disconnect();
     observer = undefined;
-    expect(!!document.querySelector(selector).innerHTML).to.equal(true);
+    expect(!!q(selector).innerHTML).to.equal(true);
     done();
   });
   // 配置观察选项:
@@ -46,13 +49,13 @@ export function shouldChildEmptyObserver(selector, done) {
     observer.disconnect();
   }
   // 选择目标节点
-  let target = document.querySelector(selector);
+  let target = q(selector);
   // 创建观察者对象
   observer = new MutationObserver(function(mutations) {
     // 停止观察
     observer.disconnect();
     observer = undefined;
-    expect(!document.querySelector(selector).innerHTML).to.equal(true);
+    expect(!q(selector).innerHTML).to.equal(true);
     done();
   });
   // 配置观察选项:
@@ -66,7 +69,7 @@ export function attributesChangeObserver(selector, callback) {
     observer.disconnect();
   }
   // 选择目标节点
-  let target = document.querySelector(selector);
+  let target = q(selector);
   // 创建观察者对象
   observer = new MutationObserver(function(mutations) {
     observer.disconnect();

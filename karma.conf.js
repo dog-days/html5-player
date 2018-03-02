@@ -5,13 +5,18 @@ const webpackConfig = require('./config/webpack.config.umd.js');
 
 const aliases = {
   src: path.resolve(process.cwd(), 'src'),
+  tests: path.resolve(process.cwd(), 'tests'),
   sinon: path.resolve(process.cwd(), 'node_modules/sinon/pkg/sinon.js'),
 };
 const rules = [
   {
     enforce: 'post',
-    test: /\.js[x]$/,
+    test: /\.js[x]?$/,
     include: /src/,
+    exclude: [
+      path.resolve(process.cwd(), 'src/utils/logger'),
+      path.resolve(process.cwd(), 'src/assets'),
+    ],
     loader: 'istanbul-instrumenter-loader',
   },
 ];
@@ -20,12 +25,11 @@ webpackConfig.module.rules = rules.concat(webpackConfig.module.rules || []);
 
 module.exports = function(config) {
   config.set({
-    client: {
-      useIframe: false,
-      runInParent: true,
-    },
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
+    client: {
+      useIframe: true,
+    },
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -82,9 +86,14 @@ module.exports = function(config) {
       // 'Firefox',
     ],
     coverageIstanbulReporter: {
-      reports: ['text-summary', 'html'],
+      reports: ['text-summary', 'lcovonly', 'html'],
       dir: 'coverage',
-      fixWebpackSourcePaths: true,
+      // Combines coverage information from multiple browsers into one report rather than outputting a report
+      // for each browser.
+      combineBrowserReports: true,
+      // if using webpack and pre-loaders, work around webpack breaking the source path
+      fixWebpackSourcePaths: true, // stop istanbul outputting messages like `File [${filename}] ignored, nothing could be mapped`
+      skipFilesWithNoCoverage: true,
     },
 
     // Concurrency level
