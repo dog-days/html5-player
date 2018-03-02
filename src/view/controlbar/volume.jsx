@@ -33,7 +33,15 @@ export default class Volume extends React.Component {
   componentDidMount() {
     const { autoMuted } = this.props;
     if (!autoMuted) {
-      this.setVolumeFromLocalStorage();
+      const storage_muted = storage.get('muted');
+      if (storage_muted) {
+        this.dispatch({
+          type: `${videoNamespace}/muted`,
+          payload: true,
+        });
+      } else {
+        this.setVolumeFromLocalStorage();
+      }
     }
   }
   setVolumeFromLocalStorage() {
