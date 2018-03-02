@@ -13,6 +13,7 @@ import clearDecorator from './decorator/clear';
 import loader from '../loader';
 import * as util from '../utils/util';
 import * as logger from '../utils/logger';
+import localizationDefault from '../i18n/default';
 import ContextMenu from './components/contextmenu';
 import ContextMenuView from './contextmenu';
 import Loading from './loading';
@@ -323,6 +324,7 @@ export default class View extends React.Component {
       living,
       children,
     } = this.props;
+    const locale = localization || localizationDefault;
     const containerStyle = this.getContainerStyle();
     let videoProps = {};
     if (ready) {
@@ -347,7 +349,9 @@ export default class View extends React.Component {
           onMouseMove={this.onMouseMove}
         >
           {!ready && (
-            <span className="html5-player-init-text">播放器加载中...</span>
+            <span className="html5-player-init-text">
+              {locale.loadingPlayerText}
+            </span>
           )}
           <video
             loop={loop}

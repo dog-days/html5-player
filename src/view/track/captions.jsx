@@ -43,7 +43,7 @@ export default class Captions extends React.Component {
     const { captions } = track;
     const currentTime = time.currentTime;
     if (!captions || isError) {
-      return false;
+      return <span className="html5-player-captions-text html5-player-hide" />;
     }
     let text;
     captions.forEach(v => {

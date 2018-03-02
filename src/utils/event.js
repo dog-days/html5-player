@@ -109,24 +109,24 @@ export function trigger(name) {
   return this;
 }
 
-export function triggerSafe(name) {
-  if (!this._events) {
-    return this;
-  }
-  const args = slice.call(arguments, 1);
-  if (!eventsApi(this, 'trigger', name, args)) {
-    return this;
-  }
-  const events = this._events[name];
-  const allEvents = this._events.all;
-  if (events) {
-    triggerEvents(events, args, this, name);
-  }
-  if (allEvents) {
-    triggerEvents(allEvents, arguments, this, name);
-  }
-  return this;
-}
+// export function triggerSafe(name) {
+//   if (!this._events) {
+//     return this;
+//   }
+//   const args = slice.call(arguments, 1);
+//   if (!eventsApi(this, 'trigger', name, args)) {
+//     return this;
+//   }
+//   const events = this._events[name];
+//   const allEvents = this._events.all;
+//   if (events) {
+//     triggerEvents(events, args, this, name);
+//   }
+//   if (allEvents) {
+//     triggerEvents(allEvents, arguments, this, name);
+//   }
+//   return this;
+// }
 
 // Regular expression used to split event strings.
 const eventSplitter = /\s+/;
