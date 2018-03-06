@@ -10,5 +10,5 @@ before_install:
   #启用火狐
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-script: "npm run build && npm run build-demo && npm run test"
+script: "npm run build && npm run build-demo"
 after_script: "npm install coveralls@3.0.0 && cat ./coverage/lcov.info | coveralls"
