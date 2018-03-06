@@ -1,6 +1,9 @@
 {
   "name": "html5-player",
   "version": "0.2.0",
+  "description": "html5 video",
+  "repository": "git@github.com:dog-days/html5-player.git",
+  "homepage": "https://github.com/dog-days/html5-player.git",
   "main": "libs/player.js",
   "dependencies": {
     "add-dom-event-listener": "^1.0.2",
@@ -51,7 +54,7 @@
     "build-css":
       "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
     "build-demo": "node ./scripts/build-demo.js",
-    "build": "node ./scripts/build-umd.js",
+    "build": "npm run test && node ./scripts/build-umd.js",
     "test": "karma start",
     "cover": "react-boilerplate-app-scripts cover",
     "serve-demo-build": "react-boilerplate-app-scripts serve-build",
@@ -60,7 +63,8 @@
     "use": "react-boilerplate-app-scripts use",
     "create-i18n-excel": "react-router-controller-cli create-i18n-excel",
     "create-i18n-list": "react-router-controller-cli create-i18n-list",
-    "build-publish": "npm run build-css && npm run transform && npm publish",
+    "build-publish":
+      "npm run test && npm run build-css && npm run transform && npm publish",
     "transform":
       "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
     "transform-es": "cross-env BABEL_ENV=es babel ./src -d es",
