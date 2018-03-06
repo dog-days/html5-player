@@ -1,6 +1,6 @@
 # Html5 Player
 
-[![build status](https://travis-ci.org/dog-days/html5-player.svg?branch=master)](https://travis-ci.org/dog-days/html5-player) [![Coverage Status](https://coveralls.io/repos/github/dog-days/html5-player/badge.svg?branch=master)](https://coveralls.io/github/dog-days/html5-player?branch=master)[![npm package](https://badge.fury.io/js/html5-player.svg)](https://www.npmjs.org/package/html5-player) [![NPM downloads](http://img.shields.io/npm/dm/html5-player.svg)](https://npmjs.org/package/html5-player)
+[![build status](https://travis-ci.org/dog-days/html5-player.svg?branch=master)](https://travis-ci.org/dog-days/html5-player) [![codecov](https://codecov.io/gh/dog-days/html5-player/branch/master/graph/badge.svg)](https://codecov.io/gh/dog-days/html5-player) [![npm package](https://badge.fury.io/js/html5-player.svg)](https://www.npmjs.org/package/html5-player) [![NPM downloads](http://img.shields.io/npm/dm/html5-player.svg)](https://npmjs.org/package/html5-player)
 
 本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react，打包后的 js 文件 gzip 后的大小为**80KB**左右（hls 和 flv 的代码是会根据视频类型动态加载的，视频类型根据文件后缀名判别）。
 
@@ -80,7 +80,7 @@ class View extends React.Component {
 }
 ```
 
-如果使用的是打包后的html5Player.js，使用如下：
+如果使用的是打包后的 html5Player.js，使用如下：
 
 ```html
 <script src="/html5Player.js"></script>
