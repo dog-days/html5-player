@@ -30,6 +30,7 @@ function itTitle(propsStr, suffix = '.') {
 export default function(player, resolve) {
   describe('Props', function(done) {
     it(itTitle('fragment'), function(done) {
+      this.timeout(5000);
       childListChangeObserver('.html5-player-container', function() {
         childListChangeObserver('.html5-player-time-slider', function() {
           expect(

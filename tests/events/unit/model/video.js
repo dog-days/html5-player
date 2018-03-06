@@ -37,6 +37,7 @@ export function getModelObject(model, config, dispatch, store) {
 }
 export default function(player, resolve) {
   describe('Events', function() {
+    this.timeout(5000);
     it('Play button click event of notAutoplayView should work.', function(done) {
       childListChangeObserver('.html5-player-play-view', function() {
         expect(spyObj.playAfterNotAutoplay.callCount).to.equal(1);

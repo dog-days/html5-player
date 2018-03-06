@@ -58,6 +58,7 @@ function dispatch(name, payload = {}) {
 export default function(player, resolve) {
   const videoDom = q('.html5-player-tag');
   describe('Model', function() {
+    this.timeout(5000);
     it(sagaItTitle('init'), function() {
       expect(spyObj.init.callCount).to.equal(1);
     });

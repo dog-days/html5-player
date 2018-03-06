@@ -29,6 +29,7 @@ function itTitle(propsStr, suffix = '.') {
 }
 export default function(player, resolve) {
   describe('Props', function() {
+    this.timeout(5000);
     it(`Play view should be shown when player config autoplay is set to false or undefined.`, function() {
       //eslint-disable-next-line
       expect(!!_config.autoplay).to.be.false;

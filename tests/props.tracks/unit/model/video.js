@@ -23,6 +23,7 @@ export function getModelObject(model, config, dispatch, store) {
 }
 export default function(player, resolve) {
   describe('Props', function(done) {
+    this.timeout(5000);
     it('props.tracks should work,when kind is "captions".', function() {
       childListChangeObserver('.html5-player-captions-text', function() {
         done();
