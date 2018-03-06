@@ -270,15 +270,16 @@ export default function(player, resolve) {
         ' when swiching the video to live status.'
       ),
       function(done) {
+        const lastCount = spyObj.living.callCount;
         childListChangeObserver('.html5-player-controlbar', function() {
+          //初始化默认会触发一次
+          expect(spyObj.living.callCount).to.equal(lastCount + 1);
           //html5-player-time-slider
           //直播无time-slider
           expect(!!q('.html5-player-time-slider')).to.equal(false);
           done();
         });
         dispatch('living', { duration: Infinity });
-        //初始化默认会触发一次
-        expect(spyObj.living.callCount).to.equal(2);
       }
     );
     it(sagaItTitle('reload'), function(done) {
