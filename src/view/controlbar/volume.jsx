@@ -73,7 +73,7 @@ export default class Volume extends React.Component {
       });
     }
     if (storage_volume !== 0) {
-      //如果原音量为0，不需要进行静音操作，点击按钮反而需要解除静音。
+      //进行静音或者取消静音操作
       this.dispatch({
         type: `${videoNamespace}/muted`,
         payload: !muted,

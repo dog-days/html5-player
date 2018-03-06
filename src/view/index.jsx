@@ -243,14 +243,6 @@ export default class View extends React.Component {
       }
     }
   };
-  onMouseOut = e => {
-    const { controls = true, playing } = this.props;
-    if (controls && playing) {
-      this.clearTimeout = setTimeout(() => {
-        this.dispatchControlbar(false);
-      }, CONTROLBAR_TIMEOUT);
-    }
-  };
   getAspectratioNumber(aspectratio) {
     let ratio = aspectratio.split(':');
     if (ratio.length !== 2 || isNaN(ratio[0]) || isNaN(ratio[1])) {
