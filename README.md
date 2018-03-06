@@ -4,7 +4,7 @@
 
 本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react，打包后的 js 文件 gzip 后的大小为**80KB**左右（hls 和 flv 的代码是会根据视频类型动态加载的，视频类型根据文件后缀名判别）。
 
-> **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了react相关代码，如果使用jsx语法，那么用法大部分基本一致。当然建议使用react更好，如果使用react、redux、redux-saga，除开这些依赖代码，html5-player的代码，包括图片样式，gzip后在20KB以内。**
+> **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了 react 相关代码，如果使用 jsx 语法，那么用法大部分基本一致。当然建议使用 react 更好，如果使用 react、redux、redux-saga，除开这些依赖代码，html5-player 的代码，包括图片样式，gzip 后在 20KB 以内。**
 
 ## 功能
 
@@ -24,7 +24,7 @@
 
 > 目前只支持 PC 端，暂不支持移动端。
 
-**由于flv直播状态兼容性问题，需要通过设置isLiving=true来强制设置为直播状态。**
+**由于 flv 直播状态兼容性问题，需要通过设置 isLiving=true 来强制设置为直播状态。**
 
 ## 入门使用
 
@@ -47,7 +47,7 @@ npm run build
 #npm run serve-demo-build 可以启动服务查看项目demo
 ```
 
-构建后的 js 文件生成在`dist`目录下，直接使用 dist 目录下的Html5Player.js，然后调用全局变量 window.Html5Player 使用即可。
+构建后的 js 文件生成在`dist`目录下，直接使用 dist 目录下的 html5Player.js，然后调用全局变量 window.html5Player 使用即可。
 
 ### 使用
 
@@ -80,7 +80,7 @@ class View extends React.Component {
 }
 ```
 
-如果使用的是打包后的 Html5Player.js，使用如下：
+如果使用的是打包后的html5Player.js，使用如下：
 
 ```html
 <script src="/html5Player.js"></script>
@@ -113,7 +113,7 @@ class View extends React.Component {
 **如果使用 flv 直播，需要设置 enableWorker，可以减少延时到 1 秒左右。 但是如果不是直播，不可以设置，否则会报错。**
 
 ```jsx
-<html5Player
+<Html5Player
   flvConfig={{ enableWorker: true }}
   title="这里是标题"
   file="/test.mp4"
@@ -137,47 +137,47 @@ class View extends React.Component {
 
 参数如下：
 
-| props                    | 类型                                  | 说明                                                         | 默认值                  | 是否必填 |
-| ------------------------ | ------------------------------------- | ------------------------------------------------------------ | ----------------------- | -------- |
-| file                     | sting                                 | 视频文件路径                                                 | 无                      | 是       |
-| isLiving                 | boolean                               | 强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。 | false                   | 否       |
-| livingMaxBuffer          | float                                 | 直播最大缓存时间（秒），如果卡设置大一定的值，理论上是越小延时越小。(hls需要而外加上15秒) | 2                       | 否       |
-| height                   | string <br />number                   | 播放器高度，不设置高度时，父元素的高度需要设置。             | 100%                    | 否       |
-| width                    | string <br />number                   | 播放器宽度                                                   | 100%                    | 否       |
-| title                    | string<br />React.element             | 标题                                                         | 无                      | 否       |
-| logo                     | string<br />React.element<br />object | logo                                                         | 无                      | 否       |
-| poster                   | string                                | video 的 poster，海报图                                      | 无                      | 否       |
-| aspectratio              | string                                | 播放器纵横比，<br />只有设置了width才有效<br />，格式为`x:y` | 16:9                    | 否       |
-| muted                    | boolean                               | 是否静音                                                     | false                   | 否       |
-| loop                     | boolean                               | 是否循环播放                                                 | false                   | 否       |
-| preload                  | boolean                               | 视频是否预加载，`autoplay=false`才会生效                     | true                    | 否       |
-| autoplay                 | boolean                               | 是否自动播放                                                 | false                   | 否       |
-| controls                 | boolean<br />object                   | 是否展示 controllerbar                                       | true                    | 否       |
-| localization             | object                                | 多语言设置                                                   | 查看后面说明            | 否       |
-| tracks                   | object                                | 各种 track 设置                                              | 无                      | 否       |
-| fragment                 | string                                | 视频断片功能                                                 | 无                      | 否       |
-| timeSliderShowFormat     | string                                | tootip展示的时间格式，值为`time`和`date`，date只有在fragment设置情况下生效。 | time                    | 否       |
-| playbackRates            | array                                 | video 的 playebackRates 设置                                 | [1, 1.25, 1.5, 1.75, 2] | 否       |
-| playbackRateControls     | boolean                               | 是否开启 playebackRate 控制                                  | true                    | 否       |
-| videoCallback            | function                              | 打包的 js 没有这个属性，详细看后面播放器实例化 API           | 无                      | 否       |
-| showLoadingLazyTime      | number                                | 延时展示loading的时间（毫秒）                                | 500                     | 否       |
-| showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                               | 1000                    | 否       |
-| contextMenu              | boolean<br />array<br />React Element | 鼠标右击菜单                                                 | 展示一行默认信息        | 否       |
-| timeout                  | number                                | 视频超时设置，5000ms后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 5000                    | 否       |
-| retryTimes               | number                                | 网络差时，timeout后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差5秒左右。 | 2                       | 否       |
+| props                    | 类型                                  | 说明                                                                                                                                                                     | 默认值                  | 是否必填 |
+| ------------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- | -------- |
+| file                     | sting                                 | 视频文件路径                                                                                                                                                             | 无                      | 是       |
+| isLiving                 | boolean                               | 强制设置为直播状态。safari 中 flv 无法获取直播状态，所以需要设置这个。                                                                                                   | false                   | 否       |
+| livingMaxBuffer          | float                                 | 直播最大缓存时间（秒），如果卡设置大一定的值，理论上是越小延时越小。(hls 需要而外加上 15 秒)                                                                             | 2                       | 否       |
+| height                   | string <br />number                   | 播放器高度，不设置高度时，父元素的高度需要设置。                                                                                                                         | 100%                    | 否       |
+| width                    | string <br />number                   | 播放器宽度                                                                                                                                                               | 100%                    | 否       |
+| title                    | string<br />React.element             | 标题                                                                                                                                                                     | 无                      | 否       |
+| logo                     | string<br />React.element<br />object | logo                                                                                                                                                                     | 无                      | 否       |
+| poster                   | string                                | video 的 poster，海报图                                                                                                                                                  | 无                      | 否       |
+| aspectratio              | string                                | 播放器纵横比，<br />只有设置了 width 才有效<br />，格式为`x:y`                                                                                                           | 16:9                    | 否       |
+| muted                    | boolean                               | 是否静音                                                                                                                                                                 | false                   | 否       |
+| loop                     | boolean                               | 是否循环播放                                                                                                                                                             | false                   | 否       |
+| preload                  | boolean                               | 视频是否预加载，`autoplay=false`才会生效                                                                                                                                 | true                    | 否       |
+| autoplay                 | boolean                               | 是否自动播放                                                                                                                                                             | false                   | 否       |
+| controls                 | boolean<br />object                   | 是否展示 controllerbar                                                                                                                                                   | true                    | 否       |
+| localization             | object                                | 多语言设置                                                                                                                                                               | 查看后面说明            | 否       |
+| tracks                   | object                                | 各种 track 设置                                                                                                                                                          | 无                      | 否       |
+| fragment                 | string                                | 视频断片功能                                                                                                                                                             | 无                      | 否       |
+| timeSliderShowFormat     | string                                | tootip 展示的时间格式，值为`time`和`date`，date 只有在 fragment 设置情况下生效。                                                                                         | time                    | 否       |
+| playbackRates            | array                                 | video 的 playebackRates 设置                                                                                                                                             | [1, 1.25, 1.5, 1.75, 2] | 否       |
+| playbackRateControls     | boolean                               | 是否开启 playebackRate 控制                                                                                                                                              | true                    | 否       |
+| videoCallback            | function                              | 打包的 js 没有这个属性，详细看后面播放器实例化 API                                                                                                                       | 无                      | 否       |
+| showLoadingLazyTime      | number                                | 延时展示 loading 的时间（毫秒）                                                                                                                                          | 500                     | 否       |
+| showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                                                                                                                                           | 1000                    | 否       |
+| contextMenu              | boolean<br />array<br />React Element | 鼠标右击菜单                                                                                                                                                             | 展示一行默认信息        | 否       |
+| timeout                  | number                                | 视频超时设置，5000ms 后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。                            | 5000                    | 否       |
+| retryTimes               | number                                | 网络差时，timeout 后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差 5 秒左右。 | 2                       | 否       |
 
 #### props.controls
 
 controls 默认为 true。
 
-| controls 参数 | 说明            | 默认值   |
-| ------------ | ------------- | ----- |
-| timeSlider   | 播放进度控制条（直播没有） | true  |
-| playPause    | 开始暂停按钮        | true  |
-| volume       | 音量按钮          | true  |
-| time         | 播放时间（直播没有）    | true  |
-| setting      | 配置（播放速度等）     | false |
-| speed        | 播放速度          | false |
+| controls 参数 | 说明                       | 默认值 |
+| ------------- | -------------------------- | ------ |
+| timeSlider    | 播放进度控制条（直播没有） | true   |
+| playPause     | 开始暂停按钮               | true   |
+| volume        | 音量按钮                   | true   |
+| time          | 播放时间（直播没有）       | true   |
+| setting       | 配置（播放速度等）         | false  |
+| speed         | 播放速度                   | false  |
 
 `controls=true`时，上面 controls 参数默认值为 true 的都会显示，`controls=false`控制条隐藏。
 
@@ -195,7 +195,7 @@ controls 默认为 true。
           <use xlinkHref="#icon-download" />
         </svg>
       </a>
-    )
+    ),
   }}
 />
 ```
@@ -232,16 +232,16 @@ controls 默认为 true。
 
 #### props.fragment
 
-视频断片功能，比较特殊的一个功能，这种情况比较少用。**最适合用在m3u8，因为m3u8是文本，可以很简单的合并分段的视频。**
+视频断片功能，比较特殊的一个功能，这种情况比较少用。**最适合用在 m3u8，因为 m3u8 是文本，可以很简单的合并分段的视频。**
 
 ```jsx
 <Html5Player
   file="https://media.w3.org/2010/05/sintel/movie.m3u8"
-  fragment='/fragment.json'
+  fragment="/fragment.json"
 />
 ```
 
-fragment定义如下：
+fragment 定义如下：
 
 ```json
 {
@@ -266,8 +266,8 @@ fragment定义如下：
 }
 ```
 
-| 参数                | 类型     | 说明                                  |
-| ----------------- | ------ | ----------------------------------- |
+| 参数              | 类型   | 说明                                             |
+| ----------------- | ------ | ------------------------------------------------ |
 | total.begin       | string | 整个视频的开始时间，格式为 `YYYY-MM-DD HH:mm:ss` |
 | total.end         | string | 整个视频的结束时间，格式为 `YYYY-MM-DD HH:mm:ss` |
 | fragments[].begin | string | 视频断片的开始时间，格式为`YYYY-MM-DD HH:mm:ss`  |
@@ -334,9 +334,9 @@ fragment定义如下：
 
 #### props.contextMenu
 
-- boolean
+* boolean
 
-  是否展示contextMenu，`true`是，展示默认的contextMenu。
+  是否展示 contextMenu，`true`是，展示默认的 contextMenu。
 
   ```jsx
   <Html5Player
@@ -345,21 +345,18 @@ fragment定义如下：
   />
   ```
 
-- array
+* array
 
   这种情况，适合用于展示多个，展示样式也是用默认的。
 
   ```jsx
   <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
-    contextMenu={[
-      <a href="#demo">demo</a>,
-      <a href="#demo2">demo2</a>,
-    ]}
+    contextMenu={[<a href="#demo">demo</a>, <a href="#demo2">demo2</a>]}
   />
   ```
 
-- React.element
+* React.element
 
   可以进行自定义结构和样式。
 
@@ -368,8 +365,12 @@ fragment定义如下：
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     contextMenu={
       <ul>
-        <li><a href="#demo">demo</a></li>,
-        <li><a href="#demo2">demo2</a></li>,
+        <li>
+          <a href="#demo">demo</a>
+        </li>,
+        <li>
+          <a href="#demo2">demo2</a>
+        </li>,
       </ul>
     }
   />
@@ -403,16 +404,16 @@ html5Player({
 
 > 这些属性值只读。
 
-| player 属性   | 类型      | 说明                                       |
-| ----------- | ------- | ---------------------------------------- |
-| loading     | boolean | 加载中                                      |
-| playing     | boolean | 播放中                                      |
-| ended       | boolean | 播放是否结束                                   |
-| currentTime | number  | 当前播放时间                                   |
-| duration    | number  | 当前视频时长                                   |
-| bufferTime  | number  | 视频缓存时间，单位秒                               |
+| player 属性 | 类型    | 说明                                                                      |
+| ----------- | ------- | ------------------------------------------------------------------------- |
+| loading     | boolean | 加载中                                                                    |
+| playing     | boolean | 播放中                                                                    |
+| ended       | boolean | 播放是否结束                                                              |
+| currentTime | number  | 当前播放时间                                                              |
+| duration    | number  | 当前视频时长                                                              |
+| bufferTime  | number  | 视频缓存时间，单位秒                                                      |
 | seeking     | boolean | 是否在 seeking，timeline 点击拖动也是在 seeking，这个跟原生的有点不一样。 |
-| isError     | boolean | 视频播放是否出错                                 |
+| isError     | boolean | 视频播放是否出错                                                          |
 
 #### 方法
 
@@ -428,17 +429,17 @@ html5Player({
 
   控制音量。
 
-  | 参数     | 类型     | 说明            | 必填   |
-  | ------ | ------ | ------------- | ---- |
-  | volume | number | 音量大小，最大值为 100 | 是    |
+  | 参数   | 类型   | 说明                   | 必填 |
+  | ------ | ------ | ---------------------- | ---- |
+  | volume | number | 音量大小，最大值为 100 | 是   |
 
 * setMuted(flag)
 
   控制音量。
 
-  | 参数   | 类型      | 说明   | 必填   |
-  | ---- | ------- | ---- | ---- |
-  | flag | boolean | 静音控制 | 是    |
+  | 参数 | 类型    | 说明     | 必填 |
+  | ---- | ------- | -------- | ---- |
+  | flag | boolean | 静音控制 | 是   |
 
 * replay()
 
@@ -448,43 +449,43 @@ html5Player({
 
   视频播放进度选取。
 
-  | 参数      | 类型     | 说明                    | 必填   |
-  | ------- | ------ | --------------------- | ---- |
-  | percent | number | 视频播放位置，按百分比来算的，最大值为 1 | 是    |
+  | 参数    | 类型   | 说明                                     | 必填 |
+  | ------- | ------ | ---------------------------------------- | ---- |
+  | percent | number | 视频播放位置，按百分比来算的，最大值为 1 | 是   |
 
 * fullscreen(flag)
 
   全屏或者退出全屏操作。
 
-  | 参数   | 类型      | 说明                 | 必填   |
-  | ---- | ------- | ------------------ | ---- |
-  | flag | boolean | true 全屏，false 退出全屏 | 是    |
+  | 参数 | 类型    | 说明                      | 必填 |
+  | ---- | ------- | ------------------------- | ---- |
+  | flag | boolean | true 全屏，false 退出全屏 | 是   |
 
 * controlbar(flag,delayTimeToHide,onControlbarEnter)
 
   控制条显示或者隐藏控制。
 
-  | 参数                   | 类型      | 说明                          | 必填   |
-  | -------------------- | ------- | --------------------------- | ---- |
-  | flag                 | boolean | true 显示，false 隐藏            | 是    |
-  | delayTimeToHide      | number  | 延时隐藏时间，毫秒级（只对隐藏有效）          | 否    |
-  | alwaysShowControlbar | boolean | 为 true 时其他操作无法隐藏 controlbar | 否    |
+  | 参数                 | 类型    | 说明                                  | 必填 |
+  | -------------------- | ------- | ------------------------------------- | ---- |
+  | flag                 | boolean | true 显示，false 隐藏                 | 是   |
+  | delayTimeToHide      | number  | 延时隐藏时间，毫秒级（只对隐藏有效）  | 否   |
+  | alwaysShowControlbar | boolean | 为 true 时其他操作无法隐藏 controlbar | 否   |
 
 * showErrorMessage(message)
 
   展示错误信息。
 
-  | 参数      | 类型     | 说明                     | 必填   |
-  | ------- | ------ | ---------------------- | ---- |
-  | message | string | 错误信息，为 null 时，错误信息不展示。 | 是    |
+  | 参数    | 类型   | 说明                                   | 必填 |
+  | ------- | ------ | -------------------------------------- | ---- |
+  | message | string | 错误信息，为 null 时，错误信息不展示。 | 是   |
 
 * playbackRate(rate)
 
   控制播放速度。
 
-  | payload | 类型     | 说明             | 必填   |
-  | ------- | ------ | -------------- | ---- |
-  | rate    | number | playbackRate 值 | 是    |
+  | payload | 类型   | 说明            | 必填 |
+  | ------- | ------ | --------------- | ---- |
+  | rate    | number | playbackRate 值 | 是   |
 
 * on(type, callback)
 
@@ -511,7 +512,6 @@ html5Player({
   off(type) {}
   ```
 
-
 ### 自定义事件列表
 
 可以使用实例化后的播放器监控，例如：
@@ -532,7 +532,7 @@ player.on('loading', function(loading) {
 
 * ready
 
-  视频准备完成，可以播放（video dom dataloaded事件触发）。
+  视频准备完成，可以播放（video dom dataloaded 事件触发）。
 
 * replay
 
