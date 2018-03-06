@@ -3,7 +3,7 @@
  */
 import sinon from 'sinon';
 
-import { q, childListChangeObserver } from '../../../util';
+import { q, childListChangeObserver, mockMouseEvent } from '../../../util';
 
 const spyObj = {};
 let _model;
@@ -24,20 +24,28 @@ export function getModelObject(model, config, dispatch, store) {
 export default function(player, resolve) {
   describe('Props', function(done) {
     this.timeout(5000);
+    mockMouseEvent(q('.html5-player-controlbar'), 'mouseenter');
     it('props.tracks should work,when kind is "captions".', function() {
       childListChangeObserver('.html5-player-captions-text', function() {
         done();
       });
     });
     it('props.tracks should work,when kind is "thumbnail".', function(done) {
-      childListChangeObserver('.html5-player-container', function() {
+      function common() {
         childListChangeObserver('.html5-player-time-slider', function() {
           //eslint-disable-next-line
           expect(!!q('.html5-player-thumbnail')).to.be.true;
           resolve();
           done();
         });
-      });
+      }
+      if (q('.html5-player-time-slider')) {
+        common();
+      } else {
+        childListChangeObserver('.html5-player-controlbar', function() {
+          common();
+        });
+      }
     });
   });
 }

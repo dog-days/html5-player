@@ -179,6 +179,7 @@ export default function(player, resolve) {
       dispatch('muted', true);
     });
     it(sagaItTitle('end'), function(done) {
+      this.timeout(10000);
       //这里因为需要验证视频结束的状态，有网络请求，所有比较慢
       //需要设置较长的超时时间，默认超时时间为2 * 1000
       //而且如果网络不好，还可能出错，所有如果这里测试不通过，需要先排除网络问题。
