@@ -4,13 +4,8 @@ import ReactDOM from 'react-dom';
 import Player from '../components/player';
 import logo from 'tests/assets/logo.png';
 
-export default function() {
+export default function(id) {
   return new Promise(function(resolve) {
-    const id = 'test';
-    const div = document.createElement('div');
-    div.setAttribute('id', id);
-    document.body.appendChild(div);
-
     ReactDOM.render(
       <Player
         resolve={resolve}

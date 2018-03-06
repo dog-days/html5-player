@@ -1,14 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import * as storage from 'src/utils/storage';
 import { childListChangeObserver } from './util';
 import model from './model/unit';
 import props from './props/unit';
 import props2 from './props-2/unit';
 import propsTracks from './props.tracks/unit';
 import propsFragment from './props.fragment/unit';
+import propsContextMenuFalse from './props.contextMenu-false/unit';
+import propsContextMenuElement from './props.contextMenu-element/unit';
+import propsLogoString from './props.logo-string/unit';
+import propsLogoElement from './props.logo-element/unit';
+import events from './events/unit';
 
-model()
+const id = 'test';
+const div = document.createElement('div');
+div.setAttribute('id', id);
+document.body.appendChild(div);
+
+model(id)
   .then(function({ lastModel, lastDispatch, lastSpyObj }) {
     return new Promise(function(resolve, reject) {
       describe('Model', function() {
@@ -26,14 +37,31 @@ model()
     });
   })
   .then(function() {
-    return props();
+    return props(id);
   })
   .then(function() {
-    return props2();
+    return props2(id);
   })
   .then(function() {
-    return propsTracks();
+    return propsTracks(id);
   })
   .then(function() {
-    return propsFragment();
+    return propsFragment(id);
+  })
+  .then(function() {
+    return propsContextMenuFalse(id);
+  })
+  .then(function() {
+    return propsContextMenuElement(id);
+  })
+  .then(function() {
+    return propsLogoString(id);
+  })
+  .then(function() {
+    return propsLogoElement(id);
+  })
+  .then(function() {
+    storage.set('muted', false);
+    storage.set('volume', 20);
+    return events(id);
   });

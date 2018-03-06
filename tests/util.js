@@ -93,3 +93,26 @@ export function isFullscreen() {
     documentContext.msFullscreenElement
   );
 }
+
+export function mockMouseEvent(dom, type) {
+  var event = document.createEvent('MouseEvents');
+  //初始化event
+  event.initMouseEvent(
+    type,
+    true,
+    true,
+    document.defaultView,
+    0,
+    0,
+    0,
+    0,
+    0,
+    false,
+    false,
+    false,
+    false,
+    0,
+    null
+  );
+  dom.dispatchEvent(event);
+}

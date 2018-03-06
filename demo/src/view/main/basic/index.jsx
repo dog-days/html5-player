@@ -32,8 +32,12 @@ class View extends React.Component {
             value={value}
           />
           <Html5Player
-            preload={false}
+            // contextMenu={[<a href="#demo">demo</a>, <a href="#demo2">demo2</a>]}
+            // playbackRates={[0.5, 1]}
+            // autoplay={true}
+            // muted={true}
             controls={{
+              setting: true,
               dowload: (
                 <a
                   className="float-right"
@@ -53,10 +57,8 @@ class View extends React.Component {
             // isLiving={true}
             // autoplay
             //logo支持string，React Element和plainObject
-            logo={{
-              image: `${process.env.basename}/logo.png`,
-              link: 'https://github.com/dog-days/html5-player',
-            }}
+            logo={`${process.env.basename}/logo.png`}
+            // poster={`${process.env.basename}/logo.png`}
           />
         </div>
       </div>
