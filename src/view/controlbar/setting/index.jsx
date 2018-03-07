@@ -73,7 +73,7 @@ export default class Setting extends React.Component {
     return (
       <div className="html5-player-setting-container">
         {showSetting && (
-          <ul className="html5-player-setting">
+          <ul className="html5-player-setting-list">
             <li onClick={this.onRateClickEvent}>
               <span className="float-left">{locale.speed}</span>
               <span className="float-right">
@@ -108,13 +108,10 @@ export default class Setting extends React.Component {
         ref="setting"
         trigger="click"
         content={this.renderContent()}
-        toTargetGap={living ? 5 : 10}
+        toTargetGap={living ? 5 : 13}
       >
         <span className="display-inline-block float-right cursor-pointer">
-          <button
-            className="html5-player-small-button"
-            onClick={this.onMuteStateChange}
-          >
+          <button className="html5-player-small-button">
             <svg
               className="html5-player-icon html5-player-setting-icon"
               aria-hidden="true"
