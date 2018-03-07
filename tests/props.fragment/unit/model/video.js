@@ -3,7 +3,7 @@
  */
 import sinon from 'sinon';
 
-import { childListChangeObserver } from '../../../util';
+import { q, childListChangeObserver } from '../../../util';
 
 const spyObj = {};
 let _model;
@@ -31,7 +31,7 @@ export default function(player, resolve) {
   describe('Props', function(done) {
     it(itTitle('fragment'), function(done) {
       this.timeout(5000);
-      childListChangeObserver('.html5-player-container', function() {
+      function common() {
         childListChangeObserver('.html5-player-time-slider', function() {
           expect(
             document.querySelectorAll('.html5-player-broken').length
@@ -39,7 +39,14 @@ export default function(player, resolve) {
           resolve();
           done();
         });
-      });
+      }
+      if (q('.html5-player-time-slider')) {
+        common();
+      } else {
+        childListChangeObserver('.html5-player-container', function() {
+          common();
+        });
+      }
     });
   });
 }

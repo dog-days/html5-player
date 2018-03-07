@@ -9,7 +9,7 @@ export default function(id) {
       <Player
         resolve={resolve}
         file="https://media.w3.org/2010/05/sintel/trailer.mp4"
-        autoplay={true}
+        autoplay={false}
         fragment="https://dog-days.github.io/demo/html5-player/fragment.json"
       />,
       document.getElementById(id)
