@@ -29,24 +29,15 @@ function itTitle(propsStr, suffix = '.') {
 }
 export default function(player, resolve) {
   describe('Props', function(done) {
+    this.timeout(5000);
     it(itTitle('fragment'), function(done) {
-      this.timeout(5000);
-      function common() {
-        childListChangeObserver('.html5-player-time-slider', function() {
-          expect(
-            document.querySelectorAll('.html5-player-broken').length
-          ).to.equal(3);
-          resolve();
-          done();
-        });
-      }
-      if (q('.html5-player-time-slider')) {
-        common();
-      } else {
-        childListChangeObserver('.html5-player-container', function() {
-          common();
-        });
-      }
+      setTimeout(function() {
+        expect(
+          document.querySelectorAll('.html5-player-broken').length
+        ).to.equal(3);
+        resolve();
+        done();
+      }, 1500);
     });
   });
 }
