@@ -1,6 +1,7 @@
 import { standardReducer } from '../utils/util';
 import fetch from '../utils/fetch';
 import { hms } from '../utils/util';
+import isString from 'lodash/isString';
 
 //请求取消函数
 let cancel;
@@ -38,7 +39,13 @@ export default function() {
     },
     sagas: {
       *fragmentSaga({ payload }, { put, call }) {
-        const data = yield call(fetchFragment, payload);
+        let data;
+        if (isString(payload)) {
+          //fragment为url的情况
+          data = yield call(fetchFragment, payload);
+        } else {
+          data = payload;
+        }
         if (!data) {
           return;
         }
@@ -46,7 +53,7 @@ export default function() {
         if (!total || !fragments) {
           return;
         }
-        //需要做safari的日记格式兼容。
+        //需要做safari的日期格式兼容。
         total.begin = +new Date(total.begin.replace(/-/g, '/')) / 1000;
         total.end = +new Date(total.end.replace(/-/g, '/')) / 1000;
         const dataAfterAdapter = [];

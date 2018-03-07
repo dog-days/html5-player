@@ -3,8 +3,6 @@
  */
 import sinon from 'sinon';
 
-import { q, childListChangeObserver } from '../../../util';
-
 const spyObj = {};
 let _model;
 let _dispatch;
@@ -29,15 +27,14 @@ function itTitle(propsStr, suffix = '.') {
 }
 export default function(player, resolve) {
   describe('Props', function(done) {
-    this.timeout(5000);
-    it(itTitle('fragment'), function(done) {
+    it(itTitle('fragment', 'when fragment is object.'), function(done) {
       setTimeout(function() {
         expect(
           document.querySelectorAll('.html5-player-broken').length
         ).to.equal(3);
         resolve();
         done();
-      }, 1500);
+      }, 500);
     });
   });
 }

@@ -80,6 +80,7 @@ export default class View extends React.Component {
     //多语言
     localization: PropTypes.object,
     controls: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    fragment: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     /**---end Appearance**/

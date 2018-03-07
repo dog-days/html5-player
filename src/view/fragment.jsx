@@ -18,7 +18,7 @@ import { namespace as fragmentNamespace } from '../model/fragment';
 @clearDecorator([fragmentNamespace])
 export default class Fragment extends React.Component {
   static propTypes = {
-    url: PropTypes.string,
+    url: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   };
   displayName = 'Fragment';
   dispatch = this.props.dispatch;

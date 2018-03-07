@@ -7,7 +7,8 @@ import model from './model/unit';
 import props from './props/unit';
 import props2 from './props-2/unit';
 import propsTracks from './props.tracks/unit';
-import propsFragment from './props.fragment/unit';
+import propsFragmentString from './props.fragment-string/unit';
+import propsFragmentObject from './props.fragment-object/unit';
 import propsContextMenuFalse from './props.contextMenu-false/unit';
 import propsContextMenuElement from './props.contextMenu-element/unit';
 import propsLogoString from './props.logo-string/unit';
@@ -46,7 +47,10 @@ model(id)
     return propsTracks(id);
   })
   .then(function() {
-    return propsFragment(id);
+    return propsFragmentString(id);
+  })
+  .then(function() {
+    return propsFragmentObject(id);
   })
   .then(function() {
     return propsContextMenuFalse(id);
