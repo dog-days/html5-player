@@ -54,6 +54,7 @@ export default class View extends React.Component {
     //播放器纵横比，默认为16:9，只有设置了宽度的情况下才会生效。
     //格式为x:y
     aspectratio: PropTypes.string,
+    stretching: PropTypes.string,
     /**---begin Behavior**/
     //静音
     muted: PropTypes.bool,
@@ -315,6 +316,7 @@ export default class View extends React.Component {
       isLiving,
       timeSliderShowFormat = 'time',
       living,
+      stretching = 'uniform',
       children,
     } = this.props;
     const locale = localization || localizationDefault;
@@ -351,6 +353,7 @@ export default class View extends React.Component {
             className={classnames('html5-player-tag', {
               'cursor-none': !userActive,
               'cursor-pointer': !(isLiving || living),
+              [`html5-player-tag-stretching-${stretching}`]: true,
             })}
             ref="video"
             {...videoProps}

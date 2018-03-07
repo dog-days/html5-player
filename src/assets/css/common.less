@@ -152,10 +152,23 @@ button {
     text-align: left;
     color: @text-color;
     .black-bg();
+    overflow: hidden;
   }
   &-tag {
     width: 100%;
     height: 100%;
+  }
+  &-tag-stretching-uniform {
+    object-fit: contain;
+  }
+  &-tag-stretching-exactfit {
+    object-fit: fill;
+  }
+  &-tag-stretching-fill {
+    object-fit: cover;
+  }
+  &-tag-stretching-none {
+    object-fit: none;
   }
   &-pretect-bg {
     width: 100%;
