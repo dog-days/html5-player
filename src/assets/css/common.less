@@ -406,10 +406,7 @@ button {
     z-index: 1000;
     color: #fff;
   }
-  &-setting-container {
-    // padding: 10px 0;
-  }
-  &-setting-container,
+  &-setting-list,
   &-list-container,
   &-rate-container {
     font-size: 12px;
@@ -420,6 +417,7 @@ button {
       line-height: 30px;
       padding: 0px 10px;
       color: @text-color;
+      cursor: pointer;
       &:hover {
         background-color: fade(@item-hover-color, 100%);
       }
@@ -437,9 +435,11 @@ button {
   &-rate-selected {
     background-color: fade(@item-hover-color, 100%);
   }
-  &-setting {
+  &-setting-list {
     width: 200px;
-    // margin-left: -80px;
+    position: relative;
+    right: 40px;
+    background-color: fade(@tooltip-bg, 100%);
     .html5-player-right-icon {
       font-size: 12px;
       margin-left: 5px;
