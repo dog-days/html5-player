@@ -1,8 +1,8 @@
-## 0.2.3(2018-03-07)
+## 0.2.3(2018-03-08)
 
 #### Bug Fix
 
-无
+* fix setting of controlbar tooltip position problem
 
 #### Update
 
