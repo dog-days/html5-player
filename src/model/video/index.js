@@ -50,6 +50,37 @@ export default function() {
   let showErrorMessageLazyTime = SHOW_ERROR_MESSAGE_LAZY_TIME;
   let _videoEvents;
   let clearIntervalForPlay;
+  let subtitleList;
+  function getTracks() {
+    const { tracks } = _config;
+    subtitleList = [];
+    //字幕，缩略图等
+    if (tracks) {
+      let i = 0;
+      tracks.forEach((v, k) => {
+        if (v.kind === 'subtitle') {
+          subtitleList.push({
+            ...v,
+            name: v.label,
+            id: i,
+          });
+          i++;
+        } else if (v.kind === 'thumbnail') {
+          _dispatch({
+            type: `${trackNamespace}/thumbnailSaga`,
+            payload: v,
+          });
+        }
+      });
+      _dispatch({
+        type: `${trackNamespace}/subtitleListSaga`,
+        payload: {
+          subtitleList: subtitleList,
+          subtitleId: -1,
+        },
+      });
+    }
+  }
   return {
     namespace,
     state: null,
@@ -107,7 +138,9 @@ export default function() {
       *playAfterNotAutoplay({ payload }, { put }) {
         if (!_api.playing) {
           if (!_config.preload) {
+            //autoplay=false,preload=false
             _api.loadSource(_config.file);
+            getTracks();
           }
           yield put({
             type: `controlbar`,
@@ -668,8 +701,10 @@ export default function() {
         });
       },
       *switchSubtitle({ payload }, { put }) {
-        //hls.js切换方式就是这样。
-        _api.hlsObj.subtitleTrack = payload;
+        if (_api.hlsObj) {
+          //hls.js切换方式就是这样。
+          _api.hlsObj.subtitleTrack = payload;
+        }
         //存储状态
         _api.currentSubtitleTrack = payload;
         yield put({
@@ -678,6 +713,16 @@ export default function() {
             subtitleId: payload,
           },
         });
+        if (subtitleList && subtitleList[payload]) {
+          //非hls自带的字幕，播放器自定义的
+          yield put({
+            type: `${trackNamespace}/subtitleCuesSaga`,
+            payload: {
+              subtitleId: payload,
+              file: subtitleList[payload].file,
+            },
+          });
+        }
       },
       *hlsSubtitleCues({ payload }, { put }) {
         const cues = [];
@@ -718,6 +763,7 @@ export default function() {
         //初始化loading状态
         if (autoplay) {
           _api.loadSource(file);
+          getTracks();
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
@@ -737,6 +783,7 @@ export default function() {
         } else {
           if (preload) {
             _api.loadSource(file);
+            getTracks();
           }
           _api.trigger('loading', false);
           _api.loading = false;

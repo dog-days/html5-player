@@ -30,7 +30,7 @@ export default class SubtitleSelect extends React.Component {
     }
     return (
       <Tooltip content={this.renderContent()} toTargetGap={20}>
-        <span className="float-right cursor-pointer html5-player-common-button">
+        <span className="float-right cursor-pointer html5-player-common-button html5-player-subtitle-button">
           {locale.subtitle}
         </span>
       </Tooltip>

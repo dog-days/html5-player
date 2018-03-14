@@ -17,6 +17,8 @@ function fetchTrack(url, params) {
 
 export const namespace = 'track';
 export default function() {
+  //存放subtitle的cues
+  const cuesList = [];
   return {
     namespace,
     state: {
@@ -57,11 +59,19 @@ export default function() {
         });
       },
       *subtitleCuesSaga({ payload }, { put, call }) {
-        const vtt = yield call(fetchTrack, payload.file);
-        if (!vtt) {
-          return;
+        let data;
+        if (!cuesList[payload.subtitleId]) {
+          const vtt = yield call(fetchTrack, payload.file);
+          if (!vtt) {
+            return;
+          }
+          data = srtParser(vtt);
+        } else {
+          data = cuesList[payload.subtitleId];
         }
-        const data = srtParser(vtt);
+        if (data) {
+          cuesList[payload.subtitleId] = data;
+        }
         yield put({
           type: 'trackReducer',
           payload: {

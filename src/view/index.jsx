@@ -21,9 +21,7 @@ import End from './end';
 import NotAutoPlay from './not-autoplay';
 import Controlbar from './controlbar';
 import ErrorMessage from './error-message';
-import Captions from './track/captions';
 import Subtitle from './track/subtitle';
-import Thumbnail from './track/thumbnail';
 import Title from './title';
 import Fragment from './fragment';
 import { CONTROLBAR_TIMEOUT, ASPECT_RATIO } from '../utils/const';
@@ -404,17 +402,6 @@ export default class View extends React.Component {
                   />
                 )}
                 <Subtitle userActive={userActive} />
-                {tracks &&
-                  tracks.map((v, k) => {
-                    return (
-                      <span key={k}>
-                        {v.kind === 'captions' && (
-                          <Captions config={v} userActive={userActive} />
-                        )}
-                        {v.kind === 'thumbnail' && <Thumbnail config={v} />}
-                      </span>
-                    );
-                  })}
                 {fragment && <Fragment url={fragment} />}
               </span>
               {children}
