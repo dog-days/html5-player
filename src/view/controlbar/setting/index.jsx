@@ -24,8 +24,8 @@ const state = {
 @connect(state => {
   return {
     playbackRate: state[playbackRateNamespace],
-    subtileList: state[trackNamespace].subtileList,
-    subtileId: state[trackNamespace].subtileId,
+    subtitleList: state[trackNamespace].subtitleList,
+    subtitleId: state[trackNamespace].subtitleId,
   };
 })
 @clearDecorator([playbackRateNamespace])
@@ -33,7 +33,7 @@ export default class Setting extends React.Component {
   static contextTypes = {
     localization: PropTypes.object,
   };
-  displayName = 'Setting ';
+  displayName = 'Setting';
   state = { showSetting: true };
   dispatch = this.props.dispatch;
   componentDidMount() {}
@@ -87,7 +87,7 @@ export default class Setting extends React.Component {
     return this.context.localization || localization;
   }
   renderContent() {
-    const { playbackRate, subtileList, subtileId } = this.props;
+    const { playbackRate, subtitleList, subtitleId } = this.props;
     const { showRateSelect, showSubtileSelect, showSetting } = this.state;
     const locale = this.getLocale();
     return (
@@ -106,15 +106,15 @@ export default class Setting extends React.Component {
                 </svg>
               </span>
             </li>
-            {subtileList &&
-              subtileList[0] && (
+            {subtitleList &&
+              subtitleList[0] && (
                 <li onClick={this.onListClickEvent('subtile')}>
-                  <span className="float-left">{locale.subtile}</span>
+                  <span className="float-left">{locale.subtitle}</span>
                   <span className="float-right">
-                    {subtileId !== -1 && (
-                      <span>{subtileList[subtileId].name}</span>
+                    {subtitleId !== -1 && (
+                      <span>{subtitleList[subtitleId].name}</span>
                     )}
-                    {subtileId === -1 && <span>{locale.subtileOff}</span>}
+                    {subtitleId === -1 && <span>{locale.subtitleOff}</span>}
                     <svg
                       className="html5-player-icon html5-player-right-icon"
                       aria-hidden="true"
