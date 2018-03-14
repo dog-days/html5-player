@@ -12,6 +12,7 @@ import { namespace as notAutoPlayNamespace } from '../not-autoplay';
 import { namespace as controlbarNamespace } from '../controlbar';
 import { namespace as timeSliderNamespace } from '../time-slider';
 import { namespace as errorMessageNamespace } from '../error-message';
+import { namespace as trackNamespace } from '../track';
 import { namespace as fragmentNamespace } from '../fragment';
 import { namespace as livingNamespace } from '../living';
 import { namespace as playbackRateNamespace } from '../playback-rate';
@@ -657,6 +658,40 @@ export default function() {
         yield put({
           type: `${playbackRateNamespace}/setPlaybackRateSaga`,
           payload: playbackRate,
+        });
+      },
+      *subtitleList({ payload }, { put }) {
+        logger.info('Subtitle List showed');
+        yield put({
+          type: `${trackNamespace}/subtitleListSaga`,
+          payload,
+        });
+      },
+      *switchSubtitle({ payload }, { put }) {
+        //hls.js切换方式就是这样。
+        _api.hlsObj.subtitleTrack = payload;
+        //存储状态
+        _api.currentSubtitleTrack = payload;
+        yield put({
+          type: `${trackNamespace}/subtitleListSaga`,
+          payload: {
+            subtitleId: payload,
+          },
+        });
+      },
+      *hlsSubtitleCues({ payload }, { put }) {
+        const cues = [];
+        for (let k = 0; k < payload.length; k++) {
+          let v = payload[k];
+          cues.push({
+            begin: v.startTime,
+            end: v.endTime,
+            text: v.text,
+          });
+        }
+        yield put({
+          type: `${trackNamespace}/hlsSubtitleCuesSaga`,
+          payload: cues,
         });
       },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace

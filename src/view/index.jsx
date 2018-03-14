@@ -22,6 +22,7 @@ import NotAutoPlay from './not-autoplay';
 import Controlbar from './controlbar';
 import ErrorMessage from './error-message';
 import Captions from './track/captions';
+import Subtitle from './track/subtitle';
 import Thumbnail from './track/thumbnail';
 import Title from './title';
 import Fragment from './fragment';
@@ -402,6 +403,7 @@ export default class View extends React.Component {
                     hasFragment={!!fragment}
                   />
                 )}
+                <Subtitle userActive={userActive} />
                 {tracks &&
                   tracks.map((v, k) => {
                     return (

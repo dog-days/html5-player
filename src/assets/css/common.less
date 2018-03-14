@@ -336,8 +336,8 @@ button {
     color: @dark-color;
     animation: zoomIn 0.2s;
   }
-  //captions
-  &-captions-text {
+  //subtitle
+  &-subtitle-text {
     position: absolute;
     bottom: 0;
     line-height: 1.5;
@@ -359,10 +359,10 @@ button {
         Verdana, 'PT Sans Caption', sans-serif;
     }
   }
-  &-captions-text-user-active {
+  &-subtitle-text-user-active {
     bottom: 60px;
   }
-  &-captions-text-user-inactive {
+  &-subtitle-text-user-inactive {
     bottom: 25px;
   }
   &-broken {
@@ -396,7 +396,7 @@ button {
     background-image: linear-gradient(
       -180deg,
       rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 0, 0, 0.1) 100%
+      rgba(0, 0, 0, 0.02) 100%
     );
     top: 0;
     left: 0;
@@ -418,10 +418,12 @@ button {
       padding: 0px 10px;
       color: @text-color;
       cursor: pointer;
+      text-align: left;
       &:hover {
         background-color: fade(@item-hover-color, 100%);
       }
     }
+    li.html5-player-list-title,
     li.html5-player-rate-title {
       height: 35px;
       line-height: 35px;
@@ -432,6 +434,7 @@ button {
       }
     }
   }
+  &-list-selected,
   &-rate-selected {
     background-color: fade(@item-hover-color, 100%);
   }
@@ -445,8 +448,8 @@ button {
       margin-left: 5px;
     }
   }
+  &-list-container,
   &-rate-container {
-    width: 70px;
     text-align: center;
     .html5-player-left-icon {
       margin-right: 5px;
@@ -454,6 +457,7 @@ button {
       margin-left: -5px;
     }
   }
+  &-common-button,
   &-rate-button {
     vertical-align: unset;
     background: rgba(255, 255, 255, 0.8);

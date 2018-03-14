@@ -41,7 +41,7 @@ export default class hlsAPI extends API {
       const hls = this.hlsObj;
       hls.detachMedia();
       hls.loadSource(file);
-      hls.attachMedia(this);
+      hls.attachMedia(this.videoDOM);
       logger.info('Source Loading :', 'loading hls video.');
       if (this.first) {
         this.first = false;
