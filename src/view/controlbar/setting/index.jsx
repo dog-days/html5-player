@@ -135,7 +135,6 @@ export default class Setting extends React.Component {
         )}
         {showSubtileSelect && (
           <SubtitleList
-            {...this.props}
             onSelect={this.onSelect}
             onBackEvent={this.onBackEvent}
           />

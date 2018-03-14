@@ -50,15 +50,6 @@ export default class PlaybackRateList extends React.Component {
             {locale.subtitle}
           </li>
         )}
-        <li
-          onClick={this.onSelect(-1)}
-          key={-1}
-          className={classnames({
-            'html5-player-list-selected': subtitleId === -1,
-          })}
-        >
-          {locale.subtitleOff}
-        </li>
         {subtitleList &&
           subtitleList.map((v, k) => {
             const className = classnames({
@@ -70,6 +61,15 @@ export default class PlaybackRateList extends React.Component {
               </li>
             );
           })}
+        <li
+          onClick={this.onSelect(-1)}
+          key={-1}
+          className={classnames({
+            'html5-player-list-selected': subtitleId === -1,
+          })}
+        >
+          {locale.subtitleOff}
+        </li>
       </ul>
     );
   }
