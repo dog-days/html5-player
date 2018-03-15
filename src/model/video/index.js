@@ -701,12 +701,22 @@ export default function() {
         });
       },
       *switchSubtitle({ payload }, { put }) {
+        //存储状态
+        _api.currentSubtitleTrack = payload;
+        //end----textTracks状态处理
         if (_api.hlsObj) {
           //hls.js切换方式就是这样。
           _api.hlsObj.subtitleTrack = payload;
+        } else {
+          //begin----textTracks状态处理
+          for (let i = 0; i < _api.textTracks.length; i++) {
+            _api.textTracks[i].mode = 'disabled';
+          }
+          if (_api.textTracks[payload]) {
+            //关闭不用处理
+            _api.textTracks[payload].mode = 'hidden';
+          }
         }
-        //存储状态
-        _api.currentSubtitleTrack = payload;
         yield put({
           type: `${trackNamespace}/subtitleListSaga`,
           payload: {

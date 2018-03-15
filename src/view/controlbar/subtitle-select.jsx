@@ -20,16 +20,27 @@ import { namespace as trackNamespace } from '../../model/track';
 export default class SubtitleSelect extends React.Component {
   displayName = 'subtitleSelect';
   state = {};
+  onRatteSelect = rate => {
+    this.setState({
+      tooltipKey: rate,
+    });
+  };
   renderContent() {
     return <SubtitleList />;
   }
   render() {
     const { subtitleList, locale } = this.props;
+    const { tooltipKey } = this.state;
     if (!subtitleList[0]) {
       return false;
     }
     return (
-      <Tooltip content={this.renderContent()} toTargetGap={20}>
+      <Tooltip
+        key={tooltipKey}
+        trigger="click"
+        content={this.renderContent()}
+        toTargetGap={20}
+      >
         <span className="float-right cursor-pointer html5-player-common-button html5-player-subtitle-button">
           {locale.subtitle}
         </span>
