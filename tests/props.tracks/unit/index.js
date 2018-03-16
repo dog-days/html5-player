@@ -12,8 +12,14 @@ export default function(id) {
         autoplay={true}
         tracks={[
           {
-            kind: 'captions',
-            file: 'https://dog-days.github.io/demo/html5-player/caption.vtt',
+            kind: 'subtitle',
+            file: `https://dog-days.github.io/demo/static/subtitle-zh-cn.vtt`,
+            label: '中文',
+          },
+          {
+            kind: 'subtitle',
+            file: `https://dog-days.github.io/demo/static/subtitle-en.vtt`,
+            label: 'English',
           },
           {
             kind: 'thumbnail',

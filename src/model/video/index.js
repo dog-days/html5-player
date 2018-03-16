@@ -12,6 +12,7 @@ import { namespace as notAutoPlayNamespace } from '../not-autoplay';
 import { namespace as controlbarNamespace } from '../controlbar';
 import { namespace as timeSliderNamespace } from '../time-slider';
 import { namespace as errorMessageNamespace } from '../error-message';
+import { namespace as trackNamespace } from '../track';
 import { namespace as fragmentNamespace } from '../fragment';
 import { namespace as livingNamespace } from '../living';
 import { namespace as playbackRateNamespace } from '../playback-rate';
@@ -49,6 +50,37 @@ export default function() {
   let showErrorMessageLazyTime = SHOW_ERROR_MESSAGE_LAZY_TIME;
   let _videoEvents;
   let clearIntervalForPlay;
+  let subtitleList;
+  function getTracks() {
+    const { tracks } = _config;
+    subtitleList = [];
+    //字幕，缩略图等
+    if (tracks) {
+      let i = 0;
+      tracks.forEach((v, k) => {
+        if (v.kind === 'subtitle') {
+          subtitleList.push({
+            ...v,
+            name: v.label,
+            id: i,
+          });
+          i++;
+        } else if (v.kind === 'thumbnail') {
+          _dispatch({
+            type: `${trackNamespace}/thumbnailSaga`,
+            payload: v,
+          });
+        }
+      });
+      _dispatch({
+        type: `${trackNamespace}/subtitleListSaga`,
+        payload: {
+          subtitleList: subtitleList,
+          subtitleId: -1,
+        },
+      });
+    }
+  }
   return {
     namespace,
     state: null,
@@ -106,7 +138,9 @@ export default function() {
       *playAfterNotAutoplay({ payload }, { put }) {
         if (!_api.playing) {
           if (!_config.preload) {
+            //autoplay=false,preload=false
             _api.loadSource(_config.file);
+            getTracks();
           }
           yield put({
             type: `controlbar`,
@@ -659,9 +693,65 @@ export default function() {
           payload: playbackRate,
         });
       },
+      *subtitleList({ payload }, { put }) {
+        logger.info('Subtitle List showed');
+        yield put({
+          type: `${trackNamespace}/subtitleListSaga`,
+          payload,
+        });
+      },
+      *switchSubtitle({ payload }, { put }) {
+        //存储状态
+        _api.currentSubtitleTrack = payload;
+        //end----textTracks状态处理
+        if (_api.hlsObj) {
+          //hls.js切换方式就是这样。
+          _api.hlsObj.subtitleTrack = payload;
+        } else {
+          //begin----textTracks状态处理
+          for (let i = 0; i < _api.textTracks.length; i++) {
+            _api.textTracks[i].mode = 'disabled';
+          }
+          if (_api.textTracks[payload]) {
+            //关闭不用处理
+            _api.textTracks[payload].mode = 'hidden';
+          }
+        }
+        yield put({
+          type: `${trackNamespace}/subtitleListSaga`,
+          payload: {
+            subtitleId: payload,
+          },
+        });
+        if (subtitleList && subtitleList[payload]) {
+          //非hls自带的字幕，播放器自定义的
+          yield put({
+            type: `${trackNamespace}/subtitleCuesSaga`,
+            payload: {
+              subtitleId: payload,
+              file: subtitleList[payload].file,
+            },
+          });
+        }
+      },
+      *hlsSubtitleCues({ payload }, { put }) {
+        const cues = [];
+        for (let k = 0; k < payload.length; k++) {
+          let v = payload[k];
+          cues.push({
+            begin: v.startTime,
+            end: v.endTime,
+            text: v.text,
+          });
+        }
+        yield put({
+          type: `${trackNamespace}/hlsSubtitleCuesSaga`,
+          payload: cues,
+        });
+      },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {
-        let { dispatch, api, config } = payload;
+        let { dispatch, api, hlsjsEvents, config } = payload;
         const {
           autoplay,
           showLoadingLazyTime: loadingLazyTime,
@@ -683,6 +773,7 @@ export default function() {
         //初始化loading状态
         if (autoplay) {
           _api.loadSource(file);
+          getTracks();
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
@@ -702,6 +793,7 @@ export default function() {
         } else {
           if (preload) {
             _api.loadSource(file);
+            getTracks();
           }
           _api.trigger('loading', false);
           _api.loading = false;
@@ -717,6 +809,9 @@ export default function() {
         _api.off();
         //----begin 事件处理
         _videoEvents = videoEvents(payload);
+        if (hlsjsEvents) {
+          hlsjsEvents(payload);
+        }
         //----end 事件处理
         //等待video运行起来后运行，对外提供接口
         const _outSideApi = outSideApi(payload, this.sagas);

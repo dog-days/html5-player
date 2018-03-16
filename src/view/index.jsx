@@ -21,8 +21,7 @@ import End from './end';
 import NotAutoPlay from './not-autoplay';
 import Controlbar from './controlbar';
 import ErrorMessage from './error-message';
-import Captions from './track/captions';
-import Thumbnail from './track/thumbnail';
+import Subtitle from './track/subtitle';
 import Title from './title';
 import Fragment from './fragment';
 import { CONTROLBAR_TIMEOUT, ASPECT_RATIO } from '../utils/const';
@@ -145,6 +144,7 @@ export default class View extends React.Component {
             ...other,
           },
           api: provider.api,
+          hlsjsEvents: provider.hlsjsEvents,
           videoCallback,
         },
         initOverCallback: outSideApi => {
@@ -402,17 +402,7 @@ export default class View extends React.Component {
                     hasFragment={!!fragment}
                   />
                 )}
-                {tracks &&
-                  tracks.map((v, k) => {
-                    return (
-                      <span key={k}>
-                        {v.kind === 'captions' && (
-                          <Captions config={v} userActive={userActive} />
-                        )}
-                        {v.kind === 'thumbnail' && <Thumbnail config={v} />}
-                      </span>
-                    );
-                  })}
+                <Subtitle userActive={userActive} />
                 {fragment && <Fragment url={fragment} />}
               </span>
               {children}

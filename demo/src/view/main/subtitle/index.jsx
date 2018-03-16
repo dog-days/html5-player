@@ -11,8 +11,14 @@ export default class View extends React.Component {
             file="https://media.w3.org/2010/05/sintel/trailer.mp4"
             tracks={[
               {
-                kind: 'captions',
-                file: `${process.env.basename}/caption.vtt`,
+                kind: 'subtitle',
+                file: `${process.env.basename}/subtitle-zh-cn.vtt`,
+                label: '中文',
+              },
+              {
+                kind: 'subtitle',
+                file: `${process.env.basename}/subtitle-en.vtt`,
+                label: 'English',
               },
             ]}
           />

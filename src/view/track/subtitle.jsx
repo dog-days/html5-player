@@ -23,30 +23,18 @@ import { namespace as errorMessageNamespace } from '../../model/error-message';
   };
 })
 @clearDecorator([trackNamespace])
-export default class Captions extends React.Component {
+export default class Subtitle extends React.Component {
   static propTypes = {};
-  displayName = 'Captions';
-  state = {};
-  dispatch = this.props.dispatch;
-  getData() {
-    const { config } = this.props;
-    this.dispatch({
-      type: `${trackNamespace}/captionsSaga`,
-      payload: config,
-    });
-  }
-  componentDidMount() {
-    this.getData();
-  }
+  displayName = 'Subtitle';
   render() {
     const { track, time, userActive, end, isError } = this.props;
-    const { captions } = track;
+    const { subtitleCues } = track;
     const currentTime = time.currentTime;
-    if (!captions || isError) {
-      return <span className="html5-player-captions-text html5-player-hide" />;
+    if (!subtitleCues || isError) {
+      return <span className="html5-player-subtitle-text html5-player-hide" />;
     }
     let text;
-    captions.forEach(v => {
+    subtitleCues.forEach(v => {
       if (currentTime >= v.begin && currentTime < v.end) {
         text = v.text;
       }
@@ -63,9 +51,9 @@ export default class Captions extends React.Component {
     }
     return (
       <span
-        className={classnames('html5-player-captions-text', {
-          'html5-player-captions-text-user-active': userActive,
-          'html5-player-captions-text-user-inactive': !userActive,
+        className={classnames('html5-player-subtitle-text', {
+          'html5-player-subtitle-text-user-active': userActive,
+          'html5-player-subtitle-text-user-inactive': !userActive,
         })}
       >
         {textArray.map((v, k) => {
