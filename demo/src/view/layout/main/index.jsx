@@ -20,7 +20,9 @@ class MainLayout extends React.Component {
   }
   render() {
     const { children, params } = this.props;
-    const codeUrl = `https://github.com/dog-days/html5-player/tree/master/demo/src/view/${params.controllerId}/${params.viewId}/index.jsx`;
+    const codeUrl = `https://github.com/dog-days/html5-player/tree/master/demo/src/view/${
+      params.controllerId
+    }/${params.viewId}/index.jsx`;
     return (
       <div className="layout-container">
         <nav className="navbar navbar-inverse">
@@ -29,9 +31,9 @@ class MainLayout extends React.Component {
               {this.renderItem('基本使用', 'basic')}
               {this.renderItem('hls使用', 'hls')}
               {this.renderItem('flv使用', 'flv')}
-              {this.renderItem('字幕使用', 'caption')}
+              {this.renderItem('字幕使用', 'subtitle')}
               {this.renderItem('缩略图使用', 'thumbnail')}
-              {this.renderItem('视频断片使用', 'history')}
+              {this.renderItem('视频断片使用', 'fragment')}
               {this.renderItem('自定义', 'custom')}
             </ul>
           </div>
