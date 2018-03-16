@@ -144,6 +144,7 @@ export default class View extends React.Component {
             ...other,
           },
           api: provider.api,
+          hlsjsEvents: provider.hlsjsEvents,
           videoCallback,
         },
         initOverCallback: outSideApi => {

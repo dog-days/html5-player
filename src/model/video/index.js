@@ -751,7 +751,7 @@ export default function() {
       },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {
-        let { dispatch, api, config } = payload;
+        let { dispatch, api, hlsjsEvents, config } = payload;
         const {
           autoplay,
           showLoadingLazyTime: loadingLazyTime,
@@ -809,6 +809,9 @@ export default function() {
         _api.off();
         //----begin 事件处理
         _videoEvents = videoEvents(payload);
+        if (hlsjsEvents) {
+          hlsjsEvents(payload);
+        }
         //----end 事件处理
         //等待video运行起来后运行，对外提供接口
         const _outSideApi = outSideApi(payload, this.sagas);

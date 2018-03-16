@@ -62,7 +62,7 @@ function loadFlvJsBundle(config) {
 function loadHlsJsBundle(config) {
   return new Promise(function(resolve) {
     require.ensure(
-      ['hls.js', './api/hlsjs-api'],
+      ['hls.js', './api/hlsjs-api', './model/video/events/hlsjs'],
       function(require) {
         const hlsjs = require('hls.js');
         logger.success(
@@ -72,9 +72,11 @@ function loadHlsJsBundle(config) {
         const apiClass = require('./api/hlsjs-api').default;
         apiClass.prototype.localization = config.localization;
         const api = new apiClass(config.videoDOM, config.file, hlsjs);
+        const hlsjsEvents = require('./model/video/events/hlsjs').default;
         resolve({
           hlsjs,
           api,
+          hlsjsEvents,
         });
       },
       chunkLoadErrorHandler,

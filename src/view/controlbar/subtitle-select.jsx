@@ -20,13 +20,13 @@ import { namespace as trackNamespace } from '../../model/track';
 export default class SubtitleSelect extends React.Component {
   displayName = 'subtitleSelect';
   state = {};
-  onRatteSelect = rate => {
+  onRateSelect = rate => {
     this.setState({
       tooltipKey: rate,
     });
   };
   renderContent() {
-    return <SubtitleList />;
+    return <SubtitleList onSelect={this.onRateSelect} />;
   }
   render() {
     const { subtitleList, locale } = this.props;

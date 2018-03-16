@@ -1,6 +1,5 @@
-import { namespace } from './index';
-import { namespace as readyNamespace } from '../ready';
-import { namespace as videoNamespace } from '../video';
+import { namespace as readyNamespace } from '../../ready';
+import { namespace as videoNamespace } from '../../video';
 import {
   HAVE_CURRENT_DATA,
   HAVE_FUTURE_DATA,
@@ -8,13 +7,13 @@ import {
   VIDEO_TIMEOUT,
   LIVING_MAXBUFFER_TIME,
   RETRY_TIMES,
-} from '../../utils/const';
-import * as logger from '../../utils/logger';
+} from '../../../utils/const';
+import * as logger from '../../../utils/logger';
 
-import { TIMEOUT_ERROR } from '../../utils/error-code';
-import { isIE } from '../../utils/browser';
-import contains from '../../utils/dom/contains';
-import localization from '../../i18n/default';
+import { TIMEOUT_ERROR } from '../../../utils/error-code';
+import { isIE } from '../../../utils/browser';
+import contains from '../../../utils/dom/contains';
+import localization from '../../../i18n/default';
 
 class Events {
   constructor(payload) {
@@ -96,66 +95,7 @@ class Events {
       }, 200);
     }
   }
-  //hls.js
-  setHlsJsSubtitle() {
-    const api = this.api;
-    const dispatch = this.dispatch;
-    if (api.hlsObj) {
-      // console.log(api.hlsObj.subtitleTracks);
-      let clearIntervalObj;
-      api.hlsObj.on(api.Hls.Events.SUBTITLE_TRACK_SWITCH, (event, data) => {
-        const currentTextTrack = api.textTracks[data.id];
-        let cues = [];
-        if (currentTextTrack) {
-          //vtt没有加载时，切换是没信息的，所以首次切换字幕这里是不会触发dispatch
-          cues = currentTextTrack.cues;
-        }
-        logger.info('Subtitle switched');
-        dispatch({
-          type: `${videoNamespace}/hlsSubtitleCues`,
-          payload: cues,
-        });
-      });
-      api.hlsObj.on(api.Hls.Events.SUBTITLE_TRACK_LOADED, (event, data) => {
-        //首次切换字幕，加载字幕才会触发这个事件，第二次切换不会触发。
-        const currentTextTrack = api.textTracks[api.currentSubtitleTrack];
-        if (!currentTextTrack) {
-          return;
-        }
-        //防止切换过快没清除。
-        clearInterval(clearIntervalObj);
-        let tempLength = 0;
-        let k = 0;
-        clearIntervalObj = setInterval(function() {
-          const length = currentTextTrack.cues.length;
-          if (currentTextTrack.cues.length > 0 && tempLength !== length) {
-            tempLength = length;
-            dispatch({
-              type: `${videoNamespace}/hlsSubtitleCues`,
-              payload: currentTextTrack.cues,
-            });
-          } else {
-            //因为是异步的无法确定什么时候加载完字幕，字幕也可能分几个片段加载的。
-            if (k >= 2) {
-              logger.info('Subtitle switched');
-              //如果两次以上length都没变化就判断为，加载完成。
-              //这里不排除网络很差的导致加载字幕出问题，但是这种极端情况，不好处理，也没必要处理。
-              //因为如果网络都差到连2KB的内容都加载不了，也完全播放不了视频了。
-              clearInterval(clearIntervalObj);
-            }
-            k++;
-          }
-        }, 200);
-      });
-      dispatch({
-        type: `${videoNamespace}/subtitleList`,
-        payload: {
-          subtitleList: api.hlsObj.subtitleTracks,
-          subtitleId: -1,
-        },
-      });
-    }
-  }
+
   loadeddata() {
     const api = this.api;
     const dispatch = this.dispatch;
@@ -163,27 +103,26 @@ class Events {
     api.on('loadeddata', () => {
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
-      this.setHlsJsSubtitle();
       dispatch({
         type: `${readyNamespace}/state`,
       });
       if (autoplay) {
         dispatch({
-          type: `${namespace}/play`,
+          type: `${videoNamespace}/play`,
         });
       }
       //兼容edge，用来比较获取loading状态
       this.currentTime = api.currentTime;
       //currentTime处理
       dispatch({
-        type: `${namespace}/time`,
+        type: `${videoNamespace}/time`,
         payload: {
           currentTime: api.currentTime,
           duration: api.duration,
         },
       });
       dispatch({
-        type: `${namespace}/living`,
+        type: `${videoNamespace}/living`,
         payload: {
           duration: isLiving ? Infinity : api.duration,
         },
@@ -219,7 +158,7 @@ class Events {
         if (api.living || this.config.isLiving) {
           //直播才做重载
           dispatch({
-            type: `${namespace}/reload`,
+            type: `${videoNamespace}/reload`,
           });
         }
         if (type === 'stalled') {
@@ -310,7 +249,7 @@ class Events {
             if (!api.loading) {
               //需要做判断，要不会被clearTimeout了
               dispatch({
-                type: `${namespace}/loading`,
+                type: `${videoNamespace}/loading`,
                 payload: true,
               });
             }
@@ -322,7 +261,7 @@ class Events {
           ) {
             if (!api.loading) {
               dispatch({
-                type: `${namespace}/loading`,
+                type: `${videoNamespace}/loading`,
                 payload: true,
               });
             }
@@ -332,7 +271,7 @@ class Events {
               api.readyState === HAVE_ENOUGH_DATA)
           ) {
             dispatch({
-              type: `${namespace}/loading`,
+              type: `${videoNamespace}/loading`,
               payload: false,
             });
           }
@@ -340,14 +279,14 @@ class Events {
         } else if (api.loading && this.currentTime !== api.currentTime) {
           //直播状态正在播放中如果发现loading，直接隐藏。
           dispatch({
-            type: `${namespace}/loading`,
+            type: `${videoNamespace}/loading`,
             payload: false,
           });
         }
         //currentTime处理
         if (!api.seekingState) {
           dispatch({
-            type: `${namespace}/time`,
+            type: `${videoNamespace}/time`,
             payload: {
               currentTime: api.ended ? api.duration : api.currentTime,
               duration: api.duration,
@@ -392,7 +331,7 @@ class Events {
         message = locale.videoNotSupport;
       }
       dispatch({
-        type: `${namespace}/errorMessage`,
+        type: `${videoNamespace}/errorMessage`,
         payload: {
           message,
         },
@@ -409,7 +348,7 @@ class Events {
         //直播是不会结束的
         //即使监控到end事件也不做处理
         dispatch({
-          type: `${namespace}/end`,
+          type: `${videoNamespace}/end`,
           payload: true,
         });
       }
@@ -430,11 +369,11 @@ class Events {
           logger.info('Keydown:', 'space key is pressed');
           if (api.playing) {
             dispatch({
-              type: `${namespace}/pause`,
+              type: `${videoNamespace}/pause`,
             });
           } else {
             dispatch({
-              type: `${namespace}/play`,
+              type: `${videoNamespace}/play`,
             });
           }
         }
