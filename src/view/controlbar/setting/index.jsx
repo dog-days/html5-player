@@ -10,8 +10,10 @@ import addEventListener from '../../../utils/dom/addEventListener';
 import Tooltip from '../../components/tooltip';
 import PlaybackRateList from './playback-rate-list';
 import SubtitleList from './subtitle-list';
+import PictureQualityList from './picture-quality-list';
 import { namespace as playbackRateNamespace } from '../../../model/playback-rate';
 import { namespace as trackNamespace } from '../../../model/track';
+import { namespace as qualityNamespace } from '../../../model/picture-quality';
 import contains from '../../../utils/dom/contains';
 import localization from '../../../i18n/default';
 
@@ -19,6 +21,7 @@ const state = {
   showSetting: false,
   showRateSelect: false,
   showSubtileSelect: false,
+  showPictureQualitySelect: false,
 };
 
 @connect(state => {
@@ -26,6 +29,8 @@ const state = {
     playbackRate: state[playbackRateNamespace],
     subtitleList: state[trackNamespace].subtitleList,
     subtitleId: state[trackNamespace].subtitleId,
+    qualityList: state[qualityNamespace].list,
+    currentQuality: state[qualityNamespace].currentQuality,
   };
 })
 @clearDecorator([playbackRateNamespace])
@@ -50,6 +55,12 @@ export default class Setting extends React.Component {
           this.setState({
             ...state,
             showSubtileSelect: true,
+          });
+          break;
+        case 'picture-quality':
+          this.setState({
+            ...state,
+            showPictureQualitySelect: true,
           });
           break;
         default:
@@ -87,9 +98,28 @@ export default class Setting extends React.Component {
     return this.context.localization || localization;
   }
   renderContent() {
-    const { playbackRate, subtitleList, subtitleId } = this.props;
-    const { showRateSelect, showSubtileSelect, showSetting } = this.state;
+    const {
+      playbackRate,
+      subtitleList,
+      subtitleId,
+      qualityList,
+      currentQuality,
+    } = this.props;
+    const {
+      showRateSelect,
+      showSubtileSelect,
+      showSetting,
+      showPictureQualitySelect,
+    } = this.state;
     const locale = this.getLocale();
+    const commonIcon = (
+      <svg
+        className="html5-player-icon html5-player-right-icon"
+        aria-hidden="true"
+      >
+        <use xlinkHref="#icon-right" />
+      </svg>
+    );
     return (
       <div className="html5-player-setting-container">
         {showSetting && (
@@ -98,12 +128,7 @@ export default class Setting extends React.Component {
               <span className="float-left">{locale.speed}</span>
               <span className="float-right">
                 <span>{playbackRate + locale.speed}</span>
-                <svg
-                  className="html5-player-icon html5-player-right-icon"
-                  aria-hidden="true"
-                >
-                  <use xlinkHref="#icon-right" />
-                </svg>
+                {commonIcon}
               </span>
             </li>
             {subtitleList &&
@@ -115,12 +140,20 @@ export default class Setting extends React.Component {
                       <span>{subtitleList[subtitleId].name}</span>
                     )}
                     {subtitleId === -1 && <span>{locale.subtitleOff}</span>}
-                    <svg
-                      className="html5-player-icon html5-player-right-icon"
-                      aria-hidden="true"
-                    >
-                      <use xlinkHref="#icon-right" />
-                    </svg>
+                    {commonIcon}
+                  </span>
+                </li>
+              )}
+            {qualityList &&
+              qualityList[0] && (
+                <li onClick={this.onListClickEvent('picture-quality')}>
+                  <span className="float-left">{locale.pictureQuality}</span>
+                  <span className="float-right">
+                    {currentQuality !== -1 && (
+                      <span>{qualityList[currentQuality].label}</span>
+                    )}
+                    {currentQuality === -1 && <span>{locale.autoQuality}</span>}
+                    {commonIcon}
                   </span>
                 </li>
               )}
@@ -135,6 +168,13 @@ export default class Setting extends React.Component {
         )}
         {showSubtileSelect && (
           <SubtitleList
+            onSelect={this.onSelect}
+            onBackEvent={this.onBackEvent}
+          />
+        )}
+
+        {showPictureQualitySelect && (
+          <PictureQualityList
             onSelect={this.onSelect}
             onBackEvent={this.onBackEvent}
           />
