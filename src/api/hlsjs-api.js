@@ -20,6 +20,8 @@ export default class hlsAPI extends API {
         fragLoadingTimeOut: 25000,
         enableWorker: true,
       });
+      //设置默认分辨率根据bandwidth自动选择
+      this.hlsObj.startLevel = -1;
     }
     return _this;
   }

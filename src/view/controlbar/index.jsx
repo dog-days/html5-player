@@ -14,8 +14,9 @@ import FullOffScreen from '../controlbar/full-off-screen';
 import Time from '../controlbar/time-container';
 import TimeSlider from '../controlbar/time-slider';
 import Setting from '../controlbar/setting';
-import PlaybackRateComponent from '../controlbar/playback-rate';
-import SubtitleSelectComponent from '../controlbar/subtitle-select';
+import PlaybackRate from '../controlbar/playback-rate';
+import SubtitleSelect from '../controlbar/subtitle-select';
+import PictureQuality from '../controlbar/picture-quality';
 import { CONTROLBAR_TIMEOUT } from '../../utils/const';
 import { getChildProps, cloneElement } from '../../utils/util';
 import { namespace as controlbarNamespace } from '../../model/controlbar';
@@ -126,6 +127,7 @@ export default class Controlbar extends React.Component {
           timeSlider: false,
           speed: false,
           subtitle: false,
+          pictureQuality: false,
         };
       } else {
         controls = {};
@@ -140,6 +142,7 @@ export default class Controlbar extends React.Component {
       timeSlider = true,
       speed = false,
       subtitle = true,
+      pictureQuality = true,
       ...customButton
     } = controls;
     return (
@@ -192,15 +195,15 @@ export default class Controlbar extends React.Component {
           {ready &&
             !living &&
             speed && (
-              <PlaybackRateComponent
-                playbackRates={playbackRates}
-                locale={locale}
-              />
+              <PlaybackRate playbackRates={playbackRates} locale={locale} />
             )}
           {ready &&
             !living &&
             subtitleList[0] &&
-            subtitle && <SubtitleSelectComponent locale={locale} />}
+            subtitle && <SubtitleSelect locale={locale} />}
+          {ready &&
+            !living &&
+            pictureQuality && <PictureQuality locale={locale} />}
           {ready && this.renderCustomButton(customButton)}
         </div>
       </div>

@@ -16,4 +16,5 @@ export default [
   'track',
   'fragment',
   'playback-rate',
+  'picture-quality',
 ];

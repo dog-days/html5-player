@@ -8,4 +8,6 @@ export default {
   videoNotSupport: '当前浏览器不支持此视频格式',
   subtitle: '字幕',
   subtitleOff: '关闭',
+  autoQuality: '自动',
+  pictureQuality: '画质',
 };
