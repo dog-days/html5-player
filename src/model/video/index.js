@@ -16,6 +16,7 @@ import { namespace as trackNamespace } from '../track';
 import { namespace as fragmentNamespace } from '../fragment';
 import { namespace as livingNamespace } from '../living';
 import { namespace as playbackRateNamespace } from '../playback-rate';
+import { namespace as qualityNamespace } from '../picture-quality';
 
 import {
   MAX_VOLUME,
@@ -747,6 +748,24 @@ export default function() {
         yield put({
           type: `${trackNamespace}/hlsSubtitleCuesSaga`,
           payload: cues,
+        });
+      },
+      *pictureQualityList({ payload }, { put }) {
+        yield put({
+          type: `${qualityNamespace}/dataSaga`,
+          payload,
+        });
+      },
+      *switchPictureQuality({ payload }, { put }) {
+        if (_api.hlsObj) {
+          //hls.js切换画质
+          _api.hlsObj.nextLevel = payload;
+        }
+        yield put({
+          type: `${qualityNamespace}/dataSaga`,
+          payload: {
+            currentQuality: payload,
+          },
         });
       },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
