@@ -124,17 +124,18 @@ export default class Setting extends React.Component {
       <div className="html5-player-setting-container">
         {showSetting && (
           <ul className="html5-player-setting-list">
+            {/**firxfox中需要float-right在前面，要位置会换行**/}
             <li onClick={this.onListClickEvent('rate')}>
-              <span className="float-left">{locale.speed}</span>
               <span className="float-right">
                 <span>{playbackRate + locale.speed}</span>
                 {commonIcon}
               </span>
+              <span className="float-left">{locale.speed}</span>
             </li>
             {subtitleList &&
               subtitleList[0] && (
                 <li onClick={this.onListClickEvent('subtile')}>
-                  <span className="float-left">{locale.subtitle}</span>
+                  {/**firxfox中需要float-right在前面，要位置会换行**/}
                   <span className="float-right">
                     {subtitleId !== -1 && (
                       <span>{subtitleList[subtitleId].name}</span>
@@ -142,12 +143,13 @@ export default class Setting extends React.Component {
                     {subtitleId === -1 && <span>{locale.subtitleOff}</span>}
                     {commonIcon}
                   </span>
+                  <span className="float-left">{locale.subtitle}</span>
                 </li>
               )}
             {qualityList &&
               qualityList[0] && (
                 <li onClick={this.onListClickEvent('picture-quality')}>
-                  <span className="float-left">{locale.pictureQuality}</span>
+                  {/**firxfox中需要float-right在前面，要位置会换行**/}
                   <span className="float-right">
                     {currentQuality !== -1 && (
                       <span>{qualityList[currentQuality].label}</span>
@@ -155,6 +157,7 @@ export default class Setting extends React.Component {
                     {currentQuality === -1 && <span>{locale.autoQuality}</span>}
                     {commonIcon}
                   </span>
+                  <span className="float-left">{locale.pictureQuality}</span>
                 </li>
               )}
           </ul>
@@ -172,7 +175,6 @@ export default class Setting extends React.Component {
             onBackEvent={this.onBackEvent}
           />
         )}
-
         {showPictureQualitySelect && (
           <PictureQualityList
             onSelect={this.onSelect}
