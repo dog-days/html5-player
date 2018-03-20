@@ -17,4 +17,5 @@ export default [
   'fragment',
   'playback-rate',
   'picture-quality',
+  'rotate',
 ];
