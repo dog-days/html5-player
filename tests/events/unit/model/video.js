@@ -29,6 +29,7 @@ export function getModelObject(model, config, dispatch, store) {
     'muted',
     'fullscreen',
     'volume',
+    'rotate',
   ];
   sagas.forEach(v => {
     spyObj[v] = sinon.spy(model.sagas[v]);
@@ -107,6 +108,16 @@ export default function(player, resolve) {
     it('Controlbar fullscreen button should work.', function() {
       mockMouseEvent(q('.html5-player-screen-full-off-icon'), 'click');
       expect(spyObj.fullscreen.callCount).to.equal(1);
+    });
+    it('Controlbar rotate button should work.', function(done) {
+      mockMouseEvent(q('.html5-player-rotate-icon'), 'click');
+      attributesChangeObserver('.html5-player-tag', function() {
+        expect(q('.html5-player-tag').style.transform).to.equal(
+          'rotate(-90deg)'
+        );
+        expect(spyObj.rotate.callCount).to.equal(1);
+        done();
+      });
     });
   });
 }

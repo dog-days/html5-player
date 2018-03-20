@@ -10,6 +10,11 @@ export default function(id) {
         resolve={resolve}
         file="https://media.w3.org/2010/05/sintel/trailer.mp4"
         autoplay={false}
+        controls={{
+          speed: true,
+          setting: true,
+          rotate: true,
+        }}
       />,
       document.getElementById(id)
     );

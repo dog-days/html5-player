@@ -24,6 +24,7 @@ export default function(id) {
           time: false,
           timeSlider: false,
           speed: true,
+          rotate: true,
           dowload: (
             <a className="test-icon-down float-right" target="_blank">
               <svg className="html5-player-icon" aria-hidden="true">
