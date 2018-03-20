@@ -17,6 +17,7 @@ import { namespace as fragmentNamespace } from '../fragment';
 import { namespace as livingNamespace } from '../living';
 import { namespace as playbackRateNamespace } from '../playback-rate';
 import { namespace as qualityNamespace } from '../picture-quality';
+import { namespace as rotateNamespace } from '../rotate';
 
 import {
   MAX_VOLUME,
@@ -767,6 +768,22 @@ export default function() {
             currentQuality: payload,
           },
         });
+      },
+      *rotate({ payload }, { put }) {
+        yield put({
+          type: `${rotateNamespace}/dataSaga`,
+          payload,
+        });
+        const width = _api.clientWidth;
+        const height = _api.clientHeight;
+        _api.style.transform = `rotate(-${payload}deg)`;
+        if (payload === 90 || payload === 270) {
+          _api.style.width = `${height}px`;
+          _api.style.marginLeft = `${width / 2 - height / 2}px`;
+        } else {
+          _api.style.width = '';
+          _api.style.marginLeft = '';
+        }
       },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {

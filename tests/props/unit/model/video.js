@@ -76,6 +76,10 @@ export default function(player, resolve) {
         expect(!!q('.html5-player-screen-full-off-icon')).to.be.false;
       }
     );
+    it(itTitle('controls', 'when controls.rotate set to true.'), function() {
+      //eslint-disable-next-line
+      expect(!!q('.html5-player-rotate-icon')).to.be.true;
+    });
     it(
       itTitle('controls', 'when controls.timeSlider set to false.'),
       function() {
