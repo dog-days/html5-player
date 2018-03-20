@@ -140,7 +140,7 @@
   # 删除本地功能性分支，不一定要急着删除，可以保留一段时间。
   # git branch -d feature-test
   # 删除远程功能性分支，不一定要急着删除，可以保留一段时间。
-  # git push --delete feature-test
+  # git push origin feature-test --delete
   # 把develop提交到自己的远程仓库中
   git push origin develop
   ```

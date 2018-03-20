@@ -11,7 +11,7 @@
 * 原生 H5 支持的视频源播放
 * HLS 视频播放
 * FLV 视频播放
-* 字幕功能
+* 字幕功能（自定义和hls自带字幕）
 * 缩略图预览
 * 播放速度
 * 视频断片功能（这个是个额外功能）
@@ -172,14 +172,17 @@ class View extends React.Component {
 
 controls 默认为 true。
 
-| controls 参数 | 默认值 | 说明                       |
-| :------------ | :----- | :------------------------- |
-| timeSlider    | true   | 播放进度控制条（直播没有） |
-| playPause     | true   | 开始暂停按钮               |
-| volume        | true   | 音量按钮                   |
-| time          | true   | 播放时间（直播没有）       |
-| setting       | false  | 配置（播放速度等）         |
-| speed         | false  | 播放速度                   |
+| controls       | 默认值 | 说明                                                        |
+| :------------- | :----- | :---------------------------------------------------------- |
+| timeSlider     | true   | 播放进度控制条（直播没有）                                  |
+| playPause      | true   | 开始暂停按钮                                                |
+| volume         | true   | 音量按钮                                                    |
+| time           | true   | 播放时间（直播没有）                                        |
+| setting        | false  | 配置（播放速度等）                                          |
+| speed          | false  | 播放速度                                                    |
+| subtitle       | true   | 如果有字幕默认显示                                          |
+| pictureQuality | true   | 清晰度（目前只支持hls.js协议的）,如果当前m3u8包含清晰度信息 |
+| rotate         | false  | 旋转（逆时针，每次增加90度）                                |
 
 `controls=true`时，上面 controls 参数默认值为 true 的都会显示，`controls=false`控制条隐藏。
 
@@ -204,16 +207,30 @@ controls 默认为 true。
 
 #### props.tracks
 
+| tracks[] | 默认值 | 说明                                  | 必填 |
+| -------- | ------ | ------------------------------------- | ---- |
+| kind     | 无     | 类型，目前只有`subtitle`和`thumbnail` | 是   |
+| file     | 无     | web vtt文件链接                       | 是   |
+| label    | 无     | subtitle列表的展示名                  | 是   |
+
 * 字幕
+
+  字幕是可以是列表的。
 
   ```jsx
   <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     tracks={[
       {
-        kind: 'captions',
-        file: '/caption.vtt',
+        kind: 'subtitle',
+        file: '/subtitle-zh-cn.vtt',
+        label: '中文',
       },
+      {
+        kind: 'subtitle',
+        file: '/subtitle-en.vtt',
+        label: 'English',
+      }, 
     ]}
   />
   ```
@@ -428,7 +445,7 @@ fragment 定义如下：
 
 请参考下图stretching用法。
 
-![img](https://support-static.jwplayer.com/images/stretch-options.png)
+![img](https://dog-days.github.io/demo/static/stretch-options.png)
 
 ### 播放器实例化对象
 
