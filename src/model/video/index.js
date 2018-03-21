@@ -75,7 +75,7 @@ export default function() {
         }
       });
       _dispatch({
-        type: `${trackNamespace}/subtitleListSaga`,
+        type: `${namespace}/subtitleList`,
         payload: {
           subtitleList: subtitleList,
           subtitleId: -1,

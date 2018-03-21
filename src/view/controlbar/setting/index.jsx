@@ -196,16 +196,14 @@ export default class Setting extends React.Component {
         content={this.renderContent()}
         toTargetGap={living ? 5 : 13}
       >
-        <span className="display-inline-block float-right cursor-pointer">
-          <button className="html5-player-small-button">
-            <svg
-              className="html5-player-icon html5-player-setting-icon"
-              aria-hidden="true"
-            >
-              <use xlinkHref="#icon-setting" />
-            </svg>
-          </button>
-        </span>
+        <button className="float-right html5-player-small-button">
+          <svg
+            className="html5-player-icon html5-player-setting-icon"
+            aria-hidden="true"
+          >
+            <use xlinkHref="#icon-setting" />
+          </svg>
+        </button>
       </Tooltip>
     );
   }

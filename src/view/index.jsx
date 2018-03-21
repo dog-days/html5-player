@@ -58,6 +58,7 @@ export default class View extends React.Component {
     //静音
     muted: PropTypes.bool,
     //preload=true，提前加载视频，false为不提前加载视频
+    //默认preload=true
     //autoplay优先与preload
     preload: PropTypes.bool,
     //自动播放
@@ -115,7 +116,13 @@ export default class View extends React.Component {
   init() {
     const videoDOM = ReactDOM.findDOMNode(this.refs.video);
     //begin----强制所有浏览器使用hls.js 或者 浏览器不支持hls，启用hls.js
-    let { forceOpenHls = false, file, videoCallback, ...other } = this.props;
+    let {
+      forceOpenHls = false,
+      file,
+      videoCallback,
+      preload = true,
+      ...other
+    } = this.props;
     if (!isString(file)) {
       file = '';
     }
@@ -141,6 +148,7 @@ export default class View extends React.Component {
             isFlv: util.isFlvFile(file),
             videoNotSupport,
             file,
+            preload,
             ...other,
           },
           api: provider.api,
