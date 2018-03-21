@@ -41,6 +41,9 @@ export function getModelObject(model, config, dispatch, store) {
     'reload',
     'living',
     'playbackRate',
+    'subtitleList',
+    'switchSubtitle',
+    'rotate',
   ];
   sagas.forEach(v => {
     spyObj[v] = sinon.spy(model.sagas[v]);
@@ -215,6 +218,13 @@ export default function(player, resolve) {
       //eslint-disable-next-line
       expect(videoDom.currentTime === videoDom.duration * percent).to.be.true;
     });
+    it(sagaItTitle('subtitleList'), function() {
+      expect(spyObj.subtitleList.callCount).to.equal(1);
+    });
+    it(sagaItTitle('switchSubtitle'), function() {
+      dispatch('switchSubtitle', 0);
+      expect(spyObj.switchSubtitle.callCount).to.equal(1);
+    });
     it(sagaItTitle('fullscreen'), function() {
       //测试中浏览器全屏功能失效
       dispatch('fullscreen', true);
@@ -252,7 +262,6 @@ export default function(player, resolve) {
         expect(spyObj.errorMessage.callCount).to.equal(2);
       }
     );
-
     it(sagaItTitle('playbackRate'), function(done) {
       //要在living saga之前，因为living为true时，speed的dom会被移除。
       attributesChangeObserver('.html5-player-rate-selected', function() {
@@ -265,7 +274,6 @@ export default function(player, resolve) {
       expect(spyObj.playbackRate.callCount).to.equal(1);
       expect(videoDom.playbackRate).to.equal(1.5);
     });
-
     it(
       sagaItTitle('living').replace(
         '.',

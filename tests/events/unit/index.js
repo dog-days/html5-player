@@ -15,6 +15,18 @@ export default function(id) {
           setting: true,
           rotate: true,
         }}
+        tracks={[
+          {
+            kind: 'subtitle',
+            file: `https://dog-days.github.io/demo/static/subtitle-zh-cn.vtt`,
+            label: '中文',
+          },
+          {
+            kind: 'subtitle',
+            file: `https://dog-days.github.io/demo/static/subtitle-en.vtt`,
+            label: 'English',
+          },
+        ]}
       />,
       document.getElementById(id)
     );

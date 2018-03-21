@@ -25,7 +25,7 @@ model(id)
     return new Promise(function(resolve, reject) {
       describe('Model', function() {
         it(`model/video/index "clear" reducer should be executed correctly.`, function(done) {
-          const id = 'test';
+          //删除播放器
           childListChangeObserver('#' + id, function() {
             //reload saga已经触发了一次clear。
             expect(lastSpyObj.clear.callCount).to.equal(2);
