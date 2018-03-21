@@ -3,7 +3,7 @@ import React from 'react';
 //import ReactDOM from 'react-dom';
 //import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-//import classnames from 'classnames';
+import classnames from 'classnames';
 //内部依赖包
 import clearDecorator from './decorator/clear';
 import { namespace as notAutoPlayNamespace } from '../model/not-autoplay';
@@ -23,15 +23,20 @@ export default class NotAutoPlay extends React.Component {
   static propTypes = {};
   displayName = 'NotAutoPlay';
   dispatch = this.props.dispatch;
+  getClassName(flag) {
+    return classnames('html5-player-cover-view html5-player-play-view', {
+      'html5-player-hide': flag,
+    });
+  }
   render() {
     const { show } = this.props;
     if (!show) {
       //这里不return false 是为了方便单元测试判断。
-      return <div className="html5-player-play-view html5-player-hide" />;
+      return <div className={this.getClassName(true)} />;
     }
     return (
       <div
-        className="html5-player-cover-view html5-player-play-view"
+        className={this.getClassName()}
         onDoubleClick={e => {
           e.stopPropagation();
         }}

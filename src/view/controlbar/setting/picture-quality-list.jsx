@@ -1,13 +1,11 @@
 //外部依赖包
 import React from 'react';
-//import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 //内部依赖包
+import List from './list';
 import { namespace as videoNamespace } from '../../../model/video';
 import { namespace as qualityNamespace } from '../../../model/picture-quality';
-import localization from '../../../i18n/default';
 
 @connect(state => {
   return {
@@ -15,41 +13,22 @@ import localization from '../../../i18n/default';
     currentQuality: state[qualityNamespace].currentQuality,
   };
 })
-export default class PictureQualityList extends React.Component {
-  static contextTypes = {
-    localization: PropTypes.object,
-  };
+export default class PictureQualityList extends List {
   displayName = 'PictureQualityList';
-  dispatch = this.props.dispatch;
   onSelect = value => {
-    return e => {
-      const { onSelect } = this.props;
-      onSelect && onSelect(value, e);
+    return this.onSelectEvent(value, () => {
       this.dispatch({
         type: `${videoNamespace}/switchPictureQuality`,
         payload: value,
       });
-    };
+    });
   };
-  getLocale() {
-    return this.context.localization || localization;
-  }
   render() {
-    const { qualityList, currentQuality, onBackEvent } = this.props;
+    const { qualityList, currentQuality } = this.props;
     const locale = this.getLocale();
     return (
       <ul className="html5-player-list-container">
-        {onBackEvent && (
-          <li className="html5-player-list-title" onClick={onBackEvent}>
-            <svg
-              className="html5-player-icon html5-player-left-icon"
-              aria-hidden="true"
-            >
-              <use xlinkHref="#icon-left" />
-            </svg>
-            {locale.pictureQuality}
-          </li>
-        )}
+        {this.renderBack(locale.pictureQuality)}
         {qualityList &&
           qualityList.map(v => {
             const className = classnames({
