@@ -99,6 +99,7 @@ export default class View extends React.Component {
     localization: PropTypes.object,
     //实例化后的player，可直接调用对外api，给使用者调用。
     player: PropTypes.object,
+    playerDOM: PropTypes.object,
   };
   outSideApi = {};
   getChildContext() {
@@ -106,6 +107,7 @@ export default class View extends React.Component {
       playerConainerDOM: this.playerConainerDOM,
       localization: this.props.localization,
       player: this.outSideApi,
+      playerDOM: ReactDOM.findDOMNode(this.refs.video),
     };
   }
   state = {
@@ -115,7 +117,7 @@ export default class View extends React.Component {
   dispatch = this.props.dispatch;
   init() {
     const videoDOM = ReactDOM.findDOMNode(this.refs.video);
-    //begin----强制所有浏览器使用hls.js 或者 浏览器不支持hls，启用hls.js
+    this.videoDOM = videoDOM;
     let {
       forceOpenHls = false,
       file,
@@ -133,12 +135,16 @@ export default class View extends React.Component {
       //通过后缀名判断，没有后缀名不作处理，如果不支持原生的浏览器video格式，需要提示。
       videoNotSupport = true;
     }
-    //end----强制所有浏览器使用hls.js 或者 浏览器不支持hls，启用hls.js
     loader({ hlsjs, flvjs, videoDOM, file, ...other }).then(provider => {
       //首先统一清理，可能会存在上一个的播放状态。
       this.dispatch({
         type: `${videoNamespace}/clear`,
       });
+      if (isPlainObject(other.controls) && other.controls.capture) {
+        //屏幕截图功能需要设置crossorigin，safari和edge才不会报安全问题。
+        //但是有一个缺点，播放链接响应请求头必须设置跨域。
+        provider.api.setAttribute('crossorigin', 'anonymous');
+      }
       this.dispatch({
         type: `${videoNamespace}/init`,
         payload: {
@@ -408,6 +414,7 @@ export default class View extends React.Component {
                     localization={localization}
                     timeSliderShowFormat={timeSliderShowFormat}
                     hasFragment={!!fragment}
+                    loadHtml2canvasBundle={this.loadHtml2canvasBundle}
                   />
                 )}
                 <Subtitle userActive={userActive} />

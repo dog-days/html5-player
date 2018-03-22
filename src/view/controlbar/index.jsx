@@ -18,6 +18,7 @@ import PlaybackRate from '../controlbar/playback-rate';
 import SubtitleSelect from '../controlbar/subtitle-select';
 import PictureQuality from '../controlbar/picture-quality';
 import Rotate from '../controlbar/rotate';
+import Capture from '../controlbar/capture';
 import { CONTROLBAR_TIMEOUT } from '../../utils/const';
 import { getChildProps, cloneElement } from '../../utils/util';
 import { namespace as controlbarNamespace } from '../../model/controlbar';
@@ -130,6 +131,7 @@ export default class Controlbar extends React.Component {
           subtitle: false,
           pictureQuality: false,
           rotate: false,
+          capture: false,
         };
       } else {
         controls = {};
@@ -146,6 +148,7 @@ export default class Controlbar extends React.Component {
       subtitle = true,
       pictureQuality = true,
       rotate = false,
+      capture = false,
       ...customButton
     } = controls;
     return (
@@ -196,6 +199,7 @@ export default class Controlbar extends React.Component {
               />
             )}
           {rotate && <Rotate />}
+          {capture && <Capture />}
           {ready &&
             !living &&
             speed && (
