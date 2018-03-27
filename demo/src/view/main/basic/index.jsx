@@ -39,7 +39,9 @@ class View extends React.Component {
             // autoplay={true}
             // muted={true}
             controls={{
+              capture: true,
               setting: true,
+              rotate: true,
               dowload: (
                 <a
                   className="float-right"

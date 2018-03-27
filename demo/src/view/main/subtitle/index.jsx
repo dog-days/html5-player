@@ -8,7 +8,7 @@ export default class View extends React.Component {
       <div className="demo-container">
         <div className="player-container">
           <Html5Player
-            file="https://media.w3.org/2010/05/sintel/trailer.mp4"
+            file="https://dog-days.github.io/demo/static/react.mp4"
             tracks={[
               {
                 kind: 'subtitle',

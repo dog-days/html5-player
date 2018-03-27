@@ -8,12 +8,12 @@ export default class View extends React.Component {
       <div className="demo-container">
         <div className="player-container">
           <Html5Player
-            file="https://dog-days.github.io/demo/static/test.mp4"
+            file="https://dog-days.github.io/demo/static/react.mp4"
             autoplay
             tracks={[
               {
                 kind: 'thumbnail',
-                file: `${process.env.basename}/thumbnail.vtt`,
+                file: `https://dog-days.github.io/demo/static/hls/react/thumbnails.vtt`,
               },
             ]}
           />
