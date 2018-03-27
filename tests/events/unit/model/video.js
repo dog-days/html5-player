@@ -174,5 +174,8 @@ export default function(player, resolve) {
       });
       mockMouseEvent(q('.html5-player-subtitle-button'), 'click');
     });
+    it('Controlbar cupture button should work.', function() {
+      mockMouseEvent(q('.html5-player-capture-icon'), 'click');
+    });
   });
 }

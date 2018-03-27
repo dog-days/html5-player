@@ -8,9 +8,10 @@ export default function(id) {
     ReactDOM.render(
       <Player
         resolve={resolve}
-        file="https://media.w3.org/2010/05/sintel/trailer.mp4"
+        file="https://dog-days.github.io/demo/static/react.mp4"
         autoplay={false}
         controls={{
+          capture: true,
           speed: true,
           setting: true,
           rotate: true,
