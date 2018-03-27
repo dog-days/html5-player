@@ -1,4 +1,4 @@
-## 0.2.3(2018-03-20)
+## 0.2.3(2018-03-27)
 
 #### Bug Fix
 
@@ -16,6 +16,7 @@
 * [add hls subtitle feature](https://github.com/dog-days/html5-player/commit/f7e5443e20a4462fb8d0440b9caf18b290481461)
 * [add hls quality swiched feature](https://github.com/dog-days/html5-player/commit/e1554a17d0167550aa4954de1c5b7b0a03f7537b)
 * [add rotate feature](https://github.com/dog-days/html5-player/commit/53b3f98146102329b20c2d127d7c8ef9ea8f0870)
+* [add screen capture feature](https://github.com/dog-days/html5-player/commit/77339118ff6b28b3b22ad8e94ffbebc716463ff7)
 
 ## 0.2.2(2018-03-07)
 

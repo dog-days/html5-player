@@ -14,6 +14,7 @@
 * 字幕功能（自定义和hls自带字幕）
 * 缩略图预览
 * 播放速度
+* 视频画质（清晰度，目前只支持hls.js的清晰度）
 * 视频断片功能（这个是个额外功能）
 
 ## 兼容性
@@ -183,6 +184,7 @@ controls 默认为 true。
 | subtitle       | true   | 如果有字幕默认显示                                          |
 | pictureQuality | true   | 清晰度（目前只支持hls.js协议的）,如果当前m3u8包含清晰度信息 |
 | rotate         | false  | 旋转（逆时针，每次增加90度）                                |
+| capture        | false  | 截屏                                                        |
 
 `controls=true`时，上面 controls 参数默认值为 true 的都会显示，`controls=false`控制条隐藏。
 
