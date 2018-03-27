@@ -119,6 +119,10 @@ export default function(player, resolve) {
       //eslint-disable-next-line
       expect(q('.html5-player-rate-container').children.length).to.equal(2);
     });
+    it(itTitle('capture'), function() {
+      //eslint-disable-next-line
+      expect(!!q('.html5-player-capture-icon')).to.be.true;
+    });
     it(itTitle('contextMenu'), function(done) {
       //eslint-disable-next-line
       expect(q('.html5-player-list-container').children.length).to.equal(2);

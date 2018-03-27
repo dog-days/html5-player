@@ -9,7 +9,7 @@ export default function(id) {
     ReactDOM.render(
       <Player
         resolve={resolve}
-        file="https://media.w3.org/2010/05/sintel/trailer.mp4"
+        file="https://dog-days.github.io/demo/static/react.mp4"
         title="test"
         preload={false}
         autoplay={true}
@@ -17,6 +17,7 @@ export default function(id) {
         width={500}
         aspectratio="4:3"
         controls={{
+          capture: true,
           playPause: false,
           volume: false,
           fullscreen: false,
