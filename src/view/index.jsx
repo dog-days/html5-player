@@ -13,6 +13,7 @@ import clearDecorator from './decorator/clear';
 import loader from '../loader';
 import * as util from '../utils/util';
 import * as logger from '../utils/logger';
+import addEventListener from '../utils/dom/addEventListener';
 import localizationDefault from '../i18n/default';
 import ContextMenu from './components/contextmenu';
 import ContextMenuView from './contextmenu';
@@ -178,6 +179,12 @@ export default class View extends React.Component {
     this.playerConainerDOM = ReactDOM.findDOMNode(
       this.refs['player-container']
     );
+    //react jsx直接绑定事件在高德地图上mousemove失效，而下面的这种绑定方式不失效。
+    this.palyerMousemoveEvent = addEventListener(
+      this.playerConainerDOM,
+      'mousemove',
+      this.onMouseMove
+    );
     this.init();
   }
   componentDidUpdate(prevProps) {
@@ -191,6 +198,9 @@ export default class View extends React.Component {
         }
       );
     }
+  }
+  componentWillUnmount() {
+    this.palyerMousemoveEvent.remove();
   }
   onDoubleClick = e => {
     e.stopPropagation();
@@ -355,7 +365,7 @@ export default class View extends React.Component {
             'cursor-none': !userActive,
           })}
           style={containerStyle}
-          onMouseMove={this.onMouseMove}
+          // onMouseMove={this.onMouseMove}
         >
           {!ready && (
             <span className="html5-player-init-text">
