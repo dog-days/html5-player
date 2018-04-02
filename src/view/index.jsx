@@ -365,7 +365,6 @@ export default class View extends React.Component {
             'cursor-none': !userActive,
           })}
           style={containerStyle}
-          // onMouseMove={this.onMouseMove}
         >
           {!ready && (
             <span className="html5-player-init-text">
