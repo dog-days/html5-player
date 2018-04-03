@@ -1,10 +1,13 @@
-## 0.2.3(2018-03-27)
+## 0.2.3(2018-04-03)
 
 #### Bug Fix
 
 * [fix setting of controlbar tooltip position problem](https://github.com/dog-days/html5-player/commit/056394069147cf7d2ecd1cf1efd6a653389b7c4f)
 * [fix firefox setting list fall down problem](https://github.com/dog-days/html5-player/commit/34b4e0bc3a3d7f27e8bb2a6b8dbed6205fccf873)
 * [fix custom subtitle problem](https://github.com/dog-days/html5-player/commit/4ecf37147133fd292ec0265e003a656953f2b653)
+* [fix mousemove problem in amap(高德地图)](https://github.com/dog-days/html5-player/pull/2/commits/caf8d2d398ecf21c30d0014f1152b3ffc43afb4c)
+* [fix custom subtitle off feature which does not take effect](https://github.com/dog-days/html5-player/commit/daad97eac79ebfd62b76dc58e99eefc6841aa512)
+* [fix controlbar not hide when selected speed or subtitle](https://github.com/dog-days/html5-player/commit/f4a4c90ce8acb613ce986614bf3cf41dd4934de4)
 
 #### Update
 

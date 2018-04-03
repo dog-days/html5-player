@@ -35,6 +35,7 @@ class MainLayout extends React.Component {
               {this.renderItem('缩略图使用', 'thumbnail')}
               {this.renderItem('视频断片使用', 'fragment')}
               {this.renderItem('自定义', 'custom')}
+              {this.renderItem('地图', 'map')}
             </ul>
           </div>
         </nav>

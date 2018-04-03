@@ -19,11 +19,8 @@ function randomKey() {
 
 function renderApp(hot) {
   const dom = document.getElementById('app');
-  if(dom) {
-    render(
-      <Container hot={hot} />,
-      dom,
-    );
+  if (dom) {
+    render(<Container hot={hot} />, dom);
   }
 }
 renderApp();

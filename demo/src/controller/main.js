@@ -75,4 +75,12 @@ export default class MainController extends Controller {
       params
     );
   }
+  mapView(params) {
+    return this.render(
+      {
+        title,
+      },
+      params
+    );
+  }
 }
