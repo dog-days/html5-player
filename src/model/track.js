@@ -60,7 +60,10 @@ export default function() {
       },
       *subtitleCuesSaga({ payload }, { put, call }) {
         let data;
-        if (!cuesList[payload.subtitleId]) {
+        if (payload.subtitleId === -1) {
+          //关闭字幕
+          data = [];
+        } else if (!cuesList[payload.subtitleId]) {
           const vtt = yield call(fetchTrack, payload.file);
           if (!vtt) {
             return;

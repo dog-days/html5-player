@@ -707,9 +707,11 @@ export default function() {
         _api.currentSubtitleTrack = payload;
         //end----textTracks状态处理
         if (_api.hlsObj) {
+          //hls.js解析的hls自带字幕
           //hls.js切换方式就是这样。
           _api.hlsObj.subtitleTrack = payload;
-        } else {
+        } else if (_api.textTracks.length > 0) {
+          //浏览器原生解析的hls自带字幕
           //begin----textTracks状态处理
           for (let i = 0; i < _api.textTracks.length; i++) {
             _api.textTracks[i].mode = 'disabled';
@@ -718,6 +720,25 @@ export default function() {
             //关闭不用处理
             _api.textTracks[payload].mode = 'hidden';
           }
+        } else {
+          if (subtitleList && subtitleList[payload]) {
+            //非hls自带的字幕，播放器自定义字幕
+            yield put({
+              type: `${trackNamespace}/subtitleCuesSaga`,
+              payload: {
+                subtitleId: payload,
+                file: subtitleList[payload].file,
+              },
+            });
+          } else {
+            //关闭字幕
+            yield put({
+              type: `${trackNamespace}/subtitleCuesSaga`,
+              payload: {
+                subtitleId: payload,
+              },
+            });
+          }
         }
         yield put({
           type: `${trackNamespace}/subtitleListSaga`,
@@ -725,16 +746,6 @@ export default function() {
             subtitleId: payload,
           },
         });
-        if (subtitleList && subtitleList[payload]) {
-          //非hls自带的字幕，播放器自定义的
-          yield put({
-            type: `${trackNamespace}/subtitleCuesSaga`,
-            payload: {
-              subtitleId: payload,
-              file: subtitleList[payload].file,
-            },
-          });
-        }
       },
       *hlsSubtitleCues({ payload }, { put }) {
         const cues = [];
