@@ -65,21 +65,23 @@ export default class Slider extends React.Component {
   setSliderValueByPercent(percent = 0) {
     this.percent = percent;
   }
-  addDocumentMouseEvents() {
-    this.onMouseMoveListener = addEventListener(
-      this.document,
-      'mousemove',
-      this.onMouseMove
+  eventsAfterMouseDown = [];
+  bindEventsAfterMouseDown() {
+    this.eventsAfterMouseDown.push(
+      addEventListener(this.document, 'mousemove', this.onMouseMove)
     );
-    this.onMouseUpListener = addEventListener(
-      this.document,
-      'mouseup',
-      this.onEnd
+    this.eventsAfterMouseDown.push(
+      addEventListener(this.document, 'mouseup', this.onEnd)
+    );
+    this.eventsAfterMouseDown.push(
+      addEventListener(this.sliderContainerDOM, 'mousemove', this.onMouseMove)
     );
   }
-  removeDocumentEvents() {
-    this.onMouseMoveListener && this.onMouseMoveListener.remove();
-    this.onMouseUpListener && this.onMouseUpListener.remove();
+  removeEventsAfterMouseDown() {
+    //移除事件
+    this.eventsAfterMouseDown.forEach(v => {
+      v.remove && v.remove();
+    });
   }
   getSliderLength() {
     const slider = this.sliderDOM;
@@ -100,7 +102,7 @@ export default class Slider extends React.Component {
   }
   onEnd = e => {
     e.stopPropagation();
-    this.removeDocumentEvents();
+    this.removeEventsAfterMouseDown();
     //结束设置isMove为false
     this.onChange(this.percent, false);
     //document和time-line的mouseup都要触发
@@ -139,9 +141,9 @@ export default class Slider extends React.Component {
     e.stopPropagation();
     const { vertical, onMouseDown } = this.props;
     let position = this.getMousePosition(vertical, e);
-    this.removeDocumentEvents();
+    this.removeEventsAfterMouseDown();
     this.onStart(position);
-    this.addDocumentMouseEvents();
+    this.bindEventsAfterMouseDown();
     onMouseDown && onMouseDown(e);
   };
   onMouseUp = e => {
