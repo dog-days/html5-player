@@ -1,6 +1,6 @@
 {
   "name": "html5-player",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "html5 video",
   "repository": "git@github.com:dog-days/html5-player.git",
   "homepage": "https://github.com/dog-days/html5-player.git",
@@ -54,7 +54,8 @@
   },
   "scripts": {
     "precommit": "npm run test",
-    "build-css": "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
+    "build-css":
+      "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
     "build-demo": "node ./scripts/build-demo.js",
     "build": "npm run test && node ./scripts/build-umd.js",
     "test": "karma start",
@@ -65,12 +66,15 @@
     "use": "react-boilerplate-app-scripts use",
     "create-i18n-excel": "react-router-controller-cli create-i18n-excel",
     "create-i18n-list": "react-router-controller-cli create-i18n-list",
-    "build-publish": "npm run test && npm run build-css && npm run transform && npm publish",
-    "transform": "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
+    "build-publish":
+      "npm run test && npm run build-css && npm run transform && npm publish",
+    "transform":
+      "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
     "transform-es": "cross-env BABEL_ENV=es babel ./src -d es",
     "transform-es-watch": "cross-env BABEL_ENV=es babel ./src -d es -w",
     "transform-default": "cross-env BABEL_ENV=production babel ./src -d libs",
-    "transform-default-watch": "cross-env BABEL_ENV=default babel ./src -d libs -w"
+    "transform-default-watch":
+      "cross-env BABEL_ENV=default babel ./src -d libs -w"
   },
   "react-boilerplate-app-scripts": {
     "basename": "demo/html5-player",
@@ -97,21 +101,11 @@
         ]
       },
       "production": {
-        "plugins": [
-          "transform-decorators-legacy",
-          "transform-runtime"
-        ],
-        "presets": [
-          "react",
-          "es2015",
-          "stage-0"
-        ]
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
+        "presets": ["react", "es2015", "stage-0"]
       },
       "es": {
-        "plugins": [
-          "transform-decorators-legacy",
-          "transform-runtime"
-        ],
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
         "presets": [
           "react",
           [
