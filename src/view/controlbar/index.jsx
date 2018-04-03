@@ -14,7 +14,11 @@ import FullOffScreen from '../controlbar/full-off-screen';
 import Time from '../controlbar/time-container';
 import TimeSlider from '../controlbar/time-slider';
 import Setting from '../controlbar/setting';
-import PlaybackRateComponent from '../controlbar/playback-rate';
+import PlaybackRate from '../controlbar/playback-rate';
+import SubtitleSelect from '../controlbar/subtitle-select';
+import PictureQuality from '../controlbar/picture-quality';
+import Rotate from '../controlbar/rotate';
+import Capture from '../controlbar/capture';
 import { CONTROLBAR_TIMEOUT } from '../../utils/const';
 import { getChildProps, cloneElement } from '../../utils/util';
 import { namespace as controlbarNamespace } from '../../model/controlbar';
@@ -22,6 +26,7 @@ import { namespace as videoNamespace } from '../../model/video';
 import { namespace as playPauseNamespace } from '../../model/play-pause';
 import { namespace as livingNamespace } from '../../model/living';
 import { namespace as readyNamespace } from '../../model/ready';
+import { namespace as trackNamespace } from '../../model/track';
 
 /**
  * 播放器加载状态的组件
@@ -32,6 +37,7 @@ import { namespace as readyNamespace } from '../../model/ready';
     playing: state[playPauseNamespace],
     living: state[livingNamespace],
     ready: state[readyNamespace],
+    subtitleList: state[trackNamespace].subtitleList,
   };
 })
 @clearDecorator([livingNamespace])
@@ -103,6 +109,7 @@ export default class Controlbar extends React.Component {
       ready,
       timeSliderShowFormat,
       hasFragment,
+      subtitleList,
     } = this.props;
     let { living } = this.props;
     if (isLiving) {
@@ -121,6 +128,10 @@ export default class Controlbar extends React.Component {
           time: false,
           timeSlider: false,
           speed: false,
+          subtitle: false,
+          pictureQuality: false,
+          rotate: false,
+          capture: false,
         };
       } else {
         controls = {};
@@ -134,6 +145,10 @@ export default class Controlbar extends React.Component {
       time = true,
       timeSlider = true,
       speed = false,
+      subtitle = true,
+      pictureQuality = true,
+      rotate = false,
+      capture = false,
       ...customButton
     } = controls;
     return (
@@ -183,14 +198,20 @@ export default class Controlbar extends React.Component {
                 playbackRateControls={playbackRateControls}
               />
             )}
+          {rotate && <Rotate />}
+          {capture && <Capture />}
           {ready &&
             !living &&
             speed && (
-              <PlaybackRateComponent
-                playbackRates={playbackRates}
-                locale={locale}
-              />
+              <PlaybackRate playbackRates={playbackRates} locale={locale} />
             )}
+          {ready &&
+            !living &&
+            subtitleList[0] &&
+            subtitle && <SubtitleSelect locale={locale} />}
+          {ready &&
+            !living &&
+            pictureQuality && <PictureQuality locale={locale} />}
           {ready && this.renderCustomButton(customButton)}
         </div>
       </div>

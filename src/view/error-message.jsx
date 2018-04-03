@@ -3,7 +3,7 @@ import React from 'react';
 //import ReactDOM from 'react-dom';
 //import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-//import classnames from 'classnames';
+import classnames from 'classnames';
 //内部依赖包
 import clearDecorator from './decorator/clear';
 import { namespace as videoNamespace } from '../model/video';
@@ -24,6 +24,14 @@ export default class ErrorMessage extends React.Component {
   displayName = 'ErrorMessage';
   state = {};
   dispatch = this.props.dispatch;
+  getClassName(flag) {
+    return classnames(
+      'html5-player-cover-view html5-player-error-message-view',
+      {
+        'html5-player-hide': flag,
+      }
+    );
+  }
   reload = e => {
     this.dispatch({
       type: `${videoNamespace}/reload`,
@@ -32,13 +40,12 @@ export default class ErrorMessage extends React.Component {
   render() {
     const { message } = this.props.errorInfo;
     if (!message) {
-      return (
-        <div className="html5-player-error-message-view html5-player-hide" />
-      );
+      //这里不return false 是为了方便单元测试判断。
+      return <div className={this.getClassName(true)} />;
     }
     return (
       <div
-        className="html5-player-cover-view html5-player-error-message-view"
+        className={this.getClassName()}
         onDoubleClick={e => {
           e.stopPropagation();
         }}

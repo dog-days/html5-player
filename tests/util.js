@@ -1,5 +1,9 @@
 export function q(query) {
-  return document.querySelector(query);
+  if (Object.prototype.toString.apply(query) === '[object String]') {
+    return document.querySelector(query);
+  } else {
+    return query;
+  }
 }
 // Firefox和Chrome早期版本中带有前缀
 const MutationObserver =

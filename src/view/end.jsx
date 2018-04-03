@@ -3,7 +3,7 @@ import React from 'react';
 //import ReactDOM from 'react-dom';
 //import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-//import classnames from 'classnames';
+import classnames from 'classnames';
 //内部依赖包
 import clearDecorator from './decorator/clear';
 import { namespace as endNamespace } from '../model/end';
@@ -30,14 +30,19 @@ export default class End extends React.Component {
       type: `${videoNamespace}/replay`,
     });
   };
+  getClassName(flag) {
+    return classnames('html5-player-cover-view html5-player-end-view', {
+      'html5-player-hide': flag,
+    });
+  }
   render() {
     const { end } = this.props;
     if (!end) {
-      return <div className="html5-player-end-view html5-player-hide" />;
+      return <div className={this.getClassName(true)} />;
     }
     return (
       <div
-        className="html5-player-cover-view html5-player-end-view"
+        className={this.getClassName()}
         onDoubleClick={e => {
           e.stopPropagation();
         }}

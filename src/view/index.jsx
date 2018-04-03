@@ -13,6 +13,7 @@ import clearDecorator from './decorator/clear';
 import loader from '../loader';
 import * as util from '../utils/util';
 import * as logger from '../utils/logger';
+import addEventListener from '../utils/dom/addEventListener';
 import localizationDefault from '../i18n/default';
 import ContextMenu from './components/contextmenu';
 import ContextMenuView from './contextmenu';
@@ -21,8 +22,7 @@ import End from './end';
 import NotAutoPlay from './not-autoplay';
 import Controlbar from './controlbar';
 import ErrorMessage from './error-message';
-import Captions from './track/captions';
-import Thumbnail from './track/thumbnail';
+import Subtitle from './track/subtitle';
 import Title from './title';
 import Fragment from './fragment';
 import { CONTROLBAR_TIMEOUT, ASPECT_RATIO } from '../utils/const';
@@ -59,6 +59,7 @@ export default class View extends React.Component {
     //静音
     muted: PropTypes.bool,
     //preload=true，提前加载视频，false为不提前加载视频
+    //默认preload=true
     //autoplay优先与preload
     preload: PropTypes.bool,
     //自动播放
@@ -99,6 +100,7 @@ export default class View extends React.Component {
     localization: PropTypes.object,
     //实例化后的player，可直接调用对外api，给使用者调用。
     player: PropTypes.object,
+    playerDOM: PropTypes.object,
   };
   outSideApi = {};
   getChildContext() {
@@ -106,6 +108,7 @@ export default class View extends React.Component {
       playerConainerDOM: this.playerConainerDOM,
       localization: this.props.localization,
       player: this.outSideApi,
+      playerDOM: ReactDOM.findDOMNode(this.refs.video),
     };
   }
   state = {
@@ -115,8 +118,14 @@ export default class View extends React.Component {
   dispatch = this.props.dispatch;
   init() {
     const videoDOM = ReactDOM.findDOMNode(this.refs.video);
-    //begin----强制所有浏览器使用hls.js 或者 浏览器不支持hls，启用hls.js
-    let { forceOpenHls = false, file, videoCallback, ...other } = this.props;
+    this.videoDOM = videoDOM;
+    let {
+      forceOpenHls = false,
+      file,
+      videoCallback,
+      preload = true,
+      ...other
+    } = this.props;
     if (!isString(file)) {
       file = '';
     }
@@ -127,12 +136,16 @@ export default class View extends React.Component {
       //通过后缀名判断，没有后缀名不作处理，如果不支持原生的浏览器video格式，需要提示。
       videoNotSupport = true;
     }
-    //end----强制所有浏览器使用hls.js 或者 浏览器不支持hls，启用hls.js
     loader({ hlsjs, flvjs, videoDOM, file, ...other }).then(provider => {
       //首先统一清理，可能会存在上一个的播放状态。
       this.dispatch({
         type: `${videoNamespace}/clear`,
       });
+      if (isPlainObject(other.controls) && other.controls.capture) {
+        //屏幕截图功能需要设置crossorigin，safari和edge才不会报安全问题。
+        //但是有一个缺点，播放链接响应请求头必须设置跨域。
+        provider.api.setAttribute('crossorigin', 'anonymous');
+      }
       this.dispatch({
         type: `${videoNamespace}/init`,
         payload: {
@@ -142,9 +155,11 @@ export default class View extends React.Component {
             isFlv: util.isFlvFile(file),
             videoNotSupport,
             file,
+            preload,
             ...other,
           },
           api: provider.api,
+          hlsjsEvents: provider.hlsjsEvents,
           videoCallback,
         },
         initOverCallback: outSideApi => {
@@ -164,6 +179,12 @@ export default class View extends React.Component {
     this.playerConainerDOM = ReactDOM.findDOMNode(
       this.refs['player-container']
     );
+    //react jsx直接绑定事件在高德地图上mousemove失效，而下面的这种绑定方式不失效。
+    this.palyerMousemoveEvent = addEventListener(
+      this.playerConainerDOM,
+      'mousemove',
+      this.onMouseMove
+    );
     this.init();
   }
   componentDidUpdate(prevProps) {
@@ -177,6 +198,9 @@ export default class View extends React.Component {
         }
       );
     }
+  }
+  componentWillUnmount() {
+    this.palyerMousemoveEvent.remove();
   }
   onDoubleClick = e => {
     e.stopPropagation();
@@ -341,7 +365,6 @@ export default class View extends React.Component {
             'cursor-none': !userActive,
           })}
           style={containerStyle}
-          onMouseMove={this.onMouseMove}
         >
           {!ready && (
             <span className="html5-player-init-text">
@@ -400,19 +423,10 @@ export default class View extends React.Component {
                     localization={localization}
                     timeSliderShowFormat={timeSliderShowFormat}
                     hasFragment={!!fragment}
+                    loadHtml2canvasBundle={this.loadHtml2canvasBundle}
                   />
                 )}
-                {tracks &&
-                  tracks.map((v, k) => {
-                    return (
-                      <span key={k}>
-                        {v.kind === 'captions' && (
-                          <Captions config={v} userActive={userActive} />
-                        )}
-                        {v.kind === 'thumbnail' && <Thumbnail config={v} />}
-                      </span>
-                    );
-                  })}
+                <Subtitle userActive={userActive} />
                 {fragment && <Fragment url={fragment} />}
               </span>
               {children}
