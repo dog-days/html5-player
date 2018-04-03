@@ -3,7 +3,7 @@ import React from 'react';
 //import ReactDOM from 'react-dom';
 //import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-//import classnames from 'classnames';
+import classnames from 'classnames';
 //内部依赖包
 import clearDecorator from './decorator/clear';
 import { namespace as loadingNamespace } from '../model/loading';
@@ -23,15 +23,20 @@ export default class Loading extends React.Component {
   displayName = 'Loading';
   state = {};
   dispatch = this.props.dispatch;
+  getClassName(flag) {
+    return classnames('html5-player-cover-view html5-player-loading-view', {
+      'html5-player-hide': flag,
+    });
+  }
   render() {
     const { loading } = this.props;
     if (!loading) {
       //这里不return false 是为了方便单元测试判断。
-      return <div className="html5-player-loading-view html5-player-hide" />;
+      return <div className={this.getClassName(true)} />;
     }
     return (
       <div
-        className="html5-player-cover-view html5-player-loading-view"
+        className={this.getClassName()}
         onDoubleClick={e => {
           e.stopPropagation();
         }}

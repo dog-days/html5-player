@@ -76,6 +76,10 @@ export default function(player, resolve) {
         expect(!!q('.html5-player-screen-full-off-icon')).to.be.false;
       }
     );
+    it(itTitle('controls', 'when controls.rotate set to true.'), function() {
+      //eslint-disable-next-line
+      expect(!!q('.html5-player-rotate-icon')).to.be.true;
+    });
     it(
       itTitle('controls', 'when controls.timeSlider set to false.'),
       function() {
@@ -114,6 +118,10 @@ export default function(player, resolve) {
     it(itTitle('playbackRates'), function() {
       //eslint-disable-next-line
       expect(q('.html5-player-rate-container').children.length).to.equal(2);
+    });
+    it(itTitle('capture'), function() {
+      //eslint-disable-next-line
+      expect(!!q('.html5-player-capture-icon')).to.be.true;
     });
     it(itTitle('contextMenu'), function(done) {
       //eslint-disable-next-line

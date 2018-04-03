@@ -29,6 +29,9 @@ export function getModelObject(model, config, dispatch, store) {
     'muted',
     'fullscreen',
     'volume',
+    'rotate',
+    'playbackRate',
+    'switchSubtitle',
   ];
   sagas.forEach(v => {
     spyObj[v] = sinon.spy(model.sagas[v]);
@@ -107,6 +110,72 @@ export default function(player, resolve) {
     it('Controlbar fullscreen button should work.', function() {
       mockMouseEvent(q('.html5-player-screen-full-off-icon'), 'click');
       expect(spyObj.fullscreen.callCount).to.equal(1);
+    });
+    it('Controlbar rotate button should work.', function(done) {
+      attributesChangeObserver('.html5-player-tag', function() {
+        expect(q('.html5-player-tag').style.transform).to.equal(
+          'rotate(-90deg)'
+        );
+        expect(spyObj.rotate.callCount).to.equal(1);
+        done();
+      });
+      mockMouseEvent(q('.html5-player-rotate-icon'), 'click');
+    });
+    it('Controlbar speed button should work.', function(done) {
+      attributesChangeObserver(
+        q('.html5-player-rate-button').querySelector(
+          '.html5-player-tooltip-content-container'
+        ),
+        function() {
+          mockMouseEvent(
+            q('.html5-player-rate-container').children[1],
+            'click'
+          );
+          expect(spyObj.playbackRate.callCount).to.equal(1);
+          done();
+        }
+      );
+      mockMouseEvent(q('.html5-player-rate-button'), 'click');
+    });
+    it('Controlbar setting button should work.', function(done) {
+      attributesChangeObserver(
+        q('.html5-player-setting-icon').nextSibling,
+        function() {
+          // eslint-disable-next-line
+          expect(!!q('.html5-player-setting-list')).to.be.true;
+          childListChangeObserver(
+            '.html5-player-setting-container',
+            function() {
+              const rateDOM = q(
+                '.html5-player-setting-container'
+              ).querySelector('.html5-player-rate-container');
+              // eslint-disable-next-line
+              expect(!!rateDOM).to.be.true;
+            }
+          );
+          mockMouseEvent(q('.html5-player-setting-list').children[0], 'click');
+          done();
+        }
+      );
+      mockMouseEvent(q('.html5-player-setting-icon'), 'click');
+    });
+    it('Controlbar subtitle button should work.', function(done) {
+      const tooltipDOM = q('.html5-player-subtitle-button').querySelector(
+        '.html5-player-tooltip-content-container'
+      );
+      attributesChangeObserver(tooltipDOM, function() {
+        // eslint-disable-next-line
+        const firstLiDOM = tooltipDOM.querySelector(
+          '.html5-player-list-container'
+        ).children[0];
+        mockMouseEvent(firstLiDOM, 'click');
+        expect(spyObj.switchSubtitle.callCount).to.equal(1);
+        done();
+      });
+      mockMouseEvent(q('.html5-player-subtitle-button'), 'click');
+    });
+    it('Controlbar cupture button should work.', function() {
+      mockMouseEvent(q('.html5-player-capture-icon'), 'click');
     });
   });
 }

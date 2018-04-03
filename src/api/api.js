@@ -20,6 +20,7 @@ import event from '../utils/event';
  * @this { boolean } notAutoPlayViewHide 当autoplay为false时，这个属性false为notAutoPlay页面展示，否则隐藏
  * @this { boolean } controlbarShow true controlbar显示，false controlbar 隐藏，这个属性在model/vidoe中设置的
  * @this { number } videoGaps 断片累加值，也是记录值
+ * @this { number } currentSubtitleTrack 当前选择的字幕
  *    //合成录像，摄像头上传视频会中断，会分成几个视频，然后这几个视频会合并成一个视频
  *    //但是这个视频不是整个时段的，会有断的，为了给用户知道这段录像哪里断了，需要而外处理
  *    //这里是为了算出播放中，遇到断片的情况

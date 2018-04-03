@@ -12,9 +12,12 @@ import { namespace as notAutoPlayNamespace } from '../not-autoplay';
 import { namespace as controlbarNamespace } from '../controlbar';
 import { namespace as timeSliderNamespace } from '../time-slider';
 import { namespace as errorMessageNamespace } from '../error-message';
+import { namespace as trackNamespace } from '../track';
 import { namespace as fragmentNamespace } from '../fragment';
 import { namespace as livingNamespace } from '../living';
 import { namespace as playbackRateNamespace } from '../playback-rate';
+import { namespace as qualityNamespace } from '../picture-quality';
+import { namespace as rotateNamespace } from '../rotate';
 
 import {
   MAX_VOLUME,
@@ -49,6 +52,37 @@ export default function() {
   let showErrorMessageLazyTime = SHOW_ERROR_MESSAGE_LAZY_TIME;
   let _videoEvents;
   let clearIntervalForPlay;
+  let subtitleList;
+  function getTracks() {
+    const { tracks } = _config;
+    subtitleList = [];
+    //字幕，缩略图等
+    if (tracks) {
+      let i = 0;
+      tracks.forEach((v, k) => {
+        if (v.kind === 'subtitle') {
+          subtitleList.push({
+            ...v,
+            name: v.label,
+            id: i,
+          });
+          i++;
+        } else if (v.kind === 'thumbnail') {
+          _dispatch({
+            type: `${trackNamespace}/thumbnailSaga`,
+            payload: v,
+          });
+        }
+      });
+      _dispatch({
+        type: `${namespace}/subtitleList`,
+        payload: {
+          subtitleList: subtitleList,
+          subtitleId: -1,
+        },
+      });
+    }
+  }
   return {
     namespace,
     state: null,
@@ -106,7 +140,9 @@ export default function() {
       *playAfterNotAutoplay({ payload }, { put }) {
         if (!_api.playing) {
           if (!_config.preload) {
+            //autoplay=false,preload=false
             _api.loadSource(_config.file);
+            getTracks();
           }
           yield put({
             type: `controlbar`,
@@ -659,9 +695,110 @@ export default function() {
           payload: playbackRate,
         });
       },
+      *subtitleList({ payload }, { put }) {
+        logger.info('Subtitle List showed');
+        yield put({
+          type: `${trackNamespace}/subtitleListSaga`,
+          payload,
+        });
+      },
+      *switchSubtitle({ payload }, { put }) {
+        //存储状态
+        _api.currentSubtitleTrack = payload;
+        //end----textTracks状态处理
+        if (_api.hlsObj) {
+          //hls.js解析的hls自带字幕
+          //hls.js切换方式就是这样。
+          _api.hlsObj.subtitleTrack = payload;
+        } else if (_api.textTracks.length > 0) {
+          //浏览器原生解析的hls自带字幕
+          //begin----textTracks状态处理
+          for (let i = 0; i < _api.textTracks.length; i++) {
+            _api.textTracks[i].mode = 'disabled';
+          }
+          if (_api.textTracks[payload]) {
+            //关闭不用处理
+            _api.textTracks[payload].mode = 'hidden';
+          }
+        } else {
+          if (subtitleList && subtitleList[payload]) {
+            //非hls自带的字幕，播放器自定义字幕
+            yield put({
+              type: `${trackNamespace}/subtitleCuesSaga`,
+              payload: {
+                subtitleId: payload,
+                file: subtitleList[payload].file,
+              },
+            });
+          } else {
+            //关闭字幕
+            yield put({
+              type: `${trackNamespace}/subtitleCuesSaga`,
+              payload: {
+                subtitleId: payload,
+              },
+            });
+          }
+        }
+        yield put({
+          type: `${trackNamespace}/subtitleListSaga`,
+          payload: {
+            subtitleId: payload,
+          },
+        });
+      },
+      *hlsSubtitleCues({ payload }, { put }) {
+        const cues = [];
+        for (let k = 0; k < payload.length; k++) {
+          let v = payload[k];
+          cues.push({
+            begin: v.startTime,
+            end: v.endTime,
+            text: v.text,
+          });
+        }
+        yield put({
+          type: `${trackNamespace}/hlsSubtitleCuesSaga`,
+          payload: cues,
+        });
+      },
+      *pictureQualityList({ payload }, { put }) {
+        yield put({
+          type: `${qualityNamespace}/dataSaga`,
+          payload,
+        });
+      },
+      *switchPictureQuality({ payload }, { put }) {
+        if (_api.hlsObj) {
+          //hls.js切换画质
+          _api.hlsObj.nextLevel = payload;
+        }
+        yield put({
+          type: `${qualityNamespace}/dataSaga`,
+          payload: {
+            currentQuality: payload,
+          },
+        });
+      },
+      *rotate({ payload }, { put }) {
+        yield put({
+          type: `${rotateNamespace}/dataSaga`,
+          payload,
+        });
+        const width = _api.clientWidth;
+        const height = _api.clientHeight;
+        _api.style.transform = `rotate(-${payload}deg)`;
+        if (payload === 90 || payload === 270) {
+          _api.style.width = `${height}px`;
+          _api.style.marginLeft = `${width / 2 - height / 2}px`;
+        } else {
+          _api.style.width = '';
+          _api.style.marginLeft = '';
+        }
+      },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {
-        let { dispatch, api, config } = payload;
+        let { dispatch, api, hlsjsEvents, config } = payload;
         const {
           autoplay,
           showLoadingLazyTime: loadingLazyTime,
@@ -683,6 +820,7 @@ export default function() {
         //初始化loading状态
         if (autoplay) {
           _api.loadSource(file);
+          getTracks();
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
@@ -702,6 +840,7 @@ export default function() {
         } else {
           if (preload) {
             _api.loadSource(file);
+            getTracks();
           }
           _api.trigger('loading', false);
           _api.loading = false;
@@ -717,6 +856,9 @@ export default function() {
         _api.off();
         //----begin 事件处理
         _videoEvents = videoEvents(payload);
+        if (hlsjsEvents) {
+          hlsjsEvents(payload);
+        }
         //----end 事件处理
         //等待video运行起来后运行，对外提供接口
         const _outSideApi = outSideApi(payload, this.sagas);
