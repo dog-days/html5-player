@@ -25,6 +25,8 @@ export default class Slider extends React.Component {
   percent = 0;
   componentDidMount() {
     this.sliderDOM = this.refs.slider;
+    this.sliderContainerDOM = this.refs['slider-container'];
+    this.bindEvents();
     this.document = this.sliderDOM.ownerDocument;
     let { percent, defaultPercent } = this.props;
     if (percent !== undefined || defaultPercent !== undefined) {
@@ -41,30 +43,45 @@ export default class Slider extends React.Component {
       }
     }
   }
+  componentWillUnmount() {
+    this.removeEvents();
+  }
+  events = [];
+  removeEvents() {
+    //移除事件
+    this.events.forEach(v => {
+      v.remove && v.remove();
+    });
+  }
+  bindEvents() {
+    //像mousemove、mousedown、mouseup等事件，直接使用jsx绑定方式，在高德地图上的tooltip会失效。
+    this.events.push(
+      addEventListener(this.sliderContainerDOM, 'mousedown', this.onMouseDown)
+    );
+    this.events.push(
+      addEventListener(this.sliderContainerDOM, 'mouseup', this.onMouseUp)
+    );
+  }
   setSliderValueByPercent(percent = 0) {
     this.percent = percent;
   }
-
-  addDocumentMouseEvents() {
-    this.onMouseMoveListener = addEventListener(
-      this.document,
-      'mousemove',
-      this.onMouseMove
+  eventsAfterMouseDown = [];
+  bindEventsAfterMouseDown() {
+    this.eventsAfterMouseDown.push(
+      addEventListener(this.document, 'mousemove', this.onMouseMove)
     );
-    this.onMouseUpListener = addEventListener(
-      this.document,
-      'mouseup',
-      this.onEnd
+    this.eventsAfterMouseDown.push(
+      addEventListener(this.document, 'mouseup', this.onEnd)
+    );
+    this.eventsAfterMouseDown.push(
+      addEventListener(this.sliderContainerDOM, 'mousemove', this.onMouseMove)
     );
   }
-  removeDocumentEvents() {
-    /* eslint-disable no-unused-expressions */
-    //this.onTouchMoveListener && this.onTouchMoveListener.remove();
-    //this.onTouchUpListener && this.onTouchUpListener.remove();
-
-    this.onMouseMoveListener && this.onMouseMoveListener.remove();
-    this.onMouseUpListener && this.onMouseUpListener.remove();
-    /* eslint-enable no-unused-expressions */
+  removeEventsAfterMouseDown() {
+    //移除事件
+    this.eventsAfterMouseDown.forEach(v => {
+      v.remove && v.remove();
+    });
   }
   getSliderLength() {
     const slider = this.sliderDOM;
@@ -83,10 +100,14 @@ export default class Slider extends React.Component {
     const pixelOffset = position - this.getSliderStart();
     return pixelOffset;
   }
-  onEnd = () => {
-    this.removeDocumentEvents();
+  onEnd = e => {
+    e.stopPropagation();
+    this.removeEventsAfterMouseDown();
     //结束设置isMove为false
     this.onChange(this.percent, false);
+    //document和time-line的mouseup都要触发
+    const { onMouseUp } = this.props;
+    onMouseUp && onMouseUp(e);
   };
   getMousePosition(vertical, e) {
     return vertical ? e.clientY : e.pageX;
@@ -120,18 +141,17 @@ export default class Slider extends React.Component {
     e.stopPropagation();
     const { vertical, onMouseDown } = this.props;
     let position = this.getMousePosition(vertical, e);
-    this.removeDocumentEvents();
+    this.removeEventsAfterMouseDown();
     this.onStart(position);
-    this.addDocumentMouseEvents();
+    this.bindEventsAfterMouseDown();
     onMouseDown && onMouseDown(e);
   };
   onMouseUp = e => {
-    const { onMouseUp } = this.props;
     e.stopPropagation();
-    this.onEnd();
-    onMouseUp && onMouseUp(e);
+    this.onEnd(e);
   };
   onMouseMove = e => {
+    e.stopPropagation();
     const { vertical } = this.props;
     let position = this.getMousePosition(vertical, e);
     this.onStart(position, true);
@@ -167,6 +187,7 @@ export default class Slider extends React.Component {
     }
     return (
       <div
+        ref="slider-container"
         style={containerStyle}
         className={classnames(
           'html5-player-slider-container',
@@ -182,8 +203,6 @@ export default class Slider extends React.Component {
         onDoubleClick={e => {
           e.stopPropagation();
         }}
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
       >
         <div
           ref="slider"
