@@ -20,6 +20,8 @@ export default class hlsAPI extends API {
         fragLoadingTimeOut: 25000,
         enableWorker: true,
       });
+      //设置默认分辨率根据bandwidth自动选择
+      this.hlsObj.startLevel = -1;
     }
     return _this;
   }
@@ -41,7 +43,7 @@ export default class hlsAPI extends API {
       const hls = this.hlsObj;
       hls.detachMedia();
       hls.loadSource(file);
-      hls.attachMedia(this);
+      hls.attachMedia(this.videoDOM);
       logger.info('Source Loading :', 'loading hls video.');
       if (this.first) {
         this.first = false;

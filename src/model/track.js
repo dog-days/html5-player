@@ -17,36 +17,68 @@ function fetchTrack(url, params) {
 
 export const namespace = 'track';
 export default function() {
+  //存放subtitle的cues
+  const cuesList = [];
   return {
     namespace,
     state: {
-      captions: null,
-      chapters: null,
-      percent: null,
+      subtitleId: -1,
+      subtitleList: [],
+      subtitleCues: null,
       thumbnails: null,
     },
     reducers: {
       trackReducer: standardReducer,
-      //合成录像，摄像头上传视频会中断，会分成几个视频，然后这几个视频会合并成一个视频
-      //但是这个视频不是整个时段的，会有断的，为了给用户知道这段录像哪里断了，需要而外处理
-      //这里是为了算出播放中，遇到断片的情况，进行一些跳过处理，获取想要的值
-      sliderReducer: standardReducer,
       clear: function(state, { payload }) {
         cancel && cancel();
         return this.state;
       },
     },
     sagas: {
-      *captionsSaga({ payload }, { put, call }) {
-        const vtt = yield call(fetchTrack, payload.file);
-        if (!vtt) {
-          return;
+      *subtitleListSaga(
+        { payload: { subtitleList, subtitleId } },
+        { put, call }
+      ) {
+        const data = {
+          subtitleId,
+        };
+        if (subtitleList) {
+          data.subtitleList = subtitleList;
         }
-        const data = srtParser(vtt);
+        yield put({
+          type: 'trackReducer',
+          payload: data,
+        });
+      },
+      *hlsSubtitleCuesSaga({ payload }, { put, call }) {
         yield put({
           type: 'trackReducer',
           payload: {
-            captions: data,
+            subtitleCues: payload,
+          },
+        });
+      },
+      *subtitleCuesSaga({ payload }, { put, call }) {
+        let data;
+        if (payload.subtitleId === -1) {
+          //关闭字幕
+          data = [];
+        } else if (!cuesList[payload.subtitleId]) {
+          const vtt = yield call(fetchTrack, payload.file);
+          if (!vtt) {
+            return;
+          }
+          data = srtParser(vtt);
+        } else {
+          data = cuesList[payload.subtitleId];
+        }
+        if (data) {
+          cuesList[payload.subtitleId] = data;
+        }
+        yield put({
+          type: 'trackReducer',
+          payload: {
+            subtitleCues: data,
           },
         });
       },

@@ -8,8 +8,26 @@ export default function(id) {
     ReactDOM.render(
       <Player
         resolve={resolve}
-        file="https://media.w3.org/2010/05/sintel/trailer.mp4"
+        file="https://dog-days.github.io/demo/static/react.mp4"
         autoplay={false}
+        controls={{
+          capture: true,
+          speed: true,
+          setting: true,
+          rotate: true,
+        }}
+        tracks={[
+          {
+            kind: 'subtitle',
+            file: `https://dog-days.github.io/demo/static/subtitle-zh-cn.vtt`,
+            label: '中文',
+          },
+          {
+            kind: 'subtitle',
+            file: `https://dog-days.github.io/demo/static/subtitle-en.vtt`,
+            label: 'English',
+          },
+        ]}
       />,
       document.getElementById(id)
     );

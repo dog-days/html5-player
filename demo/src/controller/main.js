@@ -42,7 +42,7 @@ export default class MainController extends Controller {
     );
   }
   //tracks之字幕使用
-  captionView(params) {
+  subtitleView(params) {
     return this.render(
       {
         title,
@@ -51,7 +51,7 @@ export default class MainController extends Controller {
     );
   }
   //tracks之历史录像断片使用
-  historyView(params) {
+  fragmentView(params) {
     return this.render(
       {
         title,
@@ -68,6 +68,14 @@ export default class MainController extends Controller {
     );
   }
   thumbnailView(params) {
+    return this.render(
+      {
+        title,
+      },
+      params
+    );
+  }
+  mapView(params) {
     return this.render(
       {
         title,

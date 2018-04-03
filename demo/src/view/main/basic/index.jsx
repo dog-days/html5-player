@@ -3,8 +3,10 @@ import Html5Player from 'html5-player';
 
 class View extends React.Component {
   state = {
-    value: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
-    changeFile: 'https://media.w3.org/2010/05/sintel/trailer.mp4',
+    value:
+      'https://wowzaec2demo.streamlock.net/vod-multitrack/_definst_/smil:ElephantsDream/elephantsdream2.smil/playlist.m3u8',
+    changeFile:
+      'https://wowzaec2demo.streamlock.net/vod-multitrack/_definst_/smil:ElephantsDream/elephantsdream2.smil/playlist.m3u8',
   };
   onInputChange = e => {
     this.setState({
@@ -37,7 +39,9 @@ class View extends React.Component {
             // autoplay={true}
             // muted={true}
             controls={{
+              capture: true,
               setting: true,
+              rotate: true,
               dowload: (
                 <a
                   className="float-right"

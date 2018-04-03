@@ -2,18 +2,19 @@
 
 [![build status](https://travis-ci.org/dog-days/html5-player.svg?branch=master)](https://travis-ci.org/dog-days/html5-player) [![codecov](https://codecov.io/gh/dog-days/html5-player/branch/master/graph/badge.svg)](https://codecov.io/gh/dog-days/html5-player) [![npm package](https://badge.fury.io/js/html5-player.svg)](https://www.npmjs.org/package/html5-player) [![NPM downloads](http://img.shields.io/npm/dm/html5-player.svg)](https://npmjs.org/package/html5-player)
 
-本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react，打包后的 js 文件 gzip 后的大小为**80KB**左右（hls 和 flv 的代码是会根据视频类型动态加载的，视频类型根据文件后缀名判别）。
+本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react。
 
-> **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了 react 相关代码，如果使用 jsx 语法，那么用法大部分基本一致。当然建议使用 react 更好，如果使用 react、redux、redux-saga，除开这些依赖代码，html5-player 的代码，包括图片样式，gzip 后在 20KB 以内。**
+> **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了 react 相关代码，如果使用 jsx 语法，那么用法大部分基本一致。当然建议使用 react 更好，如果使用 react、redux、redux-saga，除开这些依赖代码，html5-player 的代码，包括图片样式，gzip 后在 30KB 以内。**
 
 ## 功能
 
 * 原生 H5 支持的视频源播放
 * HLS 视频播放
 * FLV 视频播放
-* 字幕功能
+* 字幕功能（自定义和hls自带字幕）
 * 缩略图预览
 * 播放速度
+* 视频画质（清晰度，目前只支持hls.js的清晰度）
 * 视频断片功能（这个是个额外功能）
 
 ## 兼容性
@@ -172,14 +173,18 @@ class View extends React.Component {
 
 controls 默认为 true。
 
-| controls 参数 | 默认值 | 说明                       |
-| :------------ | :----- | :------------------------- |
-| timeSlider    | true   | 播放进度控制条（直播没有） |
-| playPause     | true   | 开始暂停按钮               |
-| volume        | true   | 音量按钮                   |
-| time          | true   | 播放时间（直播没有）       |
-| setting       | false  | 配置（播放速度等）         |
-| speed         | false  | 播放速度                   |
+| controls       | 默认值 | 说明                                                        |
+| :------------- | :----- | :---------------------------------------------------------- |
+| timeSlider     | true   | 播放进度控制条（直播没有）                                  |
+| playPause      | true   | 开始暂停按钮                                                |
+| volume         | true   | 音量按钮                                                    |
+| time           | true   | 播放时间（直播没有）                                        |
+| setting        | false  | 配置（播放速度等）                                          |
+| speed          | false  | 播放速度                                                    |
+| subtitle       | true   | 如果有字幕默认显示                                          |
+| pictureQuality | true   | 清晰度（目前只支持hls.js协议的）,如果当前m3u8包含清晰度信息 |
+| rotate         | false  | 旋转（逆时针，每次增加90度）                                |
+| capture        | false  | 截屏，截屏功能存在跨域问题，所以需要后端处理跨域响应头。    |
 
 `controls=true`时，上面 controls 参数默认值为 true 的都会显示，`controls=false`控制条隐藏。
 
@@ -204,16 +209,30 @@ controls 默认为 true。
 
 #### props.tracks
 
+| tracks[] | 默认值 | 说明                                  | 必填 |
+| -------- | ------ | ------------------------------------- | ---- |
+| kind     | 无     | 类型，目前只有`subtitle`和`thumbnail` | 是   |
+| file     | 无     | web vtt文件链接                       | 是   |
+| label    | 无     | subtitle列表的展示名                  | 是   |
+
 * 字幕
+
+  字幕是可以是列表的。
 
   ```jsx
   <Html5Player
     file="https://media.w3.org/2010/05/sintel/trailer.mp4"
     tracks={[
       {
-        kind: 'captions',
-        file: '/caption.vtt',
+        kind: 'subtitle',
+        file: '/subtitle-zh-cn.vtt',
+        label: '中文',
       },
+      {
+        kind: 'subtitle',
+        file: '/subtitle-en.vtt',
+        label: 'English',
+      }, 
     ]}
   />
   ```
@@ -428,7 +447,7 @@ fragment 定义如下：
 
 请参考下图stretching用法。
 
-![img](https://support-static.jwplayer.com/images/stretch-options.png)
+![img](https://dog-days.github.io/demo/static/stretch-options.png)
 
 ### 播放器实例化对象
 

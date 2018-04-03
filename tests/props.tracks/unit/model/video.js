@@ -22,10 +22,12 @@ export function getModelObject(model, config, dispatch, store) {
   });
 }
 export default function(player, resolve) {
-  describe('Props', function(done) {
+  describe('Props', function() {
     this.timeout(5000);
-    it('props.tracks should work,when kind is "captions".', function() {
-      childListChangeObserver('.html5-player-captions-text', function() {
+    it('props.tracks should work,when kind is "subtitle".', function(done) {
+      childListChangeObserver('.html5-player-controlbar', function() {
+        //eslint-disable-next-line
+        expect(!!q('.html5-player-subtitle-button')).to.be.true;
         done();
       });
     });
