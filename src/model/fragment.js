@@ -44,6 +44,7 @@ export default function() {
           //fragment为url的情况
           data = yield call(fetchFragment, payload);
         } else {
+          //防止源数据被改动
           data = payload;
         }
         if (!data) {
@@ -54,22 +55,22 @@ export default function() {
           return;
         }
         //需要做safari的日期格式兼容。
-        total.begin = +new Date(total.begin.replace(/-/g, '/')) / 1000;
-        total.end = +new Date(total.end.replace(/-/g, '/')) / 1000;
+        const total_begin = +new Date(total.begin.replace(/-/g, '/')) / 1000;
+        const total_end = +new Date(total.end.replace(/-/g, '/')) / 1000;
         const dataAfterAdapter = [];
-        let duration = total.end - total.begin;
+        let duration = total_end - total_begin;
         let gaps = 0;
         fragments.forEach(obj => {
           if (!obj.begin || !obj.end) {
             return;
           }
-          obj.begin = +new Date(obj.begin.replace(/-/g, '/')) / 1000;
-          obj.end = +new Date(obj.end.replace(/-/g, '/')) / 1000;
+          const obj_begin = +new Date(obj.begin.replace(/-/g, '/')) / 1000;
+          const obj_end = +new Date(obj.end.replace(/-/g, '/')) / 1000;
           // duration中无视频的开始结束的时间，按秒算
-          const begin = obj.begin - total.begin;
-          const end = obj.end - total.begin;
+          const begin = obj_begin - total_begin;
+          const end = obj_end - total_begin;
           // duration 无视频的大小，按秒算
-          const gap = obj.end - obj.begin;
+          const gap = obj_end - obj_begin;
           gaps += gap;
           dataAfterAdapter.push({
             gap,
@@ -87,7 +88,7 @@ export default function() {
             data: dataAfterAdapter,
           };
         }
-        fragmentData.videoBeginDateTime = total.begin;
+        fragmentData.videoBeginDateTime = total_begin;
         yield put({
           type: 'fragmentReducer',
           payload: fragmentData,

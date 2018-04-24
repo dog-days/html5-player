@@ -18,12 +18,14 @@ import { namespace as fragmentNamespace } from '../model/fragment';
 @clearDecorator([fragmentNamespace])
 export default class Fragment extends React.Component {
   static propTypes = {
+    //现在支持传对象进来
     url: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   };
   displayName = 'Fragment';
   dispatch = this.props.dispatch;
   getData() {
     const { url } = this.props;
+    console.log(url);
     this.dispatch({
       type: `${fragmentNamespace}/fragmentSaga`,
       payload: url,
