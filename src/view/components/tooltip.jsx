@@ -31,8 +31,19 @@ export default class Tooltip extends React.Component {
     show: false,
   };
   dispatch = this.props.dispatch;
+  eventLists = [];
   componentDidMount() {
     this.moveTargetDOM = ReactDOM.findDOMNode(this.refs.moveTarget);
+    //在高德地图中，react jsx绑定事件失效，这种绑定方式没问题。
+    this.eventLists.push(
+      addEventListener(this.moveTargetDOM, 'mousemove', this.onMouseMove)
+    );
+    this.eventLists.push(
+      addEventListener(this.moveTargetDOM, 'mouseover', this.onMouseOver)
+    );
+    this.eventLists.push(
+      addEventListener(this.moveTargetDOM, 'mouseleave', this.onMouseLeave)
+    );
   }
   componentWillReceiveProps(nextProps) {
     if (isNumber(nextProps.percent)) {
@@ -41,6 +52,9 @@ export default class Tooltip extends React.Component {
   }
   componentWillUnmount() {
     this.documentClickEvent && this.documentClickEvent.remove();
+    this.eventLists.forEach(v => {
+      v.remove();
+    });
   }
   getTargetHeight() {
     const moveTargetDOM = this.moveTargetDOM;
@@ -226,10 +240,7 @@ export default class Tooltip extends React.Component {
     return cloneElement(
       children,
       {
-        onMouseMove: this.onMouseMove,
         onClick: this.onClick,
-        onMouseOver: this.onMouseOver,
-        onMouseLeave: this.onMouseLeave,
         style: { position: 'relative' },
         ref: 'moveTarget',
       },
