@@ -25,7 +25,6 @@ export default class Fragment extends React.Component {
   dispatch = this.props.dispatch;
   getData() {
     const { url } = this.props;
-    console.log(url);
     this.dispatch({
       type: `${fragmentNamespace}/fragmentSaga`,
       payload: url,
