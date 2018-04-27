@@ -22,4 +22,4 @@ console_html.tar.gz
 /console/
 /coverage/
 TESTS-*.xml
-/src/assets/style.css
+/src/assets/css/style.css
