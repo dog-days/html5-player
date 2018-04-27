@@ -1,3 +1,34 @@
+## 0.25(2018-04-27)
+
+#### Bug Fix
+
+- [fix fragment original object modified problem](https://github.com/dog-days/html5-player/commit/64f2f0c7a9dae1c8cd422b8624c3561bdb18c53a)
+
+
+- [fix player event not wrok in amap](https://github.com/dog-days/html5-player/commit/f551f81fbe9c23ef98782c309d789a0df1676899)
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
+## 0.2.4(2018-04-03)
+
+#### Bug Fix
+
+- [fix timeline event in amap(高德地图)](https://github.com/dog-days/html5-player/commit/218dff2bc40956d7f47ab00e27ff7fcb8e844cb3)
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.2.3(2018-04-03)
 
 #### Bug Fix
