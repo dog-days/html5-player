@@ -1,41 +1,61 @@
+//外部依赖包
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Player from './player';
-import './style';
-window.React = React;
-window.ReactDOM = ReactDOM;
+import PropTypes from 'prop-types';
+//内部依赖包
+import Provider from './libs/provider/saga-model-provider';
+import modelList from './model-list';
+import View from './view';
+//icon的js
+import './assets/icon/iconfont';
 
-//兼容preact用法
-let root;
-/**
- *@param {object} props 播放器配置
- *@param {function} callback 播放器实例化后的回调函数，返回播放器实例
- *                           也可以使用promise获取
- *@return {promise} 播放器实例
- */
-function player(props, callback) {
-  const { id, children, ...other } = props;
-  return new Promise(resolve => {
-    root = ReactDOM.render(
-      <Player
-        videoCallback={player => {
-          callback && callback(player);
-          const remove = player.remove;
-          player.remove = function() {
-            //如果有定义remove先运行。
-            remove && remove();
-            root = ReactDOM.render(false, document.getElementById(id), root);
-          };
-          resolve(player);
-        }}
-        {...other}
-      >
-        {children}
-      </Player>,
-      document.getElementById(id),
-      root
-    );
-  });
+class ModelRegister extends React.Component {
+  static contextTypes = {
+    sagaStore: PropTypes.object,
+  };
+  displayName = 'ModelRegister';
+  state = {};
+  registerModel = register => {
+    const allModelPromise = modelList.map(modelId => {
+      const model = require(`./model/${modelId}.js`).default;
+      return model;
+    });
+    return Promise.all(allModelPromise).then(models => {
+      models.forEach(m => {
+        register(m);
+      });
+    });
+  };
+  componentDidMount() {
+    this.registerModel(this.context.sagaStore.register).then(() => {
+      this.setState({
+        canBeRendered: true,
+      });
+    });
+  }
+  render() {
+    const { children } = this.props;
+    if (this.state.canBeRendered) {
+      return <span>{children}</span>;
+    } else {
+      return false;
+    }
+  }
 }
-
-export default player;
+export default function player(props) {
+  return (
+    <Provider
+      production={process.env.NODE_ENV === 'production'}
+      plugins={[
+        {
+          onError: (error, dispatch) => {
+            console.error(error);
+          },
+        },
+      ]}
+    >
+      <ModelRegister>
+        <View {...props} />
+      </ModelRegister>
+    </Provider>
+  );
+}

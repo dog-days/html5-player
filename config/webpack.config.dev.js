@@ -171,7 +171,7 @@ var config = {
       src: paths.src,
       //react: 'preact-compat',
       //'react-dom': 'preact-compat',
-      'html5-player': path.resolve(process.cwd(), 'src/player.jsx'),
+      'html5-player': path.resolve(process.cwd(), 'src'),
     },
     //不可留空字符串
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.web.js', '.web.jsx'],

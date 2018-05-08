@@ -1,5 +1,3 @@
-'use strict';
-
 const util = require('react-boilerplate-app-utils');
 const path = require('path');
 const webpack = require('webpack');
@@ -67,7 +65,7 @@ var config = {
       require.resolve(
         util.pathResolve('config/polyfills.js', scriptsPackagename)
       ),
-      path.resolve(process.cwd(), 'src'),
+      path.resolve(process.cwd(), 'src/umd.jsx'),
     ],
   },
   output: {

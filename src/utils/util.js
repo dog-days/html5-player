@@ -204,7 +204,11 @@ export function randomKey() {
     .split('')
     .join('');
 }
-
+/**
+ * getChildProps 获取react children props，如果children是数组，取第一个。
+ * @param  {object} children react children
+ * @return {object}          返回children props。
+ */
 export function getChildProps(children) {
   //preact生成环境下children只有一个也变成数组;
   let childProps = (children[0] || children).attributes;

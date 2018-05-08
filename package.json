@@ -4,7 +4,7 @@
   "description": "html5 video",
   "repository": "git@github.com:dog-days/html5-player.git",
   "homepage": "https://github.com/dog-days/html5-player.git",
-  "main": "libs/player.js",
+  "main": "libs",
   "dependencies": {
     "add-dom-event-listener": "^1.0.2",
     "axios": "^0.17.1",

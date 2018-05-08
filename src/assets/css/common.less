@@ -11,6 +11,9 @@ button {
   background: none;
   outline: none;
 }
+.relative {
+  position: relative;
+}
 .float-right {
   float: right;
 }
@@ -26,6 +29,12 @@ button {
 .display-inline-block {
   display: inline-block;
 }
+.text-overflow {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+}
 //公共部分
 .html5-player {
   &-icon {
@@ -38,6 +47,11 @@ button {
     //需要添加下面的css代码处理。
     //然后在svg上面包一层元素来绑定click事件
     pointer-events: none;
+  }
+  &-icon-disable {
+    color: #ccc;
+    cursor: not-allowed;
+    pointer-events: unset;
   }
   //begin----tooltip
   &-tooltip-content-container {
@@ -495,5 +509,73 @@ button {
       background: #fff;
       position: relative;
     }
+  }
+  &-playlist-container {
+    padding: 10px 50px;
+    background: #26262b;
+  }
+  &-carousel {
+    position: relative;
+    overflow-x: hidden;
+  }
+  &-carousel-transition {
+    transition: left 0.8s;
+  }
+  &-carousel-title {
+    background: #000;
+    color: #fff;
+    font-size: 16px;
+    padding-bottom: 10px;
+  }
+  &-carousel-inner-contianer {
+    position: relative;
+    width: 10000000000px;
+  }
+  &-carousel-item {
+    position: relative;
+    float: left;
+    cursor: pointer;
+    border: 3px solid rgba(0, 0, 0, 0);
+    &-active {
+      border: 3px solid #1890ff;
+    }
+    &-cover {
+      height: 100px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: center;
+      > img {
+        width: 100%;
+      }
+    }
+    &-title {
+      width: 100%;
+      text-align: left;
+      z-index: 10000;
+      color: #fff;
+      font-size: 13px;
+      padding: 10px;
+      color: #333;
+      background: #fff;
+    }
+  }
+  .common-arraw() {
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    transform: translate(0%, -50%);
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+  }
+  &-carousel-arrow-left {
+    .common-arraw();
+    left: -40px;
+  }
+  &-carousel-arrow-right {
+    .common-arraw();
+    right: -40px;
   }
 }
