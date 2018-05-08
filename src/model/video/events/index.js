@@ -138,6 +138,7 @@ class Events {
     const { timeout = VIDEO_TIMEOUT, retryTimes = RETRY_TIMES } = this.config;
     // console.log(type, 'this.retryReloadTime', this.retryReloadTime);
     if (type === 'timeupdate') {
+      //原生timeoudate事件在执行，说明没有stalled和超时
       clearTimeout(this.videoTimeout);
     }
     //处理超时
@@ -146,7 +147,7 @@ class Events {
 
       logger.log('Stalled currentTime:', this.currentTime, api.currentTime);
       if (this.currentTime !== api.currentTime || api.currentTime < 1) {
-        //画面不停止了不处理
+        //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
         //flv.js不播放时，刚开始currentTime会大于0，需要做兼容处理。
         return;
       }
@@ -215,20 +216,24 @@ class Events {
       //使用的hls.js和flv.js延时处理是正常的。
       //edge原生的hls的也正常，不过经常会卡，然后就触发了重载，然后就正常了。
       //正常网络下hls处理延时变大会很少的，flv才可能频繁一点，flv的实时性要求高。
-      if (api.living && api.buffered.length > 0 && api.currentTime) {
+      if (
+        api.living &&
+        api.buffered.length > 0 &&
+        api.currentTime &&
+        livingMaxBuffer > 0
+      ) {
+        //livingMaxBuffer=0，相当于没设置，最好不要设置为0
         if (isHls) {
           //hls需要的直播需要特殊对待。
           livingMaxBuffer += 15;
         }
         //直播实时处理，让视频接近实时。
         if (api.bufferTime - api.currentTime > livingMaxBuffer) {
-          let reduceBuffer = livingMaxBuffer;
-          if (livingMaxBuffer > 1) {
-            if (isHls) {
-              reduceBuffer = 15;
-            } else {
-              reduceBuffer = 1;
-            }
+          let reduceBuffer;
+          if (isHls) {
+            reduceBuffer = 15;
+          } else {
+            reduceBuffer = 1;
           }
           //浏览器原生的hls，在直播状态设置currentTime失效。
           api.currentTime = api.bufferTime - reduceBuffer;

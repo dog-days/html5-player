@@ -17,11 +17,13 @@ export default class Playlist extends React.Component {
   static childContextTypes = {
     playlist: PropTypes.array,
     activeItem: PropTypes.number,
+    setActiveItem: PropTypes.func,
   };
   getChildContext() {
     return {
       playlist: this.props.playlist,
       activeItem: this.activeItem,
+      setActiveItem: this.setActiveItem,
     };
   }
   displayName = 'Playlist';
@@ -35,7 +37,7 @@ export default class Playlist extends React.Component {
     clearInterval(this.clearInterval);
     this.clearInterval = null;
   }
-  setVideoSwitchInterval() {
+  setVideoSwitchInterval = () => {
     const { playlist, videoCarousel } = this.props;
     if (videoCarousel) {
       clearInterval(this.clearInterval);
@@ -44,17 +46,23 @@ export default class Playlist extends React.Component {
         time = videoCarousel;
       }
       this.clearInterval = setInterval(() => {
-        if (this.activeItem === playlist.length) {
-          this.setState({ activeItem: 1 });
+        if (this.activeItem >= playlist.length) {
+          this.activeItem = 1;
         } else {
-          this.setState({ activeItem: this.activeItem + 1 });
+          this.activeItem = this.activeItem + 1;
         }
       }, time);
     }
-  }
+  };
   get activeItem() {
     return this.state.activeItem;
   }
+  set activeItem(value) {
+    this.setState({ activeItem: value });
+  }
+  setActiveItem = value => {
+    this.activeItem = value;
+  };
   onPlaylistItemClick = index => {
     return e => {
       this.setVideoSwitchInterval();

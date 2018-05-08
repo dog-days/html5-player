@@ -10,6 +10,8 @@ import clearDecorator from '../decorator/clear';
 import localization from '../../i18n/default';
 import PlayPause from '../controlbar/play-pause';
 import Volume from '../controlbar/volume';
+import Next from '../controlbar/next';
+import Prev from '../controlbar/prev';
 import FullOffScreen from '../controlbar/full-off-screen';
 import Time from '../controlbar/time-container';
 import TimeSlider from '../controlbar/time-slider';
@@ -123,6 +125,8 @@ export default class Controlbar extends React.Component {
         controls = {
           playPause: false,
           volume: false,
+          prev: false,
+          next: false,
           fullscreen: false,
           setting: false,
           time: false,
@@ -140,6 +144,8 @@ export default class Controlbar extends React.Component {
     let {
       playPause = true,
       volume = true,
+      prev = true,
+      next = true,
       fullscreen = true,
       setting = false,
       time = true,
@@ -178,7 +184,6 @@ export default class Controlbar extends React.Component {
               hasFragment={hasFragment}
             />
           )}
-          {ready && !living && time && <Time />}
           {living && (
             <button className="html5-player-small-button cursor-default">
               <svg
@@ -189,6 +194,9 @@ export default class Controlbar extends React.Component {
               </svg>
             </button>
           )}
+          {prev && <Prev />}
+          {next && <Next />}
+          {ready && !living && time && <Time />}
           {fullscreen && <FullOffScreen />}
           {ready &&
             setting && (
