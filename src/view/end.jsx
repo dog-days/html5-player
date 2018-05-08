@@ -1,7 +1,7 @@
 //外部依赖包
 import React from 'react';
 //import ReactDOM from 'react-dom';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 //内部依赖包
@@ -21,10 +21,21 @@ import { namespace as videoNamespace } from '../model/video';
 export default class End extends React.Component {
   //这里的配置参考jw-player的api
   static propTypes = {};
+  static contextTypes = {
+    playlist: PropTypes.array,
+    activeItem: PropTypes.number,
+    setActiveItem: PropTypes.func,
+  };
   displayName = 'End';
   state = {};
   dispatch = this.props.dispatch;
-  componentDidMount() {}
+  componentDidUpdate(prevProps, prevState) {
+    //播放列表，单个视频播放完的情况
+    const { playlist, activeItem, setActiveItem } = this.context;
+    if (playlist && playlist[0] && activeItem < playlist.length) {
+      setActiveItem(activeItem + 1);
+    }
+  }
   replay = e => {
     this.dispatch({
       type: `${videoNamespace}/replay`,
