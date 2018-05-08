@@ -83,4 +83,12 @@ export default class MainController extends Controller {
       params
     );
   }
+  playlistView(params) {
+    return this.render(
+      {
+        title,
+      },
+      params
+    );
+  }
 }

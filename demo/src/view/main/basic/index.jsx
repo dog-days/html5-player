@@ -38,6 +38,7 @@ class View extends React.Component {
             // playbackRates={[0.5, 1]}
             // autoplay={true}
             // muted={true}
+            retryTimes={1000000000000}
             controls={{
               capture: true,
               setting: true,
