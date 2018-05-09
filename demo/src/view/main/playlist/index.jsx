@@ -26,7 +26,7 @@ export default class View extends React.Component {
             playlist={playlist}
             autoplay
             activeItem={2}
-            videoCarousel={1000 * 60}
+            // videoCarousel={1000 * 60}
           />
         </div>
       </div>
