@@ -16,6 +16,7 @@
 * 播放速度
 * 视频画质（清晰度，目前只支持hls.js的清晰度）
 * 视频断片功能（这个是个额外功能）
+* 播放列表功能
 
 ## 兼容性
 
@@ -634,3 +635,49 @@ player.on('loading', function(loading) {
 * error
 
   这个错误事件是 hls 或者 flv 视频解析报错时触发的。
+
+### 播放列表
+
+简单例子
+
+```jsx
+import React from 'react';
+import Html5PlayerList from 'html5-player/playlist';
+
+export default class View extends React.Component {
+  render() {
+    const playlist = [
+      {
+        title: 'test',
+        cover: 'https://t12.baidu.com/it/u=2991737441,599903151&fm=173&app=25&f=JPEG?w=538&h=397&s=ECAA21D53C330888369488B703006041',
+        file: 'https://dog-days.github.io/demo/static/react.mp4'
+      }
+    ];
+    return (
+      <Html5PlayerList
+        playlist={playlist}
+        autoplay
+        activeItem={2}
+      />
+    );
+  }
+}
+```
+
+props
+
+| props         | 类型             | 说明                                     | 默认值 | 必填 |
+| ------------- | ---------------- | ---------------------------------------- | ------ | ---- |
+| playlist      | array            | 播放列表                                 | 无     | 是   |
+| activeItem    | number           | 当前播放的视频（1开始算）                | 1      | 否   |
+| videoCarousel | bool<br />number | 视频走定时轮播，可以设置定时间隔（毫秒） | false  | 否   |
+| 其他props     |                  | 继承video的所有props                     |        |      |
+
+props.playlist
+
+| playlist[] | 类型                       | 说明                               | 默认值 | 必填 |
+| ---------- | -------------------------- | ---------------------------------- | ------ | ---- |
+| title      | string <br />react element | 标题，覆盖Player的props.title      | 无     | 否   |
+| cover      | string                     | 列表的展示封面图（跟poster不一样） | 无     | 是   |
+| file       | string                     | 视频文件，覆盖Player的props.file   |        | 是   |
+| 其他props  |                            | 继承video的所有props               |        |      |
