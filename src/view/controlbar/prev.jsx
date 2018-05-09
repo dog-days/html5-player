@@ -29,7 +29,7 @@ export default class Prev extends React.Component {
         onClick={this.onClick}
       >
         <svg
-          className={classnames('html5-player-icon html5-player-next-icon')}
+          className={classnames('html5-player-icon html5-player-prev-icon')}
           aria-hidden="true"
         >
           <use xlinkHref="#icon-prev" />
