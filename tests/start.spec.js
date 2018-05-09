@@ -13,6 +13,7 @@ import propsContextMenuFalse from './props.contextMenu-false/unit';
 import propsContextMenuElement from './props.contextMenu-element/unit';
 import propsLogoString from './props.logo-string/unit';
 import propsLogoElement from './props.logo-element/unit';
+import propsPlaylist from './playlist/unit';
 import events from './events/unit';
 
 const id = 'test';
@@ -63,6 +64,9 @@ model(id)
   })
   .then(function() {
     return propsLogoElement(id);
+  })
+  .then(function() {
+    return propsPlaylist(id);
   })
   .then(function() {
     storage.set('muted', false);
