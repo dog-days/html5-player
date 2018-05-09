@@ -12,7 +12,7 @@ export default class Playlist extends React.Component {
     activeItem: PropTypes.number,
     //视频走定时轮播，没有默认值
     //可以使毫秒设置轮播间隔
-    avideoCarousel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+    videoCarousel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   };
   static childContextTypes = {
     playlist: PropTypes.array,
