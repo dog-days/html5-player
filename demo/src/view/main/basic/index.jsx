@@ -1,5 +1,6 @@
 import React from 'react';
 import Html5Player from 'html5-player';
+import { joinUrlParams } from '../../../../../src/utils/util';
 
 class View extends React.Component {
   state = {
@@ -21,6 +22,16 @@ class View extends React.Component {
       });
     }
   };
+  videoCallback = player => {
+    player.on('error', () => {
+      clearTimeout(this.clearTimeout);
+      this.timeout = setTimeout(() => {
+        this.setState({
+          changeFile: joinUrlParams(this.state.changeFile, {}),
+        });
+      }, 3000);
+    });
+  };
   render() {
     const { changeFile, value } = this.state;
     const file = changeFile;
@@ -34,9 +45,10 @@ class View extends React.Component {
             value={value}
           />
           <Html5Player
+            videoCallback={this.videoCallback}
             // contextMenu={[<a href="#demo">demo</a>, <a href="#demo2">demo2</a>]}
             // playbackRates={[0.5, 1]}
-            // autoplay={true}
+            autoplay={true}
             // muted={true}
             retryTimes={1000000000000}
             controls={{
@@ -62,7 +74,7 @@ class View extends React.Component {
             // isLiving={true}
             // autoplay
             //logo支持string，React Element和plainObject
-            logo={`${process.env.basename}/logo.png`}
+            // logo={`${process.env.basename}/logo.png`}
             // poster={`${process.env.basename}/logo.png`}
           />
         </div>
