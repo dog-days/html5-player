@@ -1,5 +1,3 @@
-'use strict';
-
 const util = require('react-boilerplate-app-utils');
 const path = require('path');
 const webpack = require('webpack');
@@ -171,6 +169,7 @@ var config = {
       src: paths.src,
       //react: 'preact-compat',
       //'react-dom': 'preact-compat',
+      'html5-player/libs/playlist': path.resolve(process.cwd(), 'src/playlist'),
       'html5-player': path.resolve(process.cwd(), 'src'),
     },
     //不可留空字符串

@@ -1,5 +1,5 @@
 import React from 'react';
-import Html5PlayerList from 'html5-player/playlist';
+import Html5PlayerList from 'html5-player/libs/playlist';
 
 export default class View extends React.Component {
   render() {
