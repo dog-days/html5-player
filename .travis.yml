@@ -1,8 +1,9 @@
 os: osx
 sudo: required
-#启用chrome
 addons:
-  chrome: stable
+  #chrome: stable
+  #启用火狐
+  firefox: "58.0.2"
 language: node_js
 node_js:
   - "8.4.0"
