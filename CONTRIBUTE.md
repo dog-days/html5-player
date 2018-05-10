@@ -134,7 +134,7 @@
   # 回到develop分支
   git checkout develop
   # 把做好的功能合并到develop中
-  git merge --no-ff feature-test
+  git rebase feature-test ##不要使用merge，merge导致分支线交叉，看起来乱。
   # git push origin feature-test
   # 如果你需要保留次分支，上面的代码提交到线上
   # 删除本地功能性分支，不一定要急着删除，可以保留一段时间。
