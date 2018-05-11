@@ -29,7 +29,7 @@ export default class Playlist extends React.Component {
   }
   displayName = 'Playlist';
   state = {
-    activeItem: this.props.activeItem,
+    activeItem: this.props.activeItem || 1,
   };
   componentDidMount() {
     this.setVideoSwitchInterval();
