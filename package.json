@@ -14,7 +14,6 @@
     "flv.js": "^1.4.0",
     "global": "^4.3.2",
     "hls.js": "^0.8.9",
-    "layzr.js": "^2.2.2",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react-redux": "^5.0.6",
