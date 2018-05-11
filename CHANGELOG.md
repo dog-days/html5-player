@@ -1,3 +1,34 @@
+## 0.32(2018-05-10)
+
+#### Bug Fix
+
+- [fix error view svg color problem](https://github.com/dog-days/html5-player/commit/ae116420b60b63f83da77d14e6827763673df120)
+
+#### Update
+
+- [modify playlist,playlist cover can be react element](https://github.com/dog-days/html5-player/commit/f72de77e24252b6f83aa05c85c6877b23b4e1337)
+
+#### New Function
+
+无
+
+## 0.31(2018-05-10)
+
+#### Bug Fix
+
+- [fix playlist css problem](https://github.com/dog-days/html5-player/commit/12e660e9cc8517959f623eb1fa888a86ad63ce90)
+
+
+- [fix alias incorrect problem](https://github.com/dog-days/html5-player/commit/1d493978df6d4deebcbd9f220677245adfcceff5)
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.30(2018-05-09)
 
 #### Bug Fix
