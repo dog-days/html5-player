@@ -1,6 +1,7 @@
 //外部依赖包
 import React from 'react';
 import PropTypes from 'prop-types';
+import isString from 'lodash/isString';
 //内部依赖包
 import Player from './index';
 import Carousel from './view/components/carousel';
@@ -99,7 +100,8 @@ export default class Playlist extends React.Component {
                   return (
                     <div key={k} onClick={this.onPlaylistItemClick(k)}>
                       <div className="html5-player-carousel-item-cover">
-                        <img alt="" src={v.cover} />
+                        {React.isValidElement(v.cover) && v.cover}
+                        {isString(v.cover) && <img alt="" src={v.cover} />}
                       </div>
                       <div className="html5-player-carousel-item-title">
                         {v.title}
