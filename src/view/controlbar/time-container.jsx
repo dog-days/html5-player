@@ -29,7 +29,10 @@ export default class Time extends React.Component {
     //fragment是播放录像（合成录像，摄像头上传视频会中断，会分成几个视频，然后这几个视频会合并成一个视频
     //但是这个视频不是整个时段的，会有断的，fragment就是给用户知道这段录像哪里断了）
     //一般都用不到fragment，如果存在fragment就优先使用fragment的duration
-    const { time: { elapse, duration }, fragment } = this.props;
+    const {
+      time: { elapse, duration },
+      fragment,
+    } = this.props;
     return (
       <span className="html5-player-time-container">
         <span>{elapse}</span>

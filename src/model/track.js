@@ -36,7 +36,9 @@ export default function() {
     },
     sagas: {
       *subtitleListSaga(
-        { payload: { subtitleList, subtitleId } },
+        {
+          payload: { subtitleList, subtitleId },
+        },
         { put, call }
       ) {
         const data = {

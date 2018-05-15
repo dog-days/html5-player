@@ -28,7 +28,7 @@ export default function getSagaModel(
     initialMiddleware,
     initialModels,
     history,
-    openReduxDevTools
+    openReduxDevTools,
   });
   plugins.forEach(sagaModel.use.bind(sagaModel));
   return sagaModel;

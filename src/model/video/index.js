@@ -461,7 +461,12 @@ export default function() {
           }
         }
       },
-      *seeking({ payload: { percent = 0, pause } }, { put, select }) {
+      *seeking(
+        {
+          payload: { percent = 0, pause },
+        },
+        { put, select }
+      ) {
         if (_api.readyState < 1) {
           //视频未就绪进来，不给操作，要不会报错
           return;
@@ -673,7 +678,12 @@ export default function() {
           type: `play`,
         });
       },
-      *living({ payload: { duration } }, { put }) {
+      *living(
+        {
+          payload: { duration },
+        },
+        { put }
+      ) {
         let living = false;
         if (duration === Infinity || isNaN(duration)) {
           living = true;

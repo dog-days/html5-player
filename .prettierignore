@@ -1,0 +1,12 @@
+.idea/
+.vscode/
+.cache
+node_modules/
+/build/
+/demo/build/
+/dist/
+/libs/
+/es/
+/coverage/
+/src/assets/css/style.css
+/src/assets/icon

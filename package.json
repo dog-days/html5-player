@@ -9,7 +9,6 @@
     "add-dom-event-listener": "^1.0.2",
     "axios": "^0.17.1",
     "classnames": "^2.2.5",
-    "co": "^4.6.0",
     "downloadjs": "^1.4.7",
     "flv.js": "^1.4.0",
     "global": "^4.3.2",
@@ -41,9 +40,11 @@
     "karma-webpack": "2.0.9",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "lint-staged": "^7.1.0",
     "mocha": "4.1.0",
     "preact": "^8.2.6",
     "preact-compat": "^3.17.0",
+    "prettier": "^1.12.1",
     "react": "^15.5.4",
     "react-boilerplate-app-scripts": "^0.2.10",
     "react-dom": "^15.5.4",
@@ -53,7 +54,8 @@
     "sinon-chai": "2.14.0"
   },
   "scripts": {
-    "build-css": "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
+    "build-css":
+      "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
     "build-demo": "node ./scripts/build-demo.js",
     "build": "npm run test && node ./scripts/build-umd.js",
     "test": "karma start",
@@ -64,17 +66,24 @@
     "use": "react-boilerplate-app-scripts use",
     "create-i18n-excel": "react-router-controller-cli create-i18n-excel",
     "create-i18n-list": "react-router-controller-cli create-i18n-list",
-    "build-publish": "npm run test && npm run build-css && npm run transform && npm publish",
-    "transform": "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
+    "build-publish":
+      "npm run test && npm run build-css && npm run transform && npm publish",
+    "prettier": "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'",
+    "transform":
+      "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
     "transform-es": "cross-env BABEL_ENV=es babel ./src -d es",
     "transform-es-watch": "cross-env BABEL_ENV=es babel ./src -d es -w",
     "transform-default": "cross-env BABEL_ENV=production babel ./src -d libs",
-    "transform-default-watch": "cross-env BABEL_ENV=default babel ./src -d libs -w"
+    "transform-default-watch":
+      "cross-env BABEL_ENV=default babel ./src -d libs -w"
   },
   "husky": {
     "hooks": {
       "pre-push": "npm run test"
     }
+  },
+  "lint-staged": {
+    "*.js": ["eslint", "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'", "git add"]
   },
   "react-boilerplate-app-scripts": {
     "basename": "demo/html5-player",
@@ -101,21 +110,11 @@
         ]
       },
       "production": {
-        "plugins": [
-          "transform-decorators-legacy",
-          "transform-runtime"
-        ],
-        "presets": [
-          "react",
-          "es2015",
-          "stage-0"
-        ]
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
+        "presets": ["react", "es2015", "stage-0"]
       },
       "es": {
-        "plugins": [
-          "transform-decorators-legacy",
-          "transform-runtime"
-        ],
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
         "presets": [
           "react",
           [

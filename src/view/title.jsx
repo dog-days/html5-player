@@ -22,11 +22,14 @@ export default class Title extends React.Component {
   state = {};
   render() {
     const { userActive, title } = this.props;
-    return <div className={
-      classnames("html5-player-title",
-      {
-        'html5-player-hide': !userActive || !title
-      })
-    }>{title}</div>;
+    return (
+      <div
+        className={classnames('html5-player-title', {
+          'html5-player-hide': !userActive || !title,
+        })}
+      >
+        {title}
+      </div>
+    );
   }
 }

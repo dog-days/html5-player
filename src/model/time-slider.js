@@ -17,7 +17,12 @@ export default function() {
       },
     },
     sagas: {
-      *timeSaga({ payload: { currentTime, duration = 0, buffer } }, { put }) {
+      *timeSaga(
+        {
+          payload: { currentTime, duration = 0, buffer },
+        },
+        { put }
+      ) {
         let percent = currentTime / duration;
         if (percent > 1) {
           percent = 1;

@@ -18,7 +18,12 @@ export default function() {
       },
     },
     sagas: {
-      *timeSaga({ payload: { currentTime, duration = 0 } }, { put }) {
+      *timeSaga(
+        {
+          payload: { currentTime, duration = 0 },
+        },
+        { put }
+      ) {
         //currentTime和duration会有误差，最大的currentTime基本都比duration小，+0.25是为了减少time中的误差。
         const elapse = hms(Math.min(currentTime + 0.25, duration));
         const timeDuration = hms(duration);

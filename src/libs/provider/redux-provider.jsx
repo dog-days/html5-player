@@ -4,7 +4,6 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import window from 'global/window';
 
-
 /**
  * redux 基础 provider
  * @prop { object } store redux store
@@ -43,11 +42,7 @@ export default class ReduxProvider extends React.Component {
     });
   }
   getEnhancers(props) {
-    const {
-      enhancers = [],
-      middlewares = [],
-      production = true,
-    } = props;
+    const { enhancers = [], middlewares = [], production = true } = props;
     let devtools = () => noop => noop;
     //如果localStorage.reduxTools=true，reduxTools强制打开。
     //给生产环境调试使用。
@@ -83,7 +78,7 @@ export default class ReduxProvider extends React.Component {
   }
   render() {
     const { children } = this.props;
-    if(!this.store) {
+    if (!this.store) {
       this.store = this.getStore();
     }
     return <Provider store={this.store}>{children}</Provider>;

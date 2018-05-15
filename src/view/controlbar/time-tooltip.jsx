@@ -74,7 +74,9 @@ export default class TimeTooltip extends React.Component {
           })}
         >
           <div className="html5-player-thumbnail" style={style} />
-          <span className="html5-player-thumbnail-time">{hms(percent * duration)}</span>
+          <span className="html5-player-thumbnail-time">
+            {hms(percent * duration)}
+          </span>
         </div>
       );
     } else {
