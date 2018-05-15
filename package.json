@@ -79,11 +79,13 @@
   },
   "husky": {
     "hooks": {
+      "pre-commit": "lint-staged",
       "pre-push": "npm run test"
     }
   },
   "lint-staged": {
-    "*.js": ["eslint", "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'", "git add"]
+    "*.js|*.jsx": ["eslint"],
+    "*.js|*.jsx|*.less|*.css": [ "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'", "git add"]
   },
   "react-boilerplate-app-scripts": {
     "basename": "demo/html5-player",
