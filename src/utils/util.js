@@ -2,7 +2,9 @@ import React from 'react';
 import isNaN from 'lodash/isNaN';
 import isNumber from 'lodash/isNumber';
 
+import * as queryString from '../libs/query-string';
 import videoUtil from './video';
+
 /**
  *  标准reducer处理，根据payload进行处理。
  *  action的格式{
@@ -148,35 +150,8 @@ export function seconds(str, frameRate) {
   return sec;
 }
 
-/**
- * params json对象(一级)拼接url ?后面的参数
- * @param  {String} url  需要拼接的url
- * @param  {Objct}  params 需要拼接的url json参数
- * @return {String}    拼接的url
- */
-export function joinUrlParams(url, params) {
-  let p = '';
-  let i = 0;
-  for (var key in params) {
-    let value = params[key];
-    if (i === 0 && !~url.indexOf('?')) {
-      p += '?' + key + '=' + value;
-    } else {
-      p += '&' + key + '=' + value;
-    }
-    i++;
-  }
-  //random防止IE可能出现的缓存问题
-  if (key) {
-    p += '&random=' + randomKey();
-  } else {
-    if (~url.indexOf('?')) {
-      p += '&random=' + randomKey();
-    } else {
-      p += '?random=' + randomKey();
-    }
-  }
-  return url + p;
+export function joinUrlParams(url, newQueryParams, options) {
+  return queryString.joinUrlParams(url, newQueryParams, options);
 }
 
 export function delay(ms) {
