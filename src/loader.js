@@ -21,9 +21,9 @@ export default function selectBundle(config = {}) {
 function loadFlvJsBundle(config) {
   return new Promise(function(resolve) {
     require.ensure(
-      ['flv.js/dist/flv.js', './api/flvjs-api'],
+      ['flv.ly.js/dist/flv.js', './api/flvjs-api'],
       function(require) {
-        const flvjs = require('flv.js/dist/flv.js');
+        const flvjs = require('flv.ly.js/dist/flv.js');
         logger.success(
           'Module Loaded:',
           'relative flv.js module loaded sucessfully.'
