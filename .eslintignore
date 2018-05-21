@@ -10,3 +10,4 @@ node_modules/
 /coverage/
 /src/assets/css/style.css
 /src/assets/icon
+/src/libs/flv/flv.min.js
