@@ -101,6 +101,10 @@ class Events {
     const dispatch = this.dispatch;
     const { autoplay, isLiving } = this.config;
     api.on('loadeddata', () => {
+      //防止超时还在执行
+      clearTimeout(this.videoTimeout);
+      //设置重载状态false，这个视事件运行了，视频就可以播放了。
+      api.reloading = false;
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
       dispatch({
@@ -131,43 +135,36 @@ class Events {
   }
   //尝试重载次数记录
   retryReloadTime = 0;
-  timeoutAction(type) {
+  timeoutAction() {
     const api = this.api;
     const dispatch = this.dispatch;
     const locale = localization || api.localization;
     const { timeout = VIDEO_TIMEOUT, retryTimes = RETRY_TIMES } = this.config;
     // console.log(type, 'this.retryReloadTime', this.retryReloadTime);
-    if (type === 'timeupdate') {
-      //原生timeoudate事件在执行，说明没有stalled和超时
-      clearTimeout(this.videoTimeout);
-    }
     //处理超时
     this.videoTimeout = setTimeout(() => {
       // console.log(this.currentTime, api.currentTime, api.playing);
 
       logger.log('Stalled currentTime:', this.currentTime, api.currentTime);
-      if (this.currentTime !== api.currentTime || api.currentTime < 1) {
+      if (this.currentTime !== api.currentTime) {
         //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
-        //flv.js不播放时，刚开始currentTime会大于0，需要做兼容处理。
         return;
       }
       //需要防止视频结束、暂停、出错等还继续执行这个timeout计时器，所以要clearTimeout
       //超时最多尝试重载retryTimes
-      if (this.retryReloadTime < retryTimes) {
+      const isLiving = api.living || this.config.isLiving;
+      if (this.retryReloadTime < retryTimes && isLiving) {
         this.retryReloadTime++;
         // console.log(this.retryReloadTime);
-        if (api.living || this.config.isLiving) {
+        if (isLiving) {
           //直播才做重载
           dispatch({
             type: `${videoNamespace}/reload`,
           });
         }
-        if (type === 'stalled') {
-          this.isStalled = false;
-          clearTimeout(this.videoTimeout);
-        }
+        logger.info('Timeout:', `try to reload.`);
       } else {
-        if (api.living || this.config.isLiving) {
+        if (isLiving) {
           logger.error(
             'Timeout:',
             `try to reload ${retryTimes} times but video can not be loaded.`
@@ -184,6 +181,7 @@ class Events {
         }
         this.retryReloadTime = 0;
       }
+      this.isStalled = false;
     }, timeout);
   }
   stalled() {
@@ -191,18 +189,23 @@ class Events {
     //stalled事件之后还会执行timeupdate事件，this.videoTimeout会被clear
     //所以需要做判断处理。
     api.on('stalled', e => {
-      logger.info(
-        'Stalled:',
-        'because of network problem,video now is stalled.'
-      );
-      this.isStalled = true;
       this.currentTime = api.currentTime;
-      // console.log(api.isError, api.playing, api.notAutoPlayViewHide);
-      if (!api.isError && !api.ended) {
+      if (
+        !this.isStalled &&
+        !api.isError &&
+        !api.ended &&
+        !api.reloading &&
+        !this.reducingDelay
+      ) {
+        logger.info(
+          'Stalled:',
+          'because of network problem,video now is stalled.'
+        );
+        this.isStalled = true;
         //hls.js和flv.js在播放正常情况下也会stalled，跟原生的不一样
         //不自动播放时也需要阻止stalled，导致的重新加载。
         //flv视频播放结束后还会触发statlled
-        this.timeoutAction('stalled');
+        this.timeoutAction();
       }
     });
   }
@@ -211,40 +214,6 @@ class Events {
     const dispatch = this.dispatch;
     let { livingMaxBuffer = LIVING_MAXBUFFER_TIME, isHls } = this.config;
     api.on('timeupdate', () => {
-      //直播延时变大处理
-      //safari原生的hls，在直播延时处理失效，还没有解决办法，不过hls本来的延时就大，影响不大。
-      //使用的hls.js和flv.js延时处理是正常的。
-      //edge原生的hls的也正常，不过经常会卡，然后就触发了重载，然后就正常了。
-      //正常网络下hls处理延时变大会很少的，flv才可能频繁一点，flv的实时性要求高。
-      if (
-        api.living &&
-        api.buffered.length > 0 &&
-        api.currentTime &&
-        livingMaxBuffer > 0
-      ) {
-        //livingMaxBuffer=0，相当于没设置，最好不要设置为0
-        if (isHls) {
-          //hls需要的直播需要特殊对待。
-          livingMaxBuffer += 15;
-        }
-        //直播实时处理，让视频接近实时。
-        if (api.bufferTime - api.currentTime > livingMaxBuffer) {
-          let reduceBuffer;
-          if (isHls) {
-            reduceBuffer = 15;
-          } else {
-            reduceBuffer = 1;
-          }
-          //浏览器原生的hls，在直播状态设置currentTime失效。
-          api.currentTime = api.bufferTime - reduceBuffer;
-          logger.log(
-            'Delay Reduce',
-            'Due to the high delay, there is a need to reduce the delay.'
-          );
-        }
-      }
-      //只要在播放，retryReloadTime就要设置为0。
-      this.retryReloadTime = 0;
       if (api.playing) {
         if (!api.living) {
           //直播不播放状态中不处理loading
@@ -298,13 +267,54 @@ class Events {
             },
           });
         }
-        if (!this.isStalled && this.currentTime !== api.currentTime) {
-          //stalled事件之后还会执行timeupdate事件，this.videoTimeout会被clear
-          //所以需要做判断处理。
-          this.timeoutAction('timeupdate');
-        } else {
-          this.isStalled = false;
+        if (this.currentTime !== api.currentTime) {
+          clearTimeout(this.videoTimeout);
         }
+        if (this.isStalled && this.currentTime !== api.currentTime) {
+          this.isStalled = false;
+          //播放中取消，减少延时的状态
+          this.reducingDelay = false;
+        } else if (!api.reloading && !this.reducingDelay) {
+          this.timeoutAction();
+        }
+        //直播延时变大处理
+        //safari原生的hls，在直播延时处理失效，还没有解决办法，不过hls本来的延时就大，影响不大。
+        //使用的hls.js和flv.js延时处理是正常的。
+        //edge原生的hls的也正常，不过经常会卡，然后就触发了重载，然后就正常了。
+        //正常网络下hls处理延时变大会很少的，flv才可能频繁一点，flv的实时性要求高。
+        if (
+          api.living &&
+          api.buffered.length > 0 &&
+          api.currentTime &&
+          livingMaxBuffer > 0
+        ) {
+          //livingMaxBuffer=0，相当于没设置，最好不要设置为0
+          if (isHls) {
+            //hls需要的直播需要特殊对待。
+            livingMaxBuffer += 15;
+          }
+          //直播实时处理，让视频接近实时。
+          if (api.bufferTime - api.currentTime > livingMaxBuffer) {
+            let reduceBuffer;
+            if (isHls) {
+              reduceBuffer = 15;
+            } else {
+              reduceBuffer = 1;
+            }
+            //浏览器原生的hls，在直播状态设置currentTime失效。
+            api.currentTime = api.bufferTime - reduceBuffer;
+            //标记正在减少延时状态
+            this.reducingDelay = true;
+            //同时超时重新计算
+            clearTimeout(this.videoTimeout);
+            logger.log(
+              'Delay Reduce',
+              'Due to the high delay, there is a need to reduce the delay.'
+            );
+          }
+        }
+        //只要在播放，retryReloadTime就要设置为0。
+        this.retryReloadTime = 0;
         //最后赋值，可以用来判断视频视频卡顿
         this.currentTime = api.currentTime;
       }
@@ -349,7 +359,7 @@ class Events {
     api.on('ended', () => {
       logger.info('Ended:', 'video is ended');
       clearTimeout(this.videoTimeout);
-      if (!api.living) {
+      if (!api.living && !this.config.isLiving) {
         //直播是不会结束的
         //即使监控到end事件也不做处理
         dispatch({

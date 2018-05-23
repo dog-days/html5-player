@@ -17,14 +17,14 @@ export const MAX_VOLUME = 100;
 
 export const DEBUG = storage.get('debug');
 //视频超时，超时后会超时reload，尝试3次后，报错误信息。
-export const VIDEO_TIMEOUT = 5000;
+export const VIDEO_TIMEOUT = 1000 * 15;
 //默认的播放器纵横比
 export const ASPECT_RATIO = '16:9';
 //用户不活跃的时候，controlbar即将消失的时间
 export const CONTROLBAR_TIMEOUT = 2000;
 export const DEFAULT_PLAYBACKRATES = [1, 1.25, 1.5, 1.75, 2];
 //直播最大缓存
-export const LIVING_MAXBUFFER_TIME = 2;
+export const LIVING_MAXBUFFER_TIME = 6;
 //延时展示loading的时间
 export const SHOW_LOADING_LAZY_TIME = 500;
 //延时展示错误信息的时间

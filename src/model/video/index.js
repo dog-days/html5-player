@@ -25,7 +25,7 @@ import {
   SHOW_LOADING_LAZY_TIME,
   SHOW_ERROR_MESSAGE_LAZY_TIME,
   VIDEO_TIMEOUT,
-  RETRY_TIMES,
+  // RETRY_TIMES,
 } from '../../utils/const';
 import fullscreenHelper from '../../utils/dom/fullscreen';
 import * as storage from '../../utils/storage';
@@ -167,11 +167,11 @@ export default function() {
         }
         const {
           timeout = VIDEO_TIMEOUT,
-          autoplay,
-          retryTimes = RETRY_TIMES,
+          // autoplay,
+          // retryTimes = RETRY_TIMES,
         } = _config;
-        if (!clearIntervalForPlay && !_api.isError && !autoplay) {
-          //处理autoplay=false时，hls ts文件500，然后点击播放后无提示问题。
+        if (!clearIntervalForPlay && !_api.isError) {
+          //hls ts文件500等，然后点击播放后无提示问题。
           const locale = localization || _api.localization;
           clearIntervalForPlay = setInterval(() => {
             _dispatch({
@@ -181,7 +181,7 @@ export default function() {
               },
             });
             //让timeout时间跟尝试重连的timeout保持最小时间一致。
-          }, timeout * retryTimes);
+          }, timeout);
         }
         if (!_api.notAutoPlayViewHide) {
           //当autoplay为false，播放后，需要隐藏not-autoplay页面
@@ -652,6 +652,7 @@ export default function() {
       },
       *reload({ payload }, { put }) {
         logger.info('Reload Video');
+        _api.reloading = true;
         _api.trigger('reload');
         //重置
         _api.reset();
@@ -664,6 +665,8 @@ export default function() {
           _api.currentTime = tempCurrentTime;
         }
         _api.isError = false;
+        //重载后还原
+        clearIntervalForPlay = undefined;
         yield put({
           type: `loading`,
           payload: true,
