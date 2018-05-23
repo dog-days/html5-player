@@ -193,6 +193,7 @@ class Events {
       if (
         !this.isStalled &&
         !api.isError &&
+        api.playing &&
         !api.ended &&
         !api.reloading &&
         !this.reducingDelay
