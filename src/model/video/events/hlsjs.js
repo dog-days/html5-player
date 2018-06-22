@@ -25,17 +25,21 @@ class HlsjsEvents {
     const dispatch = this.dispatch;
     const list = [];
     api.hlsObj.levels.forEach((v, k) => {
-      list.push({
-        label: `${v.height}p`,
-        value: k,
+      if (v.bitrate) {
+        list.push({
+          label: `${v.height}p`,
+          value: k,
+        });
+      }
+    });
+    if (list[0]) {
+      dispatch({
+        type: `${videoNamespace}/pictureQualityList`,
+        payload: {
+          list,
+        },
       });
-    });
-    dispatch({
-      type: `${videoNamespace}/pictureQualityList`,
-      payload: {
-        list,
-      },
-    });
+    }
   }
   setSubtitle() {
     const api = this.api;
