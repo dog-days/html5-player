@@ -21,7 +21,6 @@ import SubtitleSelect from '../controlbar/subtitle-select';
 import PictureQuality from '../controlbar/picture-quality';
 import Rotate from '../controlbar/rotate';
 import Capture from '../controlbar/capture';
-import { CONTROLBAR_TIMEOUT } from '../../utils/const';
 import { getChildProps, cloneElement } from '../../utils/util';
 import { namespace as controlbarNamespace } from '../../model/controlbar';
 import { namespace as videoNamespace } from '../../model/video';
@@ -46,6 +45,7 @@ import { namespace as trackNamespace } from '../../model/track';
 export default class Controlbar extends React.Component {
   static contextTypes = {
     localization: PropTypes.object,
+    controlbarHideTime: PropTypes.number,
   };
   displayName = 'Controlbar';
   state = {};
@@ -69,7 +69,7 @@ export default class Controlbar extends React.Component {
       this.dispatch({
         type: `${videoNamespace}/controlbar`,
         payload: false,
-        delayTime: CONTROLBAR_TIMEOUT,
+        delayTime: this.context.controlbarHideTime,
         onControlbarEnter: false,
       });
     }

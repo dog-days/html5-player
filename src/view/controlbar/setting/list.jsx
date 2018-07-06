@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 //内部依赖包
 import localization from '../../../i18n/default';
 import { namespace as videoNamespace } from '../../../model/video';
-import { CONTROLBAR_TIMEOUT } from '../../../utils/const';
 
 export default class List extends React.Component {
   static contextTypes = {
     localization: PropTypes.object,
     playerDOM: PropTypes.object,
+    controlbarHideTime: PropTypes.number,
   };
   displayName = 'List';
   dispatch = this.props.dispatch;
@@ -24,7 +24,7 @@ export default class List extends React.Component {
         this.dispatch({
           type: `${videoNamespace}/controlbar`,
           payload: false,
-          delayTime: CONTROLBAR_TIMEOUT,
+          delayTime: this.context.controlbarHideTime,
           onControlbarEnter: false,
         });
       }

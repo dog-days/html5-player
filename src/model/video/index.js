@@ -21,7 +21,6 @@ import { namespace as rotateNamespace } from '../rotate';
 
 import {
   MAX_VOLUME,
-  CONTROLBAR_TIMEOUT,
   SHOW_LOADING_LAZY_TIME,
   SHOW_ERROR_MESSAGE_LAZY_TIME,
   VIDEO_TIMEOUT,
@@ -240,7 +239,7 @@ export default function() {
             yield put({
               type: `controlbar`,
               payload: false,
-              delayTime: CONTROLBAR_TIMEOUT,
+              delayTime: _config.controlbarHideTime,
             });
           }
         }
@@ -548,7 +547,7 @@ export default function() {
           yield put({
             type: `controlbar`,
             payload: false,
-            delayTime: CONTROLBAR_TIMEOUT,
+            delayTime: _config.controlbarHideTime,
             onControlbarEnter: false,
           });
         }

@@ -25,7 +25,7 @@ import ErrorMessage from './error-message';
 import Subtitle from './track/subtitle';
 import Title from './title';
 import Fragment from './fragment';
-import { CONTROLBAR_TIMEOUT, ASPECT_RATIO } from '../utils/const';
+import { CONTROLBAR_HIDE_TIME, ASPECT_RATIO } from '../utils/const';
 import { namespace as videoNamespace } from '../model/video';
 import { namespace as fullscreenNamespace } from '../model/fullscreen';
 import { namespace as playPauseNamespace } from '../model/play-pause';
@@ -81,6 +81,8 @@ export default class View extends React.Component {
     /**---begin Appearance**/
     //多语言
     localization: PropTypes.object,
+    //controlbar无操作后，多少毫秒隐藏时间
+    controlbarHideTime: PropTypes.number,
     controls: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     fragment: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -101,6 +103,7 @@ export default class View extends React.Component {
     //实例化后的player，可直接调用对外api，给使用者调用。
     player: PropTypes.object,
     playerDOM: PropTypes.object,
+    controlbarHideTime: PropTypes.number,
   };
   outSideApi = {};
   getChildContext() {
@@ -109,6 +112,7 @@ export default class View extends React.Component {
       localization: this.props.localization,
       player: this.outSideApi,
       playerDOM: ReactDOM.findDOMNode(this.refs.video),
+      controlbarHideTime: this.props.controlbarHideTime || CONTROLBAR_HIDE_TIME,
     };
   }
   state = {
@@ -124,6 +128,7 @@ export default class View extends React.Component {
       file,
       videoCallback,
       preload = true,
+      controlbarHideTime = CONTROLBAR_HIDE_TIME,
       ...other
     } = this.props;
     if (!isString(file)) {
@@ -157,6 +162,7 @@ export default class View extends React.Component {
             videoNotSupport,
             file,
             preload,
+            controlbarHideTime,
             ...other,
           },
           api: provider.api,
@@ -250,21 +256,26 @@ export default class View extends React.Component {
       }
     }
   };
-  dispatchControlbar(payload, CONTROLBAR_TIMEOUT) {
+  dispatchControlbar(payload, controlbarHideTime) {
     this.dispatch({
       type: `${videoNamespace}/controlbar`,
       payload,
-      delayTime: CONTROLBAR_TIMEOUT,
+      delayTime: controlbarHideTime,
     });
   }
   onMouseMove = e => {
-    const { controls = true, playing, userActive } = this.props;
+    const {
+      controls = true,
+      playing,
+      userActive,
+      controlbarHideTime = CONTROLBAR_HIDE_TIME,
+    } = this.props;
     if (controls && playing) {
       //清理定时器，其他组件操作也可以处理当前组件的定时器，和video model中的定时器
       this.dispatch({
         type: `${videoNamespace}/controlbarClearTimeout`,
       });
-      this.dispatchControlbar(false, CONTROLBAR_TIMEOUT);
+      this.dispatchControlbar(false, controlbarHideTime);
       if (!userActive) {
         this.dispatchControlbar(true);
       }
