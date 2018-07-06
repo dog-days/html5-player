@@ -129,6 +129,7 @@ export default class View extends React.Component {
     if (!isString(file)) {
       file = '';
     }
+    file = util.urlProtocolAdapter(file);
     let hlsjs = util.shouldUseHlsjs(file, forceOpenHls);
     let flvjs = util.shouldUseFlvjs(file);
     let videoNotSupport = false;

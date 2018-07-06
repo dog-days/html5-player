@@ -247,3 +247,14 @@ export function dateFormat(time, fmt) {
       );
   return fmt;
 }
+/**
+ * 视频url的协议类型，如果传进来的是`//www.test.com/xxxx`
+ * @param {string} url url参数
+ */
+export function urlProtocolAdapter(url) {
+  if (url.trim().indexOf('//') === 0) {
+    return `${location.protocol}${url}`;
+  } else {
+    return url;
+  }
+}
