@@ -10,7 +10,17 @@ export default function(id) {
         resolve={resolve}
         file="https://media.w3.org/2010/05/sintel/trailer.mp4"
         autoplay={false}
-        fragment="https://dog-days.github.io/demo/html5-player/fragment.json"
+        fragment={{
+          fragments: [
+            { begin: '2018-06-15 01:37:35', end: '2018-06-17 12:06:00' },
+            { begin: '2018-06-17 12:06:00', end: '2018-06-17 12:06:30' },
+            { begin: '2018-06-20 12:39:30', end: '2018-06-20 12:40:30' },
+          ],
+          total: {
+            begin: '2018-06-15 01:37:35',
+            end: '2018-06-22 02:37:35',
+          },
+        }}
       />,
       document.getElementById(id)
     );

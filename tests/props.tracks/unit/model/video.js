@@ -37,7 +37,7 @@ export default function(player, resolve) {
         expect(!!q('.html5-player-thumbnail')).to.be.true;
         resolve();
         done();
-      }, 1500);
+      }, 2000);
     });
   });
 }
