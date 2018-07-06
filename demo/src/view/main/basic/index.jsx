@@ -45,6 +45,9 @@ class View extends React.Component {
             value={value}
           />
           <Html5Player
+            // isLiving
+            flvConfig={{ enableWorker: true }}
+            livingMaxBuffer={3}
             videoCallback={this.videoCallback}
             // contextMenu={[<a href="#demo">demo</a>, <a href="#demo2">demo2</a>]}
             // playbackRates={[0.5, 1]}

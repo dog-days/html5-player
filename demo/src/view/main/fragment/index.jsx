@@ -9,26 +9,21 @@ export default class View extends React.Component {
         <div className="player-container">
           <Html5Player
             timeSliderShowFormat="date"
-            file="https://media.w3.org/2010/05/sintel/trailer.mp4"
+            file="https://jxsr-api.antelopecloud.cn/v2/record/538378757/storage/hls/1529041055_1529649455.m3u8?client_token=538378757_3356491776_1561186094_06eb301c5923ea8e97c2a4ffd315956f"
             fragment={{
-              total: {
-                begin: '2017-10-03 00:00:00',
-                end: '2017-10-03 00:01:19',
-              },
               fragments: [
-                {
-                  begin: '2017-10-03 00:00:02',
-                  end: '2017-10-03 00:00:12',
-                },
-                {
-                  begin: '2017-10-03 00:00:32',
-                  end: '2017-10-03 00:00:42',
-                },
-                {
-                  begin: '2017-10-03 00:00:45',
-                  end: '2017-10-03 00:00:52',
-                },
+                { begin: '2018-06-15 01:37:35', end: '2018-06-17 12:06:00' },
+                { begin: '2018-06-17 12:06:00', end: '2018-06-17 12:06:30' },
+                { begin: '2018-06-18 10:47:30', end: '2018-06-18 10:49:30' },
+                { begin: '2018-06-20 11:43:30', end: '2018-06-20 11:44:00' },
+                { begin: '2018-06-20 12:06:30', end: '2018-06-20 12:07:00' },
+                { begin: '2018-06-20 12:39:30', end: '2018-06-20 12:40:30' },
+                { begin: '2018-06-21 03:49:30', end: '2018-06-21 03:50:00' },
               ],
+              total: {
+                begin: '2018-06-15 01:37:35',
+                end: '2018-06-22 02:37:35',
+              },
             }}
           />
         </div>
