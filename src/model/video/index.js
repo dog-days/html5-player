@@ -605,6 +605,10 @@ export default function() {
           return;
         }
         const error = () => {
+          //先清除，可能遗留的
+          _dispatch({
+            type: `${namespace}/controlbarClearTimeout`,
+          });
           if (!_api.controlbarShow) {
             _dispatch({
               type: `${namespace}/controlbar`,
