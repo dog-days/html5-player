@@ -48,7 +48,8 @@ export function shouldUseFlvjs(file) {
 }
 //当前浏览器视频支持视频播放
 export function isH5VideoSupported(file) {
-  const suffix = file.match(/.*\.(.*)$/)[1];
+  const match = file.match(/.*\.(.*)$/);
+  const suffix = match && match[1];
   if (!suffix) {
     //无后缀名的直接通过。
     return true;
