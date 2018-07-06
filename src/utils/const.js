@@ -17,7 +17,7 @@ export const MAX_VOLUME = 100;
 
 export const DEBUG = storage.get('debug');
 //视频超时，超时后会超时reload，尝试3次后，报错误信息。
-export const VIDEO_TIMEOUT = 1000 * 15;
+export const VIDEO_TIMEOUT = 1000 * 30;
 //默认的播放器纵横比
 export const ASPECT_RATIO = '16:9';
 //用户不活跃的时候，controlbar即将消失的时间

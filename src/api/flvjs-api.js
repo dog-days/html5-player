@@ -22,7 +22,7 @@ export default class flvAPI extends API {
       player.unload();
       player.detachMediaElement();
       player.destroy();
-      this.player = null;
+      this.flvPlayer = null;
       logger.success('Detach Media:', 'detach media for flv.js sucessfully.');
     }
   }
