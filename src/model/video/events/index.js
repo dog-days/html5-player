@@ -13,7 +13,6 @@ import * as logger from '../../../utils/logger';
 import { TIMEOUT_ERROR } from '../../../utils/error-code';
 import { isIE } from '../../../utils/browser';
 import contains from '../../../utils/dom/contains';
-import localization from '../../../i18n/default';
 
 class Events {
   constructor(payload) {
@@ -138,7 +137,7 @@ class Events {
   timeoutAction() {
     const api = this.api;
     const dispatch = this.dispatch;
-    const locale = localization || api.localization;
+    const locale = api.localization;
     const { timeout = VIDEO_TIMEOUT, retryTimes = RETRY_TIMES } = this.config;
     // console.log(type, 'this.retryReloadTime', this.retryReloadTime);
     //处理超时
@@ -331,7 +330,7 @@ class Events {
   error() {
     const api = this.api;
     const dispatch = this.dispatch;
-    const locale = localization || api.localization;
+    const locale = api.localization;
     api.on('error', data => {
       this.reset();
       //有message和type的是hls.js等事件的错误

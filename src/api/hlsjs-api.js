@@ -7,7 +7,6 @@ import {
   UNKNOWN_ERROR,
   FATAL_ERROR,
 } from '../utils/error-code';
-import localization from '../i18n/default';
 
 export default class hlsAPI extends API {
   constructor(videoDOM, file, Hls) {
@@ -54,7 +53,7 @@ export default class hlsAPI extends API {
   attachEvent() {
     const hlsObj = this.hlsObj;
     const Hls = this.Hls;
-    const locale = this.localization || localization;
+    const locale = this.localization;
     if (!hlsObj) {
       return;
     }

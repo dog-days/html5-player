@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import isBoolean from 'lodash/isBoolean';
 //内部依赖包
 import clearDecorator from '../decorator/clear';
-import localization from '../../i18n/default';
 import PlayPause from '../controlbar/play-pause';
 import Volume from '../controlbar/volume';
 import Next from '../controlbar/next';
@@ -75,7 +74,7 @@ export default class Controlbar extends React.Component {
     }
   };
   getLocale() {
-    return this.context.localization || localization;
+    return this.context.localization;
   }
   renderCustomButton(buttons) {
     const buttonJSX = [];

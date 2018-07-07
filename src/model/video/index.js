@@ -32,7 +32,6 @@ import * as util from '../../utils/util';
 import * as logger from '../../utils/logger';
 import videoEvents from './events';
 import outSideApi from './outside-api';
-import localization from '../../i18n/default';
 
 export const namespace = 'video';
 
@@ -171,7 +170,7 @@ export default function() {
         } = _config;
         if (!clearIntervalForPlay && !_api.isError) {
           //hls ts文件500等，然后点击播放后无提示问题。
-          const locale = localization || _api.localization;
+          const locale = _config.localization;
           clearIntervalForPlay = setInterval(() => {
             _dispatch({
               type: `${namespace}/errorMessage`,

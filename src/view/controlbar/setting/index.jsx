@@ -15,7 +15,6 @@ import { namespace as playbackRateNamespace } from '../../../model/playback-rate
 import { namespace as trackNamespace } from '../../../model/track';
 import { namespace as qualityNamespace } from '../../../model/picture-quality';
 import contains from '../../../utils/dom/contains';
-import localization from '../../../i18n/default';
 
 const state = {
   showSetting: false,
@@ -95,7 +94,7 @@ export default class Setting extends React.Component {
     });
   };
   getLocale() {
-    return this.context.localization || localization;
+    return this.context.localization;
   }
   renderContent() {
     const {
@@ -185,10 +184,7 @@ export default class Setting extends React.Component {
     );
   }
   render() {
-    const { living, playbackRateControls = true } = this.props;
-    if (living || !playbackRateControls) {
-      return false;
-    }
+    const { living } = this.props;
     return (
       <Tooltip
         ref="setting"

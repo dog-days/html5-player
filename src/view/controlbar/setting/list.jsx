@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 //内部依赖包
-import localization from '../../../i18n/default';
 import { namespace as videoNamespace } from '../../../model/video';
 
 export default class List extends React.Component {
@@ -31,7 +30,7 @@ export default class List extends React.Component {
     };
   };
   getLocale() {
-    return this.context.localization || localization;
+    return this.context.localization;
   }
   renderBack(title) {
     const { onBackEvent } = this.props;

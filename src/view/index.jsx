@@ -105,11 +105,18 @@ export default class View extends React.Component {
     playerDOM: PropTypes.object,
     controlbarHideTime: PropTypes.number,
   };
+  constructor(props) {
+    super(props);
+    this.locale = {
+      ...localizationDefault,
+      ...props.localization,
+    };
+  }
   outSideApi = {};
   getChildContext() {
     return {
       playerConainerDOM: this.playerConainerDOM,
-      localization: this.props.localization,
+      localization: this.locale,
       player: this.outSideApi,
       playerDOM: ReactDOM.findDOMNode(this.refs.video),
       controlbarHideTime: this.props.controlbarHideTime || CONTROLBAR_HIDE_TIME,
@@ -142,7 +149,14 @@ export default class View extends React.Component {
       //通过后缀名判断，没有后缀名不作处理，如果不支持原生的浏览器video格式，需要提示。
       videoNotSupport = true;
     }
-    loader({ hlsjs, flvjs, videoDOM, file, ...other }).then(provider => {
+    loader({
+      hlsjs,
+      flvjs,
+      videoDOM,
+      file,
+      localization: this.locale,
+      ...other,
+    }).then(provider => {
       //首先统一清理，可能会存在上一个的播放状态。
       this.dispatch({
         type: `${videoNamespace}/clear`,
@@ -163,6 +177,7 @@ export default class View extends React.Component {
             file,
             preload,
             controlbarHideTime,
+            localization: this.locale,
             ...other,
           },
           api: provider.api,
@@ -346,7 +361,6 @@ export default class View extends React.Component {
       playbackRateControls,
       logo,
       loop,
-      localization,
       contextMenu = true,
       fragment,
       isLiving,
@@ -355,7 +369,7 @@ export default class View extends React.Component {
       stretching = 'uniform',
       children,
     } = this.props;
-    const locale = localization || localizationDefault;
+    const locale = this.locale;
     const containerStyle = this.getContainerStyle();
     let videoProps = {};
     if (ready) {
@@ -432,7 +446,6 @@ export default class View extends React.Component {
                     muted={muted}
                     controls={controls}
                     isLiving={isLiving}
-                    localization={localization}
                     timeSliderShowFormat={timeSliderShowFormat}
                     hasFragment={!!fragment}
                     loadHtml2canvasBundle={this.loadHtml2canvasBundle}

@@ -1,6 +1,5 @@
 import API from './api';
 import * as logger from '../utils/logger';
-import localization from '../i18n/default';
 
 export default class flvAPI extends API {
   constructor(videoDOM, file, flvjs, flvConfig = {}) {
@@ -54,7 +53,7 @@ export default class flvAPI extends API {
     }
   }
   attachEvent() {
-    const locale = this.localization || localization;
+    const locale = this.localization;
     const errorTitle = 'Flv.js Error,';
     this.flvjs &&
       this.flvjs.LoggingControl.addLogListener((type, str) => {
