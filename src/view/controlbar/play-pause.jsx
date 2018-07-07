@@ -45,7 +45,7 @@ export default class PlayPause extends React.Component {
     }
     return (
       <button
-        className="html5-player-small-button"
+        className="html5-player-small-button html5-player-play-pause-button"
         onClick={playing ? this.pause : this.play}
       >
         <svg

@@ -125,33 +125,31 @@ export default class Volume extends React.Component {
         show={this.isMove}
         toTargetGap={toTargetGap}
       >
-        <span className="display-inline-block">
-          <button
-            className="html5-player-small-button"
-            onClick={this.onMuteStateChange}
+        <button
+          className="html5-player-small-button html5-player-volume-button"
+          onClick={this.onMuteStateChange}
+        >
+          <svg
+            className={classnames(
+              'html5-player-icon html5-player-volume-icon',
+              {
+                'html5-player-volume-full-icon': volume === 100 && !muted,
+                'html5-player-volume-x-icon': volume === 0 || muted,
+                'html5-player-volume-part-icon':
+                  volume > 0 && volume < 100 && !muted,
+              }
+            )}
+            aria-hidden="true"
           >
-            <svg
-              className={classnames(
-                'html5-player-icon html5-player-volume-icon',
-                {
-                  'html5-player-volume-full-icon': volume === 100 && !muted,
-                  'html5-player-volume-x-icon': volume === 0 || muted,
-                  'html5-player-volume-part-icon':
-                    volume > 0 && volume < 100 && !muted,
-                }
-              )}
-              aria-hidden="true"
-            >
-              <use
-                xlinkHref={classnames({
-                  '#icon-volume-full': volume === 100 && !muted,
-                  '#icon-volume-x': volume === 0 || muted,
-                  '#icon-volume-part': volume > 0 && volume < 100 && !muted,
-                })}
-              />
-            </svg>
-          </button>
-        </span>
+            <use
+              xlinkHref={classnames({
+                '#icon-volume-full': volume === 100 && !muted,
+                '#icon-volume-x': volume === 0 || muted,
+                '#icon-volume-part': volume > 0 && volume < 100 && !muted,
+              })}
+            />
+          </svg>
+        </button>
       </Tooltip>
     );
   }

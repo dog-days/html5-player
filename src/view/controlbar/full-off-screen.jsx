@@ -36,7 +36,7 @@ export default class FullOffScreen extends React.Component {
     const { isfull } = this.props;
     return (
       <button
-        className="html5-player-small-button float-right"
+        className="html5-player-small-button float-right html5-player-screen-full-off-button"
         onClick={this.onFullStateChange}
       >
         <svg

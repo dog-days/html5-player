@@ -25,7 +25,7 @@ export default class Prev extends React.Component {
     }
     return (
       <button
-        className="html5-player-small-button float-left"
+        className="html5-player-small-button float-left html5-player-prev-button"
         onClick={this.onClick}
       >
         <svg

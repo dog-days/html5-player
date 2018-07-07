@@ -26,7 +26,7 @@ export default class Capture extends React.Component {
   render() {
     return (
       <button
-        className="html5-player-small-button float-right"
+        className="html5-player-small-button float-right html5-player-capture-button"
         onClick={this.capture}
       >
         <svg
