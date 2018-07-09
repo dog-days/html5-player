@@ -14,6 +14,7 @@ import { namespace as timeSliderNamespace } from '../time-slider';
 import { namespace as errorMessageNamespace } from '../error-message';
 import { namespace as trackNamespace } from '../track';
 import { namespace as fragmentNamespace } from '../fragment';
+import { namespace as selectionNamespace } from '../selection';
 import { namespace as livingNamespace } from '../living';
 import { namespace as playbackRateNamespace } from '../playback-rate';
 import { namespace as qualityNamespace } from '../picture-quality';
@@ -368,12 +369,18 @@ export default function() {
             },
           });
         }
-        yield put({
-          type: `${timeNamespace}/timeSaga`,
-          payload,
-        });
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
+        yield put({
+          type: `${timeNamespace}/timeSaga`,
+          payload: {
+            ...payload,
+            duration: (fragment && fragment.duration) || payload.duration,
+            currentTime:
+              payload.currentTime +
+              (payload.currentTime === 0 ? 0 : _api.videoGaps),
+          },
+        });
         if (!fragment || !fragment.data) {
           yield put({
             type: `${timeSliderNamespace}/timeSaga`,
@@ -397,11 +404,37 @@ export default function() {
         if (!fragment || !fragment.data) {
           return;
         }
+        _api.fragmentDuration = fragment.duration;
+        if (_api.currentTime === 0) {
+          //循环播放会重头放，需要重置
+          _api.videoGaps = 0;
+        }
         const { duration: fragmentDuration, data: fragmentData } = fragment;
+        //begin----处理selection
+        const selection = reduxStore.selection;
+        let selectionBeginPercent;
+        if (_config.selection) {
+          if (selection.end > fragment.duration) {
+            selection.end = fragment.duration;
+          }
+          if (
+            _api.currentTime + _api.videoGaps < selection.begin ||
+            _api.currentTime + _api.videoGaps > selection.end
+          ) {
+            if (_api.notAutoPlayViewHide && !_config.autoplay) {
+              yield put({
+                type: `loading`,
+                payload: true,
+              });
+            }
+            selectionBeginPercent = selection.begin / fragment.duration;
+          }
+        }
+        //end----处理selection
         let sliderPercent = 0;
         const { seeking, percent } = payload;
-        if (seeking) {
-          let position = percent * fragmentDuration;
+        if (seeking || selectionBeginPercent) {
+          let position = (selectionBeginPercent || percent) * fragmentDuration;
           //如果是点击、拖拽
           _api.videoGaps = 0;
           fragmentData.forEach(v => {
@@ -413,7 +446,7 @@ export default function() {
             }
           });
           _api.currentTime = position - _api.videoGaps;
-          sliderPercent = percent;
+          sliderPercent = selectionBeginPercent || percent;
         } else {
           const gapPosition = _api.currentTime + _api.videoGaps;
           fragmentData.forEach((v, k) => {
@@ -505,6 +538,74 @@ export default function() {
           },
         });
         _api.trigger('seek', percent);
+      },
+      *selection(
+        {
+          payload: { percent, type },
+        },
+        { put, select }
+      ) {
+        const reduxStore = yield select();
+        const fragment = reduxStore.fragment;
+        const selection = reduxStore.selection;
+        if (selection.end > fragment.duration) {
+          selection.end = fragment.duration;
+        }
+        if (type === 'left-blur') {
+          yield put({
+            type: `seeking`,
+            payload: {
+              percent,
+            },
+          });
+          let begin = percent * fragment.duration;
+          //对外提供selection事件
+          _api.trigger('selection', {
+            ...selection,
+            begin,
+          });
+        } else if (type === 'left-change') {
+          let begin = percent * fragment.duration;
+          if (begin > selection.end - selection.minGap) {
+            begin = selection.end - selection.minGap;
+            if (selection.end < selection.minGap) {
+              begin = 0;
+            }
+          }
+          if (selection.end - begin > selection.maxGap) {
+            begin = selection.end - selection.maxGap;
+          }
+          yield put({
+            type: `${selectionNamespace}/dataReducer`,
+            payload: {
+              begin,
+            },
+          });
+        } else if (type === 'right-change') {
+          let end = percent * fragment.duration;
+          if (selection.begin > end - selection.minGap) {
+            end = selection.begin + selection.minGap;
+            if (selection.end < selection.minGap) {
+              end = fragment.duration;
+            }
+          }
+          if (end - selection.begin > selection.maxGap) {
+            end = selection.maxGap + selection.begin;
+          }
+          yield put({
+            type: `${selectionNamespace}/dataReducer`,
+            payload: {
+              end,
+            },
+          });
+        } else if (type === 'right-blur') {
+          let end = percent * fragment.duration;
+          //对外提供selection事件
+          _api.trigger('selection', {
+            ...selection,
+            end,
+          });
+        }
       },
       *fullscreen({ payload }, { put }) {
         if (fullscreenObj) {
@@ -865,6 +966,21 @@ export default function() {
             type: `muted`,
             payload: true,
             autoMuted: true,
+          });
+        }
+        if (_config.selection) {
+          if (_config.selection === true) {
+            _config.selection = {};
+          }
+          const payload = {
+            begin: 0,
+            //5分钟
+            end: 5 * 60,
+            ..._config.selection,
+          };
+          yield put({
+            type: `${selectionNamespace}/dataReducer`,
+            payload,
           });
         }
         //防止事件没移除

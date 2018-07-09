@@ -126,7 +126,7 @@ export default class Slider extends React.Component {
     if (vertical) {
       percent = 1 - percent;
     }
-    if (defaultPercent) {
+    if (defaultPercent || defaultPercent === 0) {
       this.percent = percent;
       this.setState({ random: Math.random() });
     }

@@ -96,6 +96,16 @@ export default class API {
                 },
               });
               break;
+            case 'duration':
+              _this = Object.create(_this, {
+                duration: {
+                  // eslint-disable-next-line
+                  get: function() {
+                    return _this.fragmentDuration || videoDOM.duration;
+                  },
+                },
+              });
+              break;
             default:
           }
         }

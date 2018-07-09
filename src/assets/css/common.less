@@ -171,6 +171,7 @@ button {
     color: @text-color;
     .black-bg();
     overflow: hidden;
+    user-select: none;
   }
   &-tag {
     width: 100%;
@@ -581,5 +582,24 @@ button {
   &-carousel-arrow-right {
     .common-arraw();
     right: -40px;
+  }
+  &-selection {
+    &-left,
+    &-right {
+      cursor: ew-resize;
+      position: absolute;
+      z-index: 100000;
+      left: 0;
+      top: -5px;
+      width: 3px;
+      height: ~'calc(100% + 5px)';
+      background: #fff;
+    }
+    &-right {
+      transform: translate(-50%, 0%);
+    }
+    &-left {
+      transform: translate(-50%, 0%);
+    }
   }
 }

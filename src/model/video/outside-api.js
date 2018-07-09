@@ -1,4 +1,6 @@
 import { namespace } from './index';
+import { namespace as selectionNamespace } from '../selection';
+
 //忽略的saga名，不忽略的saga名注意不要跟下面的properties重复
 const outSideSagas = [
   'play',
@@ -96,6 +98,17 @@ class OutsideApi {
         };
       }
     }
+    outSideApi['setSelection'] = payload => {
+      const action = {
+        type: `${selectionNamespace}/dataReducer`,
+        payload,
+      };
+      dispatch(action);
+      //对外提供selection事件
+      this.api.trigger('selection', {
+        ...action.payload,
+      });
+    };
   }
   getProperty(outSideApi) {
     oustSidePropertyList.forEach(v => {

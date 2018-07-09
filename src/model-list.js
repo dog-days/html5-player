@@ -18,4 +18,5 @@ export default [
   'playback-rate',
   'picture-quality',
   'rotate',
+  'selection',
 ];

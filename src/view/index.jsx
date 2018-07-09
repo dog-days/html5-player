@@ -85,6 +85,7 @@ export default class View extends React.Component {
     controlbarHideTime: PropTypes.number,
     controls: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     fragment: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    selection: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     /**---end Appearance**/
@@ -364,11 +365,15 @@ export default class View extends React.Component {
       contextMenu = true,
       fragment,
       isLiving,
-      timeSliderShowFormat = 'time',
+      timeSliderShowFormat = 'date',
       living,
       stretching = 'uniform',
+      selection,
       children,
     } = this.props;
+    if (selection) {
+      loop = true;
+    }
     const locale = this.locale;
     const containerStyle = this.getContainerStyle();
     let videoProps = {};
