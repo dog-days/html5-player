@@ -116,7 +116,7 @@ export default class Selection extends React.Component {
     this.onStart(e.pageX);
   };
   render() {
-    let { percent, defaultPercent, ...other } = this.props;
+    let { percent, defaultPercent, children, ...other } = this.props;
     if (this.percent === undefined) {
       this.percent = percent || defaultPercent || 0;
     }
@@ -124,6 +124,10 @@ export default class Selection extends React.Component {
       ...this.props.style,
     };
     style.left = `${this.percent * 100}%`;
-    return <div {...other} style={style} ref="selection" />;
+    return (
+      <div {...other} style={style} ref="selection">
+        {children}
+      </div>
+    );
   }
 }

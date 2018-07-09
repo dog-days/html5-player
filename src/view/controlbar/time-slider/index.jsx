@@ -30,7 +30,10 @@ import { namespace as errorNamespace } from '../../../model/error-message';
 export default class TimeSlider extends React.Component {
   static propTypes = {};
   static displayName = 'TimeSlider';
-
+  static contextTypes = {
+    leftSelectionComponent: PropTypes.element,
+    rightSelectionComponent: PropTypes.element,
+  };
   static childContextTypes = {
     timeSliderDOM: PropTypes.object,
   };
@@ -120,13 +123,17 @@ export default class TimeSlider extends React.Component {
           percent={leftPercent}
           onBlur={this.onLeftSelectionBlur}
           onChange={this.onLeftSelectionChange}
-        />
+        >
+          {this.context.leftSelectionComponent}
+        </Selection>
         <Selection
           percent={rightPercent}
           className="html5-player-selection-right"
           onChange={this.onRightSelectionChange}
           onBlur={this.onRightSelectionBlur}
-        />
+        >
+          {this.context.rightSelectionComponent}
+        </Selection>
       </span>
     );
   }

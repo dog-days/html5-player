@@ -86,6 +86,8 @@ export default class View extends React.Component {
     controls: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
     fragment: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     selection: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+    leftSelectionComponent: PropTypes.element,
+    rightSelectionComponent: PropTypes.element,
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     /**---end Appearance**/
@@ -105,6 +107,8 @@ export default class View extends React.Component {
     player: PropTypes.object,
     playerDOM: PropTypes.object,
     controlbarHideTime: PropTypes.number,
+    leftSelectionComponent: PropTypes.element,
+    rightSelectionComponent: PropTypes.element,
   };
   constructor(props) {
     super(props);
@@ -113,7 +117,6 @@ export default class View extends React.Component {
       ...props.localization,
     };
   }
-  outSideApi = {};
   getChildContext() {
     return {
       playerConainerDOM: this.playerConainerDOM,
@@ -121,8 +124,11 @@ export default class View extends React.Component {
       player: this.outSideApi,
       playerDOM: ReactDOM.findDOMNode(this.refs.video),
       controlbarHideTime: this.props.controlbarHideTime || CONTROLBAR_HIDE_TIME,
+      leftSelectionComponent: this.props.leftSelectionComponent,
+      rightSelectionComponent: this.props.rightSelectionComponent,
     };
   }
+  outSideApi = {};
   state = {
     //是否准备好，准备好就可以开始处理video的属性问题，就可以开始播放了
     ready: false,
