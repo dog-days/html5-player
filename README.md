@@ -156,10 +156,11 @@ class View extends React.Component {
 | preload                  | boolean                               | 视频是否预加载，`autoplay=false`才会生效                     | true                    | 否   |
 | autoplay                 | boolean                               | 是否自动播放                                                 | false                   | 否   |
 | controls                 | boolean<br />object                   | 是否展示 controllerbar                                       | true                    | 否   |
+| controlbarHideTime       | number                                | 用户不活跃后，多长时间隐藏controlbar，毫秒                   | 2000                    | 否   |
 | localization             | object                                | 多语言设置                                                   | 查看后面说明            | 否   |
 | tracks                   | object                                | 各种 track 设置                                              | 无                      | 否   |
 | fragment                 | string <br />object                   | 视频断片功能                                                 | 无                      | 否   |
-| timeSliderShowFormat     | string                                | tootip 展示的时间格式，值为`time`和`date`，date 只有在 fragment 设置情况下生效。 | time                    | 否   |
+| timeSliderShowFormat     | string                                | tootip 展示的时间格式，值为`time`和`date`，date 只有在 fragment 设置情况下生效。 | date                    | 否   |
 | playbackRates            | array                                 | video 的 playebackRates 设置                                 | [1, 1.25, 1.5, 1.75, 2] | 否   |
 | playbackRateControls     | boolean                               | 是否开启 playebackRate 控制                                  | true                    | 否   |
 | videoCallback            | function                              | 打包的 js 没有这个属性，详细看后面播放器实例化 API           | 无                      | 否   |
@@ -169,6 +170,9 @@ class View extends React.Component {
 | timeout                  | number                                | 视频超时设置，5000ms 后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 5000                    | 否   |
 | retryTimes               | number                                | 网络差时，timeout 后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差 5 秒左右。 | 2                       | 否   |
 | stretching               | string                                | 调整视频大小以适合播放器尺寸。                               | uniform                 | 否   |
+| selection                | object<br />boolean                   | 配合fragment使用，截取视频，请参考下面selection说明          | undefined               | 否   |
+| leftSelectionComponent   | react element                         | selection左边组件                                            | 无                      | 否   |
+| rightSelectionComponent  | react element                         | selection右边组件                                            | 无                      | 否   |
 
 #### props.controls
 
@@ -322,6 +326,17 @@ fragment 定义如下：
 | total.end         | string | 整个视频的结束时间，格式为 `YYYY-MM-DD HH:mm:ss` |
 | fragments[].begin | string | 视频断片的开始时间，格式为`YYYY-MM-DD HH:mm:ss`  |
 | fragments[].end   | string | 视频断片的结束时间，格式为 `YYYY-MM-DD HH:mm:ss` |
+
+#### props.selection
+
+需要配合`fragments`
+
+| 参数      | 类型   | 说明                 | 必填 |
+| --------- | ------ | -------------------- | ---- |
+| begin     | number | 截取开始时间，单位秒 | 否   |
+| total.end | number | 截取结束时间，单位秒 | 否   |
+| minGap    | number | 最小的间距，单位秒   | 否   |
+| maxGap    | number | 最大的间距，单位秒   | 否   |
 
 #### props.logo
 
@@ -557,9 +572,22 @@ html5Player({
 
   控制播放速度。
 
-  | payload | 类型   | 说明            | 必填 |
-  | ------- | ------ | --------------- | ---- |
-  | rate    | number | playbackRate 值 | 是   |
+  | 参数 | 类型   | 说明            | 必填 |
+  | ---- | ------ | --------------- | ---- |
+  | rate | number | playbackRate 值 | 是   |
+
+* setSelection(payload)
+
+  payload参数请参考上面的`props.selection`
+
+  ```js
+  {
+    begin,
+    end,
+    minGap,
+    maxGap
+  }
+  ```
 
 * on(type, callback)
 
@@ -635,6 +663,10 @@ player.on('loading', function(loading) {
 * error
 
   这个错误事件是 hls 或者 flv 视频解析报错时触发的。
+
+* selection
+
+  selection操作，触发。
 
 ### 播放列表
 
