@@ -59,7 +59,7 @@
       "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
     "build-demo": "node ./scripts/build-demo.js",
     "build": "npm run test && node ./scripts/build-umd.js",
-    "test": "karma start",
+    "test": "",
     "cover": "react-boilerplate-app-scripts cover",
     "serve-demo-build": "react-boilerplate-app-scripts serve-build",
     "serve-umd-build": "serve ./dist -o",
