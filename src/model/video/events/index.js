@@ -371,12 +371,14 @@ class Events {
   }
   //键盘空格键和video聚焦事件
   onSpaceAndVieoFocusEvent() {
+    if (!this.config.spaceAction) {
+      return false;
+    }
     const api = this.api;
     const dispatch = this.dispatch;
     const keydown = () => {
       this.playerKeydownEvent && this.playerKeydownEvent.off();
       this.playerKeydownEvent = api.on(api.ownerDocument, 'keydown', e => {
-        e.preventDefault();
         if (api.living) {
           return;
         }

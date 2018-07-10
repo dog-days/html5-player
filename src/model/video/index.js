@@ -368,6 +368,9 @@ export default function() {
               message: null,
             },
           });
+          yield put({
+            type: `play`,
+          });
         }
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
@@ -744,6 +747,9 @@ export default function() {
                 payload: false,
               });
             }
+            _dispatch({
+              type: `${namespace}/pause`,
+            });
             error();
           }, showErrorMessageLazyTime);
         } else {

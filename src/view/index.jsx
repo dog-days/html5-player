@@ -66,6 +66,8 @@ export default class View extends React.Component {
     autoplay: PropTypes.bool,
     //播完重复播放
     loop: PropTypes.bool,
+    //是否开启space按键暂停播放功能，默认开启
+    spaceAction: PropTypes.bool,
     //强制定义为直播
     isLiving: PropTypes.bool,
     showLoadingLazyTime: PropTypes.number,
@@ -142,6 +144,7 @@ export default class View extends React.Component {
       file,
       videoCallback,
       preload = true,
+      spaceAction = true,
       controlbarHideTime = CONTROLBAR_HIDE_TIME,
       ...other
     } = this.props;
@@ -185,6 +188,7 @@ export default class View extends React.Component {
             preload,
             controlbarHideTime,
             localization: this.locale,
+            spaceAction,
             ...other,
           },
           api: provider.api,
