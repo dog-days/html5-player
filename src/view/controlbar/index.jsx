@@ -81,11 +81,11 @@ export default class Controlbar extends React.Component {
     for (let i in buttons) {
       const button = buttons[i];
       if (!button) {
-        return;
+        continue;
       }
       if (!React.isValidElement(button)) {
         console.error('自定义按钮必须是React组件！');
-        return;
+        continue;
       }
       buttonJSX.push(
         cloneElement(button, {
