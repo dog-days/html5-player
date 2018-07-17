@@ -1,6 +1,6 @@
 {
   "name": "html5-player",
-  "version": "0.4.0-beta.3",
+  "version": "0.4.0-beta.5",
   "description": "html5 video",
   "repository": "git@github.com:dog-days/html5-player.git",
   "homepage": "https://github.com/dog-days/html5-player.git",
@@ -71,12 +71,14 @@
       "npm run test && npm run build-css && npm run transform && npm publish",
     "prettier": "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'",
     "transform":
-      "npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
-    "transform-es": "cross-env BABEL_ENV=es babel ./src -d es",
-    "transform-es-watch": "cross-env BABEL_ENV=es babel ./src -d es -w",
-    "transform-default": "cross-env BABEL_ENV=production babel ./src -d libs",
+      "rm -rf ./es && rm -rf ./libs && npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
+    "transform-es": "rm -rf ./es && cross-env BABEL_ENV=es babel ./src -d es",
+    "transform-es-watch":
+      "rm -rf ./es && cross-env BABEL_ENV=es babel ./src -d es -w",
+    "transform-default":
+      "rm -rf ./libs && cross-env BABEL_ENV=production babel ./src -d libs",
     "transform-default-watch":
-      "cross-env BABEL_ENV=default babel ./src -d libs -w"
+      "rm -rf ./libs && cross-env BABEL_ENV=production babel ./src -d libs -w"
   },
   "husky": {
     "hooks": {
