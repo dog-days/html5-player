@@ -64,6 +64,8 @@ export default class View extends React.Component {
     preload: PropTypes.bool,
     //自动播放
     autoplay: PropTypes.bool,
+    //设置默认开始播放的时间
+    defaultCurrentTime: PropTypes.number,
     //播完重复播放
     loop: PropTypes.bool,
     //是否开启space按键暂停播放功能，默认开启
@@ -111,6 +113,9 @@ export default class View extends React.Component {
     controlbarHideTime: PropTypes.number,
     leftSelectionComponent: PropTypes.element,
     rightSelectionComponent: PropTypes.element,
+  };
+  static contextTypes = {
+    isHistory: PropTypes.bool,
   };
   constructor(props) {
     super(props);
@@ -189,6 +194,7 @@ export default class View extends React.Component {
             controlbarHideTime,
             localization: this.locale,
             spaceAction,
+            isHistory: this.context.isHistory,
             ...other,
           },
           api: provider.api,
@@ -222,14 +228,11 @@ export default class View extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.file !== prevProps.file) {
-      this.setState(
-        {
-          ready: false,
-        },
-        () => {
-          this.init();
-        }
-      );
+      this.dispatch({
+        type: `${videoNamespace}/end`,
+        payload: false,
+      });
+      this.init();
     }
   }
   componentWillUnmount() {
@@ -379,9 +382,10 @@ export default class View extends React.Component {
       living,
       stretching = 'uniform',
       selection,
+      customTimeSlider,
       children,
     } = this.props;
-    if (selection) {
+    if (selection && !this.context.isHistory) {
       loop = true;
     }
     const locale = this.locale;
@@ -463,7 +467,7 @@ export default class View extends React.Component {
                     isLiving={isLiving}
                     timeSliderShowFormat={timeSliderShowFormat}
                     hasFragment={!!fragment}
-                    loadHtml2canvasBundle={this.loadHtml2canvasBundle}
+                    customTimeSlider={customTimeSlider}
                   />
                 )}
                 <Subtitle userActive={userActive} />

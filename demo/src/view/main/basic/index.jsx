@@ -1,6 +1,6 @@
 import React from 'react';
 import Html5Player from 'html5-player';
-import { joinUrlParams } from '../../../../../src/utils/util';
+// import { joinUrlParams } from '../../../../../src/utils/util';
 
 class View extends React.Component {
   state = {
@@ -23,14 +23,14 @@ class View extends React.Component {
     }
   };
   videoCallback = player => {
-    player.on('error', () => {
-      clearTimeout(this.clearTimeout);
-      this.timeout = setTimeout(() => {
-        this.setState({
-          changeFile: joinUrlParams(this.state.changeFile, {}),
-        });
-      }, 3000);
-    });
+    // player.on('error', () => {
+    //   clearTimeout(this.clearTimeout);
+    //   this.timeout = setTimeout(() => {
+    //     this.setState({
+    //       changeFile: joinUrlParams(this.state.changeFile, {}),
+    //     });
+    //   }, 3000);
+    // });
   };
   render() {
     const { changeFile, value } = this.state;
@@ -45,7 +45,7 @@ class View extends React.Component {
             value={value}
           />
           <Html5Player
-            // isLiving
+            defaultCurrentTime={90}
             flvConfig={{ enableWorker: true }}
             livingMaxBuffer={3}
             videoCallback={this.videoCallback}

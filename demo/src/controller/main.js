@@ -91,4 +91,12 @@ export default class MainController extends Controller {
       params
     );
   }
+  historyView(params) {
+    return this.render(
+      {
+        title,
+      },
+      params
+    );
+  }
 }

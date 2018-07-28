@@ -45,6 +45,7 @@ export default class Controlbar extends React.Component {
   static contextTypes = {
     localization: PropTypes.object,
     controlbarHideTime: PropTypes.number,
+    isHistory: PropTypes.bool,
   };
   displayName = 'Controlbar';
   state = {};
@@ -111,8 +112,10 @@ export default class Controlbar extends React.Component {
       timeSliderShowFormat,
       hasFragment,
       subtitleList,
+      customTimeSlider,
     } = this.props;
     let { living } = this.props;
+    const { isHistory } = this.context;
     if (isLiving) {
       living = true;
     }
@@ -167,6 +170,7 @@ export default class Controlbar extends React.Component {
       >
         {ready &&
           !living &&
+          !customTimeSlider &&
           timeSlider && (
             <TimeSlider
               hasFragment={hasFragment}
@@ -174,13 +178,14 @@ export default class Controlbar extends React.Component {
               timeSliderShowFormat={timeSliderShowFormat}
             />
           )}
+        {ready && !living && customTimeSlider}
         <div className="html5-player-button-container">
           {playPause && <PlayPause living={living} />}
           {volume && (
             <Volume
               autoMuted={muted}
               living={living}
-              hasFragment={hasFragment}
+              hasFragment={hasFragment || isHistory}
             />
           )}
           {living && (
@@ -193,8 +198,8 @@ export default class Controlbar extends React.Component {
               </svg>
             </button>
           )}
-          {prev && <Prev />}
-          {next && <Next />}
+          {!isHistory && prev && <Prev />}
+          {!isHistory && next && <Next />}
           {ready && !living && time && <Time />}
           {fullscreen && <FullOffScreen />}
           {ready &&

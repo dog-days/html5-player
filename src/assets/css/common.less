@@ -385,12 +385,16 @@ button {
   &-subtitle-text-user-inactive {
     bottom: 25px;
   }
-  &-broken {
+  &-broken,
+  &-hasvideo {
     position: absolute;
     z-index: 10000;
     background-color: @slider-broken-color;
     width: 0%;
     height: 100%;
+  }
+  &-hasvideo {
+    background: none;
   }
   &-track-history-slider {
     .html5-player-slider-circle,

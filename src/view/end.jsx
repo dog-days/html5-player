@@ -25,21 +25,41 @@ export default class End extends React.Component {
     playlist: PropTypes.array,
     activeItem: PropTypes.number,
     setActiveItem: PropTypes.func,
+    isHistory: PropTypes.bool,
   };
-  displayName = 'End';
+  static displayName = 'End';
   state = {};
   dispatch = this.props.dispatch;
   componentDidUpdate(prevProps, prevState) {
-    //播放列表，单个视频播放完的情况
-    const { playlist, activeItem, setActiveItem } = this.context;
-    if (playlist && playlist[0] && activeItem < playlist.length) {
-      setActiveItem(activeItem + 1);
+    if (this.props.end) {
+      //播放列表，单个视频播放完的情况
+      const { activeItem, setActiveItem } = this.context;
+      if (!this.isLastVideo) {
+        setActiveItem(activeItem + 1);
+      }
     }
   }
+  //播放列表是否是最后一个
+  get isLastVideo() {
+    let { playlist, activeItem, isHistory } = this.context;
+    if (isHistory) {
+      //history列表的从0算起
+      activeItem += 1;
+    }
+    if (playlist && playlist[0] && activeItem < playlist.length) {
+      return false;
+    }
+    return true;
+  }
   replay = e => {
-    this.dispatch({
-      type: `${videoNamespace}/replay`,
-    });
+    const { isHistory, setActiveItem } = this.context;
+    if (isHistory) {
+      setActiveItem(0);
+    } else {
+      this.dispatch({
+        type: `${videoNamespace}/replay`,
+      });
+    }
   };
   getClassName(flag) {
     return classnames('html5-player-cover-view html5-player-end-view', {
@@ -48,7 +68,7 @@ export default class End extends React.Component {
   }
   render() {
     const { end } = this.props;
-    if (!end) {
+    if (!end || !this.isLastVideo) {
       return <div className={this.getClassName(true)} />;
     }
     return (

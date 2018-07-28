@@ -170,6 +170,7 @@ var config = {
       //react: 'preact-compat',
       //'react-dom': 'preact-compat',
       'html5-player/libs/playlist': path.resolve(process.cwd(), 'src/playlist'),
+      'html5-player/libs/history': path.resolve(process.cwd(), 'src/history'),
       'html5-player': path.resolve(process.cwd(), 'src'),
     },
     //不可留空字符串

@@ -27,6 +27,12 @@ export default function() {
         if (percent > 1) {
           percent = 1;
         }
+        if (isNaN(percent)) {
+          percent = 0;
+        }
+        if (isNaN(duration)) {
+          duration = 0;
+        }
         yield put({
           type: 'timeReducer',
           payload: {

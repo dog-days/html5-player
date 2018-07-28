@@ -98,7 +98,7 @@ class Events {
   loadeddata() {
     const api = this.api;
     const dispatch = this.dispatch;
-    const { autoplay, isLiving } = this.config;
+    const { autoplay, isLiving, defaultCurrentTime } = this.config;
     api.on('loadeddata', () => {
       //防止超时还在执行
       clearTimeout(this.videoTimeout);
@@ -106,6 +106,12 @@ class Events {
       api.reloading = false;
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
+      dispatch({
+        type: `${videoNamespace}/seeking`,
+        payload: {
+          percent: defaultCurrentTime / api.duration,
+        },
+      });
       dispatch({
         type: `${readyNamespace}/state`,
       });

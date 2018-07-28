@@ -416,7 +416,8 @@ export default function() {
         //begin----处理selection
         const selection = reduxStore.selection;
         let selectionBeginPercent;
-        if (_config.selection) {
+        if (_config.selection && !_config.isHistory) {
+          //history是fragment的另一版本，多个视频，fragment是一个视频
           if (selection.end > fragment.duration) {
             selection.end = fragment.duration;
           }
@@ -544,31 +545,40 @@ export default function() {
       },
       *selection(
         {
-          payload: { percent, type },
+          payload: { percent, type, duration },
         },
         { put, select }
       ) {
+        if (!_config.selection) {
+          return;
+        }
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
         const selection = reduxStore.selection;
-        if (selection.end > fragment.duration) {
-          selection.end = fragment.duration;
+        if (!duration) {
+          duration = fragment.duration;
+        }
+        if (selection.end > duration) {
+          selection.end = duration;
         }
         if (type === 'left-blur') {
-          yield put({
-            type: `seeking`,
-            payload: {
-              percent,
-            },
-          });
-          let begin = percent * fragment.duration;
+          if (!_config.isHistory) {
+            //history是fragment的另一版本，多个视频，fragment是一个视频
+            yield put({
+              type: `seeking`,
+              payload: {
+                percent,
+              },
+            });
+          }
+          let begin = percent * duration;
           //对外提供selection事件
           _api.trigger('selection', {
             ...selection,
             begin,
           });
         } else if (type === 'left-change') {
-          let begin = percent * fragment.duration;
+          let begin = percent * duration;
           if (begin > selection.end - selection.minGap) {
             begin = selection.end - selection.minGap;
             if (selection.end < selection.minGap) {
@@ -585,11 +595,11 @@ export default function() {
             },
           });
         } else if (type === 'right-change') {
-          let end = percent * fragment.duration;
+          let end = percent * duration;
           if (selection.begin > end - selection.minGap) {
             end = selection.begin + selection.minGap;
             if (selection.end < selection.minGap) {
-              end = fragment.duration;
+              end = duration;
             }
           }
           if (end - selection.begin > selection.maxGap) {
@@ -602,7 +612,7 @@ export default function() {
             },
           });
         } else if (type === 'right-blur') {
-          let end = percent * fragment.duration;
+          let end = percent * duration;
           //对外提供selection事件
           _api.trigger('selection', {
             ...selection,

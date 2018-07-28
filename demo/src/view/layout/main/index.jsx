@@ -37,6 +37,7 @@ class MainLayout extends React.Component {
               {this.renderItem('自定义', 'custom')}
               {this.renderItem('地图', 'map')}
               {this.renderItem('播放列表', 'playlist')}
+              {this.renderItem('历史回放', 'history')}
             </ul>
           </div>
         </nav>
