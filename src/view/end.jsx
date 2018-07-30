@@ -45,8 +45,8 @@ export default class End extends React.Component {
     if (isHistory) {
       //history列表的从0算起
       activeItem += 1;
-      if (!playlist[activeItem].file) {
-        //判断下一个是否有视频
+      if (!playlist[activeItem].file && playlist.length === activeItem) {
+        //判断下一个是否有视频（最后一个视频）
         return true;
       }
     }
