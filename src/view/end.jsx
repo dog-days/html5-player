@@ -39,12 +39,16 @@ export default class End extends React.Component {
       }
     }
   }
-  //播放列表是否是最后一个
+  //是否是最后一个可以播放的视频
   get isLastVideo() {
     let { playlist, activeItem, isHistory } = this.context;
     if (isHistory) {
       //history列表的从0算起
       activeItem += 1;
+      if (!playlist[activeItem].file) {
+        //判断下一个是否有视频
+        return true;
+      }
     }
     if (playlist && playlist[0] && activeItem < playlist.length) {
       return false;

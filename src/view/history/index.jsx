@@ -27,8 +27,20 @@ export default class HistoryPlayer extends React.Component {
     };
   }
   state = {
-    activeItem: 0,
+    activeItem: this.getFirstActiveItem(),
   };
+  //获取第一个可播放的activeItem
+  getFirstActiveItem() {
+    let activeItem = 0;
+    for (let k = 0; k < this.fragments.length; k++) {
+      const v = this.fragments[k];
+      if (v.file) {
+        activeItem = k;
+        break;
+      }
+    }
+    return activeItem;
+  }
   get fragments() {
     const { historyList } = this.props;
     const fragments =
@@ -53,10 +65,14 @@ export default class HistoryPlayer extends React.Component {
     }
     while (!this.fragments[value].file) {
       k++;
-      value++;
+      if (value === this.fragments.length - 1) {
+        value = 0;
+      } else {
+        value++;
+      }
       if (k > this.fragments.length) {
         //最后一个视频是断点（即无视频）
-        this.setState({ end: true });
+        // this.setState({ end: true });
         break;
       }
     }

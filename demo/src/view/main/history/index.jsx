@@ -8,52 +8,60 @@ export default class View extends React.Component {
       <div className="demo-container">
         <div className="player-container">
           <Player
-            videoCallback={player => {
-              player.setSelection({
-                begin: 5,
-                end: 15,
-              });
-              player.on('selection', data => {
-                console.log(player.currentTime);
-                console.log(data);
-              });
-            }}
-            selection={true}
+            // videoCallback={player => {
+            //   player.setSelection({
+            //     begin: 5,
+            //     end: 15,
+            //   });
+            //   player.on('selection', data => {
+            //     console.log(player.currentTime);
+            //     console.log(data);
+            //   });
+            // }}
+            // selection={true}
             historyList={{
               beginDate: '2018-07-28 00:00:00',
-              duration: 52 + 12 + 52 + 52 + 10 + 52,
+              duration: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,
               fragments: [
                 {
                   begin: 0,
-                  end: 52,
+                  end: 20,
+                },
+                {
+                  begin: 20,
+                  end: 20 + 654,
                   file:
-                    'https://media.w3.org/2010/05/sintel/trailer.mp4?test=1',
+                    'https://wowzaec2demo.streamlock.net/vod-multitrack/_definst_/smil:ElephantsDream/elephantsdream2.smil/playlist.m3u8?test=2',
                 },
                 {
-                  begin: 52,
-                  end: 64,
+                  begin: 20 + 654,
+                  end: 20 + 654 + 12,
                 },
                 {
-                  begin: 64,
-                  end: 116,
+                  begin: 20 + 654 + 12,
+                  end: 20 + 654 + 12 + 52,
                   file:
                     'https://media.w3.org/2010/05/sintel/trailer.mp4?test=2',
                 },
                 {
-                  begin: 116,
-                  end: 168,
+                  begin: 20 + 654 + 12 + 52,
+                  end: 20 + 654 + 12 + 52 + 52,
                   file:
                     'https://media.w3.org/2010/05/sintel/trailer.mp4?test=3',
                 },
                 {
-                  begin: 168,
-                  end: 178,
+                  begin: 20 + 654 + 12 + 52 + 52,
+                  end: 20 + 654 + 12 + 52 + 52 + 10,
                 },
                 {
-                  begin: 178,
-                  end: 230,
+                  begin: 20 + 654 + 12 + 52 + 52 + 10,
+                  end: 20 + 654 + 12 + 52 + 52 + 10 + 654,
                   file:
-                    'https://media.w3.org/2010/05/sintel/trailer.mp4?test=4',
+                    'https://wowzaec2demo.streamlock.net/vod-multitrack/_definst_/smil:ElephantsDream/elephantsdream2.smil/playlist.m3u8',
+                },
+                {
+                  begin: 20 + 654 + 12 + 52 + 52 + 10 + 654,
+                  end: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,
                 },
               ],
             }}

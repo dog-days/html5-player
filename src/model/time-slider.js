@@ -24,6 +24,7 @@ export default function() {
         { put }
       ) {
         let percent = currentTime / duration;
+        // console.log(percent, currentTime, duration);
         if (percent > 1) {
           percent = 1;
         }

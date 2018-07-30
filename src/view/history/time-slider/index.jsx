@@ -230,6 +230,7 @@ export default class TimeSlider extends React.Component {
     ) {
       return this.state.percent || 0;
     }
+    // console.log(currentVideoPercent);
     let percent = 0;
     //当前播放的视频的当前播放时长
     let currentVideoTime = currentVideoPercent * currentVideoDuration;

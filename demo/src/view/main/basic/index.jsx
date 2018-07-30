@@ -45,7 +45,6 @@ class View extends React.Component {
             value={value}
           />
           <Html5Player
-            defaultCurrentTime={90}
             flvConfig={{ enableWorker: true }}
             livingMaxBuffer={3}
             videoCallback={this.videoCallback}

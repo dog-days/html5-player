@@ -65,6 +65,9 @@ export function isH5VideoSupported(file) {
     oga: 'video/ogg',
     vorbis: 'video/ogg',
     webm: 'video/webm',
+    m3u8: 'application/vnd.apple.mpegurl',
+    m3u: 'application/vnd.apple.mpegurl',
+    hls: 'application/vnd.apple.mpegurl',
   };
   if (!videoUtil.canPlayType) {
     //如果canPlayType不存在，返回true，做兼容。
