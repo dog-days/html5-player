@@ -106,12 +106,14 @@ class Events {
       api.reloading = false;
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
-      dispatch({
-        type: `${videoNamespace}/seeking`,
-        payload: {
-          percent: defaultCurrentTime / api.duration,
-        },
-      });
+      if (defaultCurrentTime) {
+        dispatch({
+          type: `${videoNamespace}/seeking`,
+          payload: {
+            percent: defaultCurrentTime / api.duration,
+          },
+        });
+      }
       dispatch({
         type: `${readyNamespace}/state`,
       });
@@ -371,6 +373,10 @@ class Events {
         dispatch({
           type: `${videoNamespace}/end`,
           payload: true,
+        });
+      } else {
+        dispatch({
+          type: `${videoNamespace}/reload`,
         });
       }
     });
