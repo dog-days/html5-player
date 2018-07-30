@@ -1,14 +1,24 @@
 //外部依赖包
 import React from 'react';
 import PropTypes from 'prop-types';
+import isNumber from 'lodash/isNumber';
 //内部依赖包
 import Player from '../../index';
+import { ASPECT_RATIO } from '../../utils/const';
 import TimeSlider from './time-slider';
 
 export default class HistoryPlayer extends React.Component {
   static displayName = 'HistoryPlayer ';
   static propTypes = {
-    historyList: PropTypes.object.isRequired,
+    historyList: PropTypes.oneOfType([
+      PropTypes.object.isRequired,
+      PropTypes.bool.isRequired,
+    ]),
+    noneVideoComponent: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.string,
+    ]),
+
     //当前选择播放的视频源（播放列表中的某项）
     activeItem: PropTypes.number,
   };
@@ -29,8 +39,14 @@ export default class HistoryPlayer extends React.Component {
   state = {
     activeItem: this.getFirstActiveItem(),
   };
+  componentWillReceiveProps() {
+    this.storage.defaultCurrentTime = 0;
+  }
   //获取第一个可播放的activeItem
   getFirstActiveItem() {
+    if (!this.props.historyList) {
+      return 0;
+    }
     let activeItem = 0;
     for (let k = 0; k < this.fragments.length; k++) {
       const v = this.fragments[k];
@@ -100,21 +116,77 @@ export default class HistoryPlayer extends React.Component {
       />
     );
   }
+  getAspectratioNumber(aspectratio) {
+    let ratio = aspectratio.split(':');
+    if (ratio.length !== 2 || isNaN(ratio[0]) || isNaN(ratio[1])) {
+      console.warn(
+        'Config error:',
+        'Aspectratio format is wrong,aspectratio format should be "x:y".'
+      );
+      aspectratio = ASPECT_RATIO;
+      ratio = aspectratio.split(':');
+    }
+    return {
+      x: parseInt(ratio[0], 10),
+      y: parseInt(ratio[1], 10),
+    };
+  }
+  getContainerStyle() {
+    let { aspectratio = ASPECT_RATIO, height, width, style } = this.props;
+    let containerStyle = {};
+    if (width) {
+      containerStyle.width = width;
+    }
+    if (height) {
+      containerStyle.height = height;
+    }
+    if (width && !height && this.playerConainerDOM) {
+      //第二次渲染，执行在计算height之前
+      width = this.playerConainerDOM.clientWidth;
+    }
+    if (isNumber(width) && !height) {
+      //width是数字是才计算
+      const ratio = this.getAspectratioNumber(aspectratio);
+      containerStyle.height = width * ratio.y / ratio.x;
+    }
+    if (style) {
+      containerStyle = {
+        ...containerStyle,
+        ...style,
+      };
+    }
+    return containerStyle;
+  }
   render() {
-    const { autoplay, controls, ...other } = this.props;
+    const {
+      noneVideoComponent,
+      autoplay,
+      controls,
+      historyList,
+      ...other
+    } = this.props;
+    const containerStyle = this.getContainerStyle();
+    if (!historyList) {
+      return (
+        <div className="html5-player-container" style={containerStyle}>
+          <div className="html5-player-error-message-container">
+            {!noneVideoComponent && '请选择有视频的时间段'}
+            {noneVideoComponent}
+          </div>
+        </div>
+      );
+    }
     //     const { activeItem } = this.state;
     // || activeItem === 0 ? autoplay : true
     return (
-      <span>
-        <Player
-          {...other}
-          file={this.file}
-          controls={{ ...controls, timeSlider: false, time: false }}
-          customTimeSlider={this.renderSlider()}
-          autoplay={true}
-          defaultCurrentTime={this.storage.defaultCurrentTime}
-        />
-      </span>
+      <Player
+        {...other}
+        file={this.file}
+        controls={{ ...controls, timeSlider: false, time: false }}
+        customTimeSlider={this.renderSlider()}
+        autoplay={true}
+        defaultCurrentTime={this.storage.defaultCurrentTime}
+      />
     );
   }
 }
