@@ -92,6 +92,8 @@ export default class TimeSlider extends React.Component {
         percent: currentVideoTime / currentVideoDuration,
       },
     });
+    //video/event/index.js中loadeddata事件中使用。
+    window.historyVideoCurrentTime = currentVideoTime;
     //end----处理当前video的进度
   };
   onMouseDown = e => {

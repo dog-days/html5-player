@@ -107,10 +107,14 @@ class Events {
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
       if (defaultCurrentTime) {
+        // console.log(window.historyVideoCurrentTime);
         dispatch({
           type: `${videoNamespace}/seeking`,
           payload: {
-            percent: defaultCurrentTime / api.duration,
+            percent:
+              //window.historyVideoCurrentTime在view/history/time-slider/index.js中
+              (window.historyVideoCurrentTime || defaultCurrentTime) /
+              api.duration,
           },
         });
       }
