@@ -2,23 +2,32 @@ import React from 'react';
 import Player from 'html5-player/libs/history';
 
 export default class View extends React.Component {
+  state = {};
   //录像断片处理
   render() {
     return (
       <div className="demo-container">
         <div className="player-container">
+          {/* <button
+            onClick={() => {
+              // const player = this.player;
+            }}
+          >
+            test
+          </button> */}
           <Player
-            // videoCallback={player => {
-            //   player.setSelection({
-            //     begin: 5,
-            //     end: 15,
-            //   });
-            //   player.on('selection', data => {
-            //     console.log(player.currentTime);
-            //     console.log(data);
-            //   });
-            // }}
-            // selection={true}
+            videoCallback={player => {
+              this.player = player;
+              // player.setSelection({
+              //   begin: 5,
+              //   end: 70,
+              // });
+              // player.on('selection', data => {
+              //   console.log(player.currentTime);
+              //   console.log(data);
+              // });
+            }}
+            selection={true}
             historyList={{
               beginDate: '2018-07-28 00:00:00',
               duration: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,

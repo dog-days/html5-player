@@ -9,7 +9,7 @@ import clearDecorator from '../../decorator/clear';
 import Slider from '../../components/slider';
 import TimeTooltip from './time-tooltip';
 import Selection from './selection';
-import { namespace as vidoeNamespace } from '../../../model/video';
+import { namespace as videoNamespace } from '../../../model/video';
 import { namespace as timeSliderNamespace } from '../../../model/time-slider';
 import { namespace as selectionNamespace } from '../../../model/selection';
 import { namespace as errorNamespace } from '../../../model/error-message';
@@ -47,14 +47,20 @@ export default class TimeSlider extends React.Component {
   componentDidMount() {
     this.timeSliderDOM = ReactDOM.findDOMNode(this.refs.slider);
   }
+  componentDidUpdate() {
+    //为了对外提供api，historyCurrentTime
+    this.dispatch({
+      type: `${videoNamespace}/setHistoryCurrentTime`,
+      payload: {
+        historyCurrentTime: this.percent * this.props.duration,
+      },
+    });
+  }
+  componentWillUnmount() {
+    window.historyVideoCurrentTime = 0;
+  }
   onSliderChange = percent => {
-    const {
-      duration,
-      activeItem,
-      fragments,
-      storage,
-      sliderModel,
-    } = this.props;
+    const { duration, activeItem, fragments, storage } = this.props;
     const currentTime = percent * duration;
     //当前播放的currentTime，需要转换
     let currentVideoTime = currentTime;
@@ -84,22 +90,14 @@ export default class TimeSlider extends React.Component {
       //拖动到broken或者点击到broken处（即无视频处）
       currentVideoTime = 0;
     }
-    const { duration: currentVideoDuration = 0 } = sliderModel;
     this.currentVideoTime = currentVideoTime;
-    this.dispatch({
-      type: `${vidoeNamespace}/seeking`,
-      payload: {
-        percent: currentVideoTime / currentVideoDuration,
-      },
-    });
-    //video/event/index.js中loadeddata事件中使用。
-    window.historyVideoCurrentTime = currentVideoTime;
+
     //end----处理当前video的进度
   };
   onMouseDown = e => {
     this.hasbeenClick = true;
     this.dispatch({
-      type: `${vidoeNamespace}/seekingState`,
+      type: `${videoNamespace}/seekingState`,
       payload: true,
     });
     this.setState({
@@ -107,30 +105,39 @@ export default class TimeSlider extends React.Component {
     });
   };
   onMouseUp = e => {
-    this.dispatch({
-      type: `${vidoeNamespace}/seekingState`,
-      payload: false,
-    });
     this.setState({
       isSliding: false,
     });
-    if (this.selectedItem !== 0) {
-      this.setState({
-        percent: 0,
-      });
-    }
-    const { storage, setActiveItem, activeItem } = this.props;
+    const { storage, setActiveItem, activeItem, sliderModel } = this.props;
+    const { duration: currentVideoDuration = 0 } = sliderModel;
+    this.dispatch({
+      type: `${videoNamespace}/seeking`,
+      payload: {
+        percent: this.currentVideoTime / currentVideoDuration,
+      },
+    });
+    //video/event/index.js中loadeddata事件中使用。
+    window.historyVideoCurrentTime = this.currentVideoTime;
     if (activeItem !== this.selectedItem) {
       //拖动或者点击slider，选中的item不一样，需要切换item进行播放
       setActiveItem(this.selectedItem);
       //视频切换需要设置defaultCurrentTime，setActiveItem会先重置defaultCurrentTime=0。
       storage.defaultCurrentTime = this.currentVideoTime;
     }
+    if (this.selectedItem !== 0) {
+      this.setState({
+        percent: 0,
+      });
+    }
+    this.dispatch({
+      type: `${videoNamespace}/seekingState`,
+      payload: false,
+    });
   };
   duration = this.props.duration;
   onLeftSelectionBlur = percent => {
     this.dispatch({
-      type: `${vidoeNamespace}/selection`,
+      type: `${videoNamespace}/selection`,
       payload: {
         type: 'left-blur',
         percent,
@@ -140,7 +147,7 @@ export default class TimeSlider extends React.Component {
   };
   onLeftSelectionChange = percent => {
     this.dispatch({
-      type: `${vidoeNamespace}/selection`,
+      type: `${videoNamespace}/selection`,
       payload: {
         type: 'left-change',
         percent,
@@ -150,7 +157,7 @@ export default class TimeSlider extends React.Component {
   };
   onRightSelectionChange = percent => {
     this.dispatch({
-      type: `${vidoeNamespace}/selection`,
+      type: `${videoNamespace}/selection`,
       payload: {
         type: 'right-change',
         percent,
@@ -160,7 +167,7 @@ export default class TimeSlider extends React.Component {
   };
   onRightSelectionBlur = percent => {
     this.dispatch({
-      type: `${vidoeNamespace}/selection`,
+      type: `${videoNamespace}/selection`,
       payload: {
         type: 'right-blur',
         percent,
@@ -244,7 +251,6 @@ export default class TimeSlider extends React.Component {
       //处理当前视频播放结束切换下一个视频时，currentVideoTime还等于上一个的duration问题。
       currentVideoTime = 0;
     }
-    // console.log(currentVideoTime);
     let currentTime = 0;
     currentTime += currentVideoTime;
     fragments.forEach((v, k) => {
@@ -270,6 +276,7 @@ export default class TimeSlider extends React.Component {
       return false;
     }
     const percent = this.getPercent();
+    this.percent = percent;
     return (
       <Slider
         ref="slider"

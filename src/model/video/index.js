@@ -52,6 +52,8 @@ export default function() {
   let _videoEvents;
   let clearIntervalForPlay;
   let subtitleList;
+  //init运行一次
+  let runOnce = true;
   function getTracks() {
     const { tracks } = _config;
     subtitleList = [];
@@ -84,7 +86,9 @@ export default function() {
   }
   return {
     namespace,
-    state: null,
+    state: {
+      historyPercent: 0,
+    },
     reducers: {
       clear: function(state, { payload }) {
         _videoEvents && _videoEvents.reset();
@@ -449,8 +453,8 @@ export default function() {
               position = v.begin + v.gap;
             }
           });
-          _api.currentTime = position - _api.videoGaps;
           sliderPercent = selectionBeginPercent || percent;
+          this.tempCurrentTime = position - _api.videoGaps;
         } else {
           const gapPosition = _api.currentTime + _api.videoGaps;
           fragmentData.forEach((v, k) => {
@@ -474,7 +478,7 @@ export default function() {
         });
       },
       //是否在seeking
-      *seekingState({ payload }, { put }) {
+      *seekingState({ payload }, { put, select }) {
         if (_api.ended) {
           return;
         }
@@ -488,6 +492,9 @@ export default function() {
           _api.pause();
         }
         if (!payload) {
+          if (this.tempCurrentTime) {
+            _api.currentTime = this.tempCurrentTime;
+          }
           //seeking结束后，都播放视频。
           if (!_api.playing) {
             yield put({ type: `play` });
@@ -512,18 +519,26 @@ export default function() {
             payload: false,
           });
         }
-        if (!pause) {
-          if (_api.bufferTime < _api.currentTime) {
-            yield put({
-              type: `loading`,
-              payload: true,
-            });
-          }
-        }
+        // if (!pause) {
+        //   if (_api.bufferTime < _api.currentTime) {
+        //     yield put({
+        //       type: `loading`,
+        //       payload: true,
+        //     });
+        //   }
+        // }
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
         if (!fragment || !fragment.data) {
-          _api.currentTime = _api.duration * percent;
+          this.tempCurrentTime = _api.duration * percent;
+          yield put({
+            type: `${timeSliderNamespace}/timeSaga`,
+            payload: {
+              buffer: _api.bufferTime,
+              currentTime: _api.duration * percent,
+              duration: _api.duration,
+            },
+          });
         } else {
           yield put({
             type: 'fragment',
@@ -533,14 +548,6 @@ export default function() {
             },
           });
         }
-        yield put({
-          type: `${timeSliderNamespace}/timeSaga`,
-          payload: {
-            buffer: _api.bufferTime,
-            currentTime: _api.currentTime,
-            duration: _api.duration,
-          },
-        });
         _api.trigger('seek', percent);
       },
       *selection(
@@ -928,6 +935,14 @@ export default function() {
           _api.style.marginLeft = '';
         }
       },
+      setHistoryCurrentTime(
+        {
+          payload: { historyCurrentTime },
+        },
+        { put }
+      ) {
+        _api.historyCurrentTime = historyCurrentTime;
+      },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {
         let { dispatch, api, hlsjsEvents, config } = payload;
@@ -984,7 +999,7 @@ export default function() {
             autoMuted: true,
           });
         }
-        if (_config.selection) {
+        if (_config.selection && runOnce) {
           if (_config.selection === true) {
             _config.selection = {};
           }
@@ -1010,6 +1025,7 @@ export default function() {
         //等待video运行起来后运行，对外提供接口
         const _outSideApi = outSideApi(payload, this.sagas);
         initOverCallback && initOverCallback(_outSideApi);
+        runOnce = false;
       },
     },
   };

@@ -27,6 +27,7 @@ export default class HistoryPlayer extends React.Component {
     activeItem: PropTypes.number,
     setActiveItem: PropTypes.func,
     isHistory: PropTypes.bool,
+    historyDuration: PropTypes.number,
   };
   getChildContext() {
     return {
@@ -34,13 +35,15 @@ export default class HistoryPlayer extends React.Component {
       activeItem: this.activeItem,
       setActiveItem: this.setActiveItem,
       isHistory: true,
+      historyDuration: this.duration,
     };
   }
   state = {
     activeItem: this.getFirstActiveItem(),
   };
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
     this.storage.defaultCurrentTime = 0;
+    this.historyListChanged = true;
   }
   //获取第一个可播放的activeItem
   getFirstActiveItem() {
@@ -61,17 +64,20 @@ export default class HistoryPlayer extends React.Component {
     const { historyList } = this.props;
     const fragments =
       historyList && historyList.fragments && historyList.fragments;
-    return fragments;
+    return fragments || [];
   }
   get duration() {
     const { historyList } = this.props;
-    return historyList && (historyList.duration || 0);
+    return (historyList && historyList.duration) || 0;
   }
   get file() {
-    const { activeItem } = this.state;
-    return this.fragments[activeItem].file;
+    return this.fragments[this.activeItem].file;
   }
   get activeItem() {
+    if (this.historyListChanged) {
+      this.historyListChanged = false;
+      return this.getFirstActiveItem();
+    }
     return this.state.activeItem;
   }
   set activeItem(value) {
@@ -176,8 +182,6 @@ export default class HistoryPlayer extends React.Component {
         </div>
       );
     }
-    //     const { activeItem } = this.state;
-    // || activeItem === 0 ? autoplay : true
     return (
       <Player
         {...other}

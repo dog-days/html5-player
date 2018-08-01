@@ -31,7 +31,8 @@ class OutsideApi {
   constructor(payload, sagas) {
     this.api = payload.api;
     this.dispatch = payload.dispatch;
-    this.autoplay = payload.autoplay;
+    this.config = payload.config;
+    this.autoplay = payload.config.autoplay;
     this.sagas = sagas;
     const api = payload.api;
     //begin--对外提供的借口
@@ -79,7 +80,9 @@ class OutsideApi {
           };
           switch (sagaName) {
             case 'seeking':
-              action.payload = { percent: params[0], pause: true };
+              if (!this.config.isHistory) {
+                action.payload = { percent: params[0], pause: true };
+              }
               break;
             case 'controlbar':
               action.payload = params[0];
@@ -94,7 +97,11 @@ class OutsideApi {
                 action.payload = params[0];
               }
           }
-          dispatch(action);
+          if (this.config.isHistory && sagaName === 'seeking') {
+            console.warn('history cannot use seeking');
+          } else {
+            dispatch(action);
+          }
         };
       }
     }
@@ -118,6 +125,12 @@ class OutsideApi {
       }
       Object.defineProperty(outSideApi, key, {
         get: () => {
+          if (key === 'duration' && this.config.historyDuration) {
+            return this.config.historyDuration;
+          }
+          if (key === 'currentTime') {
+            return this.api.historyCurrentTime;
+          }
           return this.api[v];
         },
         set: function() {

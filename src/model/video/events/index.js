@@ -106,17 +106,11 @@ class Events {
       api.reloading = false;
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
-      if (defaultCurrentTime) {
+      if (defaultCurrentTime !== undefined) {
         // console.log(window.historyVideoCurrentTime);
-        dispatch({
-          type: `${videoNamespace}/seeking`,
-          payload: {
-            percent:
-              //window.historyVideoCurrentTime在view/history/time-slider/index.js中
-              (window.historyVideoCurrentTime || defaultCurrentTime) /
-              api.duration,
-          },
-        });
+        api.currentTime = window.historyVideoCurrentTime || defaultCurrentTime;
+        //重置
+        window.historyVideoCurrentTime = 0;
       }
       dispatch({
         type: `${readyNamespace}/state`,

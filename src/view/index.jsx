@@ -105,6 +105,7 @@ export default class View extends React.Component {
     ]),
   };
   static childContextTypes = {
+    api: PropTypes.object,
     playerConainerDOM: PropTypes.object,
     localization: PropTypes.object,
     //实例化后的player，可直接调用对外api，给使用者调用。
@@ -116,6 +117,10 @@ export default class View extends React.Component {
   };
   static contextTypes = {
     isHistory: PropTypes.bool,
+    setActiveItem: PropTypes.func,
+    playlist: PropTypes.array,
+    historyDuration: PropTypes.number,
+    activeItem: PropTypes.number,
   };
   constructor(props) {
     super(props);
@@ -126,6 +131,7 @@ export default class View extends React.Component {
   }
   getChildContext() {
     return {
+      api: this.api,
       playerConainerDOM: this.playerConainerDOM,
       localization: this.locale,
       player: this.outSideApi,
@@ -181,6 +187,7 @@ export default class View extends React.Component {
         //但是有一个缺点，播放链接响应请求头必须设置跨域。
         provider.api.setAttribute('crossorigin', 'anonymous');
       }
+      this.api = provider.api;
       this.dispatch({
         type: `${videoNamespace}/init`,
         payload: {
@@ -195,6 +202,10 @@ export default class View extends React.Component {
             localization: this.locale,
             spaceAction,
             isHistory: this.context.isHistory,
+            setActiveItem: this.context.setActiveItem,
+            playlist: this.context.playlist,
+            historyDuration: this.context.historyDuration,
+            activeItem: this.context.activeItem,
             ...other,
           },
           api: provider.api,

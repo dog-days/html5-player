@@ -9,18 +9,18 @@ export default class View extends React.Component {
         <div className="player-container">
           <Html5Player
             videoCallback={player => {
-              player.setSelection({
-                begin: 5,
-                end: 15,
-                minGap: 5,
-                maxGap: 30,
-              });
-              player.on('selection', data => {
-                console.log(player.currentTime);
-                console.log(data);
-              });
+              // player.setSelection({
+              //   begin: 5,
+              //   end: 15,
+              //   minGap: 5,
+              //   maxGap: 30,
+              // });
+              // player.on('selection', data => {
+              //   console.log(player.currentTime);
+              //   console.log(data);
+              // });
             }}
-            selection={true}
+            // selection={true}
             file="https://media.w3.org/2010/05/sintel/trailer.mp4"
             fragment={{
               total: {
