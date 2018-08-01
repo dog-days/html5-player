@@ -57,6 +57,7 @@ export default class TimeSlider extends React.Component {
     });
   }
   componentWillUnmount() {
+    console.log(222);
     window.historyVideoCurrentTime = 0;
   }
   onSliderChange = percent => {
@@ -251,6 +252,10 @@ export default class TimeSlider extends React.Component {
       //处理当前视频播放结束切换下一个视频时，currentVideoTime还等于上一个的duration问题。
       currentVideoTime = 0;
     }
+    if (window.historyVideoCurrentTime) {
+      window.historyVideoCurrentTime = 0;
+    }
+    // console.log(window.historyVideoCurrentTime);
     let currentTime = 0;
     currentTime += currentVideoTime;
     fragments.forEach((v, k) => {
@@ -272,9 +277,6 @@ export default class TimeSlider extends React.Component {
       isError,
     } = this.props;
     // this.setStorage();
-    if (isError) {
-      return false;
-    }
     const percent = this.getPercent();
     this.percent = percent;
     return (
@@ -285,7 +287,10 @@ export default class TimeSlider extends React.Component {
         padding="0 10px"
         className={classnames(
           'html5-player-time-slider',
-          'html5-player-track-history-slider'
+          'html5-player-track-history-slider',
+          {
+            'html5-player-hide': isError,
+          }
         )}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}

@@ -8,13 +8,14 @@ export default class View extends React.Component {
     return (
       <div className="demo-container">
         <div className="player-container">
-          {/* <button
+          <button
             onClick={() => {
               // const player = this.player;
+              // player.setSeeking(0);
             }}
           >
             test
-          </button> */}
+          </button>
           <Player
             videoCallback={player => {
               this.player = player;
@@ -22,10 +23,10 @@ export default class View extends React.Component {
               //   begin: 5,
               //   end: 70,
               // });
-              // player.on('selection', data => {
-              //   console.log(player.currentTime);
-              //   console.log(data);
-              // });
+              player.on('selection', data => {
+                console.log(player.currentTime);
+                console.log(data);
+              });
             }}
             selection={true}
             historyList={{

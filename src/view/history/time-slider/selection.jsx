@@ -88,6 +88,7 @@ export default class Selection extends React.Component {
       value = sliderLength;
     }
     let percent = value / sliderLength;
+
     const { defaultPercent } = this.props;
     if (defaultPercent || defaultPercent === 0) {
       this.percent = percent;

@@ -157,8 +157,12 @@ export default class View extends React.Component {
       preload = true,
       spaceAction = true,
       controlbarHideTime = CONTROLBAR_HIDE_TIME,
+      selection,
       ...other
     } = this.props;
+    if (selection === true) {
+      selection = {};
+    }
     if (!isString(file)) {
       file = '';
     }
@@ -197,6 +201,7 @@ export default class View extends React.Component {
             isFlv: util.isFlvFile(file),
             videoNotSupport,
             file,
+            selection,
             preload,
             controlbarHideTime,
             localization: this.locale,

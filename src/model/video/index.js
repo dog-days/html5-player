@@ -1000,9 +1000,6 @@ export default function() {
           });
         }
         if (_config.selection && runOnce) {
-          if (_config.selection === true) {
-            _config.selection = {};
-          }
           const payload = {
             begin: 0,
             //5分钟
