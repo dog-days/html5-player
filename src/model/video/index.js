@@ -492,7 +492,7 @@ export default function() {
           _api.pause();
         }
         if (!payload) {
-          if (this.tempCurrentTime) {
+          if (this.tempCurrentTime !== undefined) {
             _api.currentTime = this.tempCurrentTime;
           }
           //seeking结束后，都播放视频。

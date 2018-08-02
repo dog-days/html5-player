@@ -101,6 +101,9 @@ export default class HistoryPlayer extends React.Component {
     this.setState({ activeItem: value });
     //重置
     this.storage.defaultCurrentTime = 0;
+    if (window.historyVideoCurrentTime) {
+      window.historyVideoCurrentTime = 0;
+    }
   }
   setActiveItem = value => {
     this.activeItem = value;

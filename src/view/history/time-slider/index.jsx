@@ -61,7 +61,13 @@ export default class TimeSlider extends React.Component {
     window.historyVideoCurrentTime = 0;
   }
   onSliderChange = percent => {
-    const { duration, activeItem, fragments, storage } = this.props;
+    const {
+      duration,
+      activeItem,
+      fragments,
+      storage,
+      sliderModel,
+    } = this.props;
     const currentTime = percent * duration;
     //当前播放的currentTime，需要转换
     let currentVideoTime = currentTime;
@@ -93,6 +99,13 @@ export default class TimeSlider extends React.Component {
     }
     this.currentVideoTime = currentVideoTime;
 
+    const { duration: currentVideoDuration = 0 } = sliderModel;
+    this.dispatch({
+      type: `${videoNamespace}/seeking`,
+      payload: {
+        percent: this.currentVideoTime / currentVideoDuration,
+      },
+    });
     //end----处理当前video的进度
   };
   onMouseDown = e => {
@@ -109,16 +122,13 @@ export default class TimeSlider extends React.Component {
     this.setState({
       isSliding: false,
     });
-    const { storage, setActiveItem, activeItem, sliderModel } = this.props;
-    const { duration: currentVideoDuration = 0 } = sliderModel;
-    this.dispatch({
-      type: `${videoNamespace}/seeking`,
-      payload: {
-        percent: this.currentVideoTime / currentVideoDuration,
-      },
-    });
+    const { storage, setActiveItem, activeItem } = this.props;
     //video/event/index.js中loadeddata事件中使用。
     window.historyVideoCurrentTime = this.currentVideoTime;
+    this.dispatch({
+      type: `${videoNamespace}/seekingState`,
+      payload: false,
+    });
     if (activeItem !== this.selectedItem) {
       //拖动或者点击slider，选中的item不一样，需要切换item进行播放
       setActiveItem(this.selectedItem);
@@ -130,10 +140,6 @@ export default class TimeSlider extends React.Component {
         percent: 0,
       });
     }
-    this.dispatch({
-      type: `${videoNamespace}/seekingState`,
-      payload: false,
-    });
   };
   duration = this.props.duration;
   onLeftSelectionBlur = percent => {
