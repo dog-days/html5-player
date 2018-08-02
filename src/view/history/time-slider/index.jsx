@@ -319,7 +319,8 @@ export default class TimeSlider extends React.Component {
             return (
               <div
                 key={k}
-                className={classnames('html5-player-broken', {
+                className={classnames({
+                  'html5-player-broken': !v.file,
                   'html5-player-hasvideo': v.file,
                 })}
                 style={style}
