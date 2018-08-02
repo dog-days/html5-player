@@ -136,6 +136,13 @@ export default class API {
   }
   //获取buffer的秒数
   getBufferTime() {
+    if (this.living) {
+      if (this.buffered.length > 0) {
+        return this.buffered.end(0);
+      } else {
+        return 0;
+      }
+    }
     var buf = this.buffered;
     var total = 0;
     for (let ii = 0; ii < buf.length; ii++) {

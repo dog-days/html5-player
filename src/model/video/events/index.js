@@ -300,6 +300,7 @@ class Events {
             livingMaxBuffer += 15;
           }
           //直播实时处理，让视频接近实时。
+          // console.log(api.bufferTime, api.buffered.end(0));
           if (api.bufferTime - api.currentTime > livingMaxBuffer) {
             let reduceBuffer;
             if (isHls) {
