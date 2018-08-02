@@ -45,7 +45,11 @@ export default class End extends React.Component {
     if (isHistory) {
       //history列表的从0算起
       activeItem += 1;
-      if (!playlist[activeItem].file && playlist.length === activeItem) {
+      if (
+        playlist[activeItem] &&
+        !playlist[activeItem].file &&
+        playlist.length - 1 === activeItem
+      ) {
         //判断下一个是否有视频（最后一个视频）
         return true;
       }
@@ -56,8 +60,8 @@ export default class End extends React.Component {
     return true;
   }
   replay = e => {
-    const { isHistory, setActiveItem } = this.context;
-    if (isHistory) {
+    const { isHistory, setActiveItem, activeItem } = this.context;
+    if (isHistory && activeItem !== 0) {
       setActiveItem(0);
     } else {
       this.dispatch({
