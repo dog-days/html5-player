@@ -52,7 +52,7 @@ export default class TimeSlider extends React.Component {
     this.dispatch({
       type: `${videoNamespace}/setHistoryCurrentTime`,
       payload: {
-        historyCurrentTime: this.percent * this.props.duration,
+        historyCurrentTime: this.percent * this.duration,
       },
     });
   }
@@ -61,13 +61,13 @@ export default class TimeSlider extends React.Component {
     window.historyVideoCurrentTime = 0;
   }
   onSliderChange = percent => {
-    const {
-      duration,
-      activeItem,
-      fragments,
-      storage,
-      sliderModel,
-    } = this.props;
+    let { activeItem, fragments, storage, sliderModel } = this.props;
+    const { duration: currentVideoDuration = 0 } = sliderModel;
+    let duration = this.duration;
+    if (currentVideoDuration > duration) {
+      //只有一个视频的时候，会存在误差
+      duration = currentVideoDuration;
+    }
     const currentTime = percent * duration;
     //当前播放的currentTime，需要转换
     let currentVideoTime = currentTime;
@@ -99,7 +99,6 @@ export default class TimeSlider extends React.Component {
     }
     this.currentVideoTime = currentVideoTime;
 
-    const { duration: currentVideoDuration = 0 } = sliderModel;
     this.dispatch({
       type: `${videoNamespace}/seeking`,
       payload: {
@@ -141,7 +140,15 @@ export default class TimeSlider extends React.Component {
       });
     }
   };
-  duration = this.props.duration;
+  get duration() {
+    let { duration, sliderModel } = this.props;
+    const { duration: currentVideoDuration = 0 } = sliderModel;
+    if (currentVideoDuration > duration) {
+      //只有一个视频的时候，会存在误差
+      duration = currentVideoDuration;
+    }
+    return duration;
+  }
   onLeftSelectionBlur = percent => {
     this.dispatch({
       type: `${videoNamespace}/selection`,
@@ -188,8 +195,8 @@ export default class TimeSlider extends React.Component {
   renderSelection() {
     let {
       selection: { begin, end },
-      duration,
     } = this.props;
+    let duration = this.duration;
     if (end > duration) {
       end = duration;
     }
@@ -217,19 +224,13 @@ export default class TimeSlider extends React.Component {
     );
   }
   getPercent() {
-    const {
-      sliderModel,
-      fragments,
-      duration,
-      activeItem,
-      storage,
-      end,
-    } = this.props;
+    let { sliderModel, fragments, activeItem, storage, end } = this.props;
     //currentVideoDuration当前播放视频的duration
     const {
       percent: currentVideoPercent = 0,
       duration: currentVideoDuration = 0,
     } = sliderModel;
+    let duration = this.duration;
     if (
       (currentVideoPercent === 0 || currentVideoDuration === 0) &&
       activeItem > 0
@@ -272,16 +273,32 @@ export default class TimeSlider extends React.Component {
     });
     percent = currentTime / duration;
     storage.lastPercent = percent;
+    if (percent > 1) {
+      percent = 1;
+    }
     return percent;
   }
+  //是否是最后一个可以播放的视频
+  get isLastVideo() {
+    let { fragments, activeItem } = this.props;
+    activeItem += 1;
+    if (
+      fragments[activeItem] &&
+      !fragments[activeItem].file &&
+      fragments.length - 1 === activeItem
+    ) {
+      //判断下一个是否有视频（最后一个视频）
+      return true;
+    }
+    if (fragments && fragments[0] && activeItem < fragments.length) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
-    const {
-      fragments,
-      duration,
-      beginDateTime,
-      selection,
-      isError,
-    } = this.props;
+    let { fragments, beginDateTime, selection, isError, end } = this.props;
+    let duration = this.duration;
     // this.setStorage();
     const percent = this.getPercent();
     this.percent = percent;
@@ -295,7 +312,7 @@ export default class TimeSlider extends React.Component {
           'html5-player-time-slider',
           'html5-player-track-history-slider',
           {
-            'html5-player-hide': isError,
+            'html5-player-hide': isError || (this.isLastVideo && end),
           }
         )}
         onMouseDown={this.onMouseDown}

@@ -36,12 +36,12 @@ function loadFlvJsBundle(config) {
             ...config.flvConfig,
             ...{
               enableWorker: true,
-              lazyLoad: false,
+              // lazyLoad: false,
               //Indicates how many seconds of data to be kept for lazyLoad.
-              lazyLoadMaxDuration: 0,
-              autoCleanupMaxBackwardDuration: 3,
-              autoCleanupMinBackwardDuration: 2,
-              autoCleanupSourceBuffer: true,
+              // lazyLoadMaxDuration: 0,
+              // autoCleanupMaxBackwardDuration: 3,
+              // autoCleanupMinBackwardDuration: 2,
+              // autoCleanupSourceBuffer: true,
               enableStashBuffer: false,
               stashInitialSize: 128,
               isLive: true,

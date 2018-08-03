@@ -71,7 +71,9 @@ export default class HistoryPlayer extends React.Component {
     return (historyList && historyList.duration) || 0;
   }
   get file() {
-    return this.fragments[this.activeItem].file;
+    return (
+      this.fragments[this.activeItem] && this.fragments[this.activeItem].file
+    );
   }
   get activeItem() {
     if (this.historyListChanged) {
@@ -175,7 +177,7 @@ export default class HistoryPlayer extends React.Component {
       ...other
     } = this.props;
     const containerStyle = this.getContainerStyle();
-    if (!historyList) {
+    if (!historyList || !this.file) {
       return (
         <div className="html5-player-container" style={containerStyle}>
           <div className="html5-player-error-message-container">
