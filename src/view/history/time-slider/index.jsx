@@ -57,7 +57,6 @@ export default class TimeSlider extends React.Component {
     });
   }
   componentWillUnmount() {
-    console.log(222);
     window.historyVideoCurrentTime = 0;
   }
   onSliderChange = percent => {

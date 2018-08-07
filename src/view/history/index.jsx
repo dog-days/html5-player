@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import isNumber from 'lodash/isNumber';
+import isEqual from 'lodash/isEqual';
 //内部依赖包
 import Player from '../../index';
 import { ASPECT_RATIO } from '../../utils/const';
@@ -43,7 +44,10 @@ export default class HistoryPlayer extends React.Component {
   };
   componentWillReceiveProps(nextProps) {
     this.storage.defaultCurrentTime = 0;
-    this.historyListChanged = true;
+    if (!isEqual(nextProps.historyList, this.props.historyList)) {
+      //historyList不一样，需要进行更新
+      this.historyListChanged = true;
+    }
   }
   //获取第一个可播放的activeItem
   getFirstActiveItem() {
@@ -58,6 +62,7 @@ export default class HistoryPlayer extends React.Component {
         break;
       }
     }
+    this.lastActiveItem = activeItem;
     return activeItem;
   }
   get fragments() {
@@ -78,9 +83,10 @@ export default class HistoryPlayer extends React.Component {
   get activeItem() {
     if (this.historyListChanged) {
       this.historyListChanged = false;
-      return this.getFirstActiveItem();
+      const activeItem = this.getFirstActiveItem();
+      return activeItem;
     }
-    return this.state.activeItem;
+    return this.lastActiveItem;
   }
   set activeItem(value) {
     let k = 0;
@@ -100,6 +106,7 @@ export default class HistoryPlayer extends React.Component {
         break;
       }
     }
+    this.lastActiveItem = value;
     this.setState({ activeItem: value });
     //重置
     this.storage.defaultCurrentTime = 0;
