@@ -40,14 +40,14 @@ import { namespace as trackNamespace } from '../../model/track';
     subtitleList: state[trackNamespace].subtitleList,
   };
 })
-@clearDecorator([livingNamespace])
+@clearDecorator([controlbarNamespace, livingNamespace])
 export default class Controlbar extends React.Component {
   static contextTypes = {
     localization: PropTypes.object,
     controlbarHideTime: PropTypes.number,
     isHistory: PropTypes.bool,
   };
-  displayName = 'Controlbar';
+  static displayName = 'Controlbar';
   state = {};
   dispatch = this.props.dispatch;
   onMouseEnter = e => {

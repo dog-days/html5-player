@@ -33,15 +33,20 @@ export default class Volume extends React.Component {
   componentDidMount() {
     const { autoMuted } = this.props;
     if (!autoMuted) {
-      const storage_muted = storage.get('muted');
-      if (storage_muted) {
-        this.dispatch({
-          type: `${videoNamespace}/muted`,
-          payload: true,
-        });
-      } else {
-        this.setVolumeFromLocalStorage();
-      }
+      setTimeout(() => {
+        //之所以使用setTimeout，是因为切换视频，最外层palyer jsx没销毁，model/video init后于这个这行
+        //这样dispatch就是上一个的视频控制，所以要延时执行。
+        //队列比栈后执行，所以setTimeout，0就足够
+        const storage_muted = storage.get('muted');
+        if (storage_muted) {
+          this.dispatch({
+            type: `${videoNamespace}/muted`,
+            payload: true,
+          });
+        } else {
+          this.setVolumeFromLocalStorage();
+        }
+      }, 0);
     }
   }
   setVolumeFromLocalStorage() {

@@ -31,6 +31,7 @@ import { namespace as fullscreenNamespace } from '../model/fullscreen';
 import { namespace as playPauseNamespace } from '../model/play-pause';
 import { namespace as controlbarNamespace } from '../model/controlbar';
 import { namespace as livingNamespace } from '../model/living';
+import { namespace as readyNamespace } from '../model/ready';
 
 @connect(state => {
   return {
@@ -43,7 +44,7 @@ import { namespace as livingNamespace } from '../model/living';
 })
 //播放器删除，卸载后，还原所有state状态，异常事件监控等。
 //只要用到redux，每个组件基本都有相应的clearDecorator
-@clearDecorator([videoNamespace])
+@clearDecorator([videoNamespace, readyNamespace])
 export default class View extends React.Component {
   //这里的配置参考jw-player的api
   static propTypes = {
@@ -231,6 +232,12 @@ export default class View extends React.Component {
     });
   }
   componentDidMount() {
+    this.initWithEvent();
+  }
+  initWithEvent() {
+    if (this.palyerMousemoveEvent) {
+      this.palyerMousemoveEvent.remove();
+    }
     this.playerConainerDOM = ReactDOM.findDOMNode(
       this.refs['player-container']
     );
@@ -244,11 +251,11 @@ export default class View extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.file !== prevProps.file) {
-      this.dispatch({
-        type: `${videoNamespace}/end`,
-        payload: false,
-      });
-      this.init();
+      // this.dispatch({
+      //   type: `${videoNamespace}/end`,
+      //   payload: false,
+      // });
+      this.initWithEvent();
     }
   }
   componentWillUnmount() {
@@ -416,12 +423,12 @@ export default class View extends React.Component {
     }
     return (
       <ContextMenu
+        key={file}
         ref="player-container"
         overflow={false}
         content={<ContextMenuView content={contextMenu} />}
       >
         <div
-          key={file}
           className={classnames('html5-player-container', className, {
             'cursor-none': !userActive,
           })}
