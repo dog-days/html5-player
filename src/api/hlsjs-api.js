@@ -11,6 +11,7 @@ import {
 export default class hlsAPI extends API {
   constructor(videoDOM, file, Hls) {
     let _this = super(videoDOM, file);
+    this.file = file;
     if (Hls.isSupported()) {
       this.Hls = Hls;
       this.hlsObj = new Hls({
@@ -61,6 +62,23 @@ export default class hlsAPI extends API {
     let type;
     logger.info('Listening:', 'listening on hls.js events.');
     const errorTitle = 'Hls.js Error,';
+    let beginDateStamp = 0;
+    let endDateStamp = 0;
+    let fragmentRequestTime = 0;
+    hlsObj.on(Hls.Events.FRAG_LOADING, () => {
+      beginDateStamp = +new Date();
+    });
+    hlsObj.on(Hls.Events.FRAG_LOADED, (event, data) => {
+      endDateStamp = +new Date();
+      fragmentRequestTime = endDateStamp - beginDateStamp;
+      const info = {
+        requestTime: fragmentRequestTime,
+        duration: data.frag.duration,
+        fileSize: data.frag.loaded,
+        // file: this.file,
+      };
+      this.event.trigger('hlsFragmentInfo', info);
+    });
     hlsObj.on(Hls.Events.ERROR, (event, data) => {
       switch (data.details) {
         case Hls.ErrorDetails.MANIFEST_LOAD_ERROR:
