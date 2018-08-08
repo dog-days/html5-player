@@ -62,6 +62,10 @@ export default class End extends React.Component {
   replay = e => {
     const { isHistory, setActiveItem, activeItem } = this.context;
     if (isHistory && activeItem !== 0) {
+      this.dispatch({
+        type: `${videoNamespace}/end`,
+        payload: false,
+      });
       setActiveItem(0);
     } else {
       this.dispatch({
