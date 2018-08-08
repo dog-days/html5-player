@@ -631,11 +631,21 @@ export default function() {
         if (fullscreenObj) {
           fullscreenObj.remove();
         }
+        const fullscreenDom = _api.parentNode.parentNode;
         fullscreenObj = new fullscreenHelper(
-          _api.parentElement || _api.parentNode,
+          fullscreenDom,
           _api.ownerDocument,
           function() {
             const isFull = fullscreenObj.fullscreenElement();
+            if (isFull) {
+              fullscreenDom.style.width = '100%';
+              fullscreenDom.style.display = 'block';
+              fullscreenDom.style.height = '100%';
+            } else {
+              fullscreenDom.style.width = '';
+              fullscreenDom.style.display = '';
+              fullscreenDom.style.height = '';
+            }
             _api.trigger('fullscreen', !!isFull);
             if (isFull) {
               logger.info('Fullscreen');
@@ -792,6 +802,7 @@ export default function() {
         }
         _api.isError = false;
         //重载后还原
+        clearInterval(clearIntervalForPlay);
         clearIntervalForPlay = undefined;
         yield put({
           type: `loading`,
