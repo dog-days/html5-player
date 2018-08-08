@@ -668,6 +668,16 @@ player.on('loading', function(loading) {
 
   selection操作，触发。
 
+* hlsFragmentInfo
+
+  返回hls ts的一些细信息，可以计算下载速度和带宽。
+
+  | 参数        | 类型   | 说明                     |
+  | ----------- | ------ | ------------------------ |
+  | requestTime | number | ts网络请求时间，单位毫秒 |
+  | duration    | number | ts时长，单位秒           |
+  | fileSize    | number | ts文件大小，单位bit      |
+
 ### 播放列表
 
 简单例子
