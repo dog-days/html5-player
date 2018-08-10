@@ -9,15 +9,18 @@ import {
   RETRY_TIMES,
 } from '../../../utils/const';
 import * as logger from '../../../utils/logger';
+import { isSafari } from '../../../utils/browser';
 
 import { TIMEOUT_ERROR } from '../../../utils/error-code';
 import { isIE } from '../../../utils/browser';
 import contains from '../../../utils/dom/contains';
 
 class Events {
-  constructor(payload) {
+  constructor(payload, isFirstRun) {
     this.api = payload.api;
     this.dispatch = payload.dispatch;
+    //是否是第一次运行
+    this.isFirstRun = isFirstRun;
     this.config = payload.config;
     if (!this.api.hlsObj) {
       this.setOriginHlsSubtitle();
@@ -27,13 +30,19 @@ class Events {
     this.pause();
     this.error();
     this.ended();
-    this.stalled();
     this.onSpaceAndVieoFocusEvent();
+    const { timeout = VIDEO_TIMEOUT } = this.config;
+    this.timeoutInterval = setInterval(() => {
+      //定时查看是否超时
+      if (this.api.playing) {
+        this.timeoutAction();
+      }
+    }, timeout);
     logger.info('Listening:', 'listening on h5 video events.');
   }
   reset() {
     this.currentTime = 0;
-    clearTimeout(this.videoTimeout);
+    clearInterval(this.timeoutInterval);
   }
   //原生浏览器hls
   setOriginHlsSubtitle() {
@@ -94,16 +103,12 @@ class Events {
       }, 200);
     }
   }
-
   loadeddata() {
     const api = this.api;
     const dispatch = this.dispatch;
-    const { autoplay, isLiving, defaultCurrentTime } = this.config;
+    const { isLiving, defaultCurrentTime } = this.config;
     api.on('loadeddata', () => {
-      //防止超时还在执行
-      clearTimeout(this.videoTimeout);
       //设置重载状态false，这个视事件运行了，视频就可以播放了。
-      api.reloading = false;
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
       if (defaultCurrentTime !== undefined) {
@@ -112,14 +117,14 @@ class Events {
         //重置
         window.historyVideoCurrentTime = 0;
       }
-      dispatch({
-        type: `${readyNamespace}/state`,
-      });
-      if (autoplay) {
+      if (!this.isFirstRun) {
         dispatch({
           type: `${videoNamespace}/play`,
         });
       }
+      dispatch({
+        type: `${readyNamespace}/state`,
+      });
       //兼容edge，用来比较获取loading状态
       this.currentTime = api.currentTime;
       //currentTime处理
@@ -136,6 +141,11 @@ class Events {
           duration: isLiving ? Infinity : api.duration,
         },
       });
+      dispatch({
+        type: `${videoNamespace}/loading`,
+        payload: false,
+      });
+      api.reloading = false;
     });
   }
   //尝试重载次数记录
@@ -144,76 +154,46 @@ class Events {
     const api = this.api;
     const dispatch = this.dispatch;
     const locale = api.localization;
-    const { timeout = VIDEO_TIMEOUT, retryTimes = RETRY_TIMES } = this.config;
+    const { retryTimes = RETRY_TIMES } = this.config;
     // console.log(type, 'this.retryReloadTime', this.retryReloadTime);
     //处理超时
-    this.videoTimeout = setTimeout(() => {
-      // console.log(this.currentTime, api.currentTime, api.playing);
-
-      logger.log('Stalled currentTime:', this.currentTime, api.currentTime);
-      if (this.currentTime !== api.currentTime) {
-        //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
-        return;
-      }
-      //需要防止视频结束、暂停、出错等还继续执行这个timeout计时器，所以要clearTimeout
-      //超时最多尝试重载retryTimes
-      const isLiving = api.living || this.config.isLiving;
-      if (this.retryReloadTime < retryTimes && isLiving) {
-        this.retryReloadTime++;
-        // console.log(this.retryReloadTime);
-        if (isLiving) {
-          //直播才做重载
-          dispatch({
-            type: `${videoNamespace}/reload`,
-          });
-        }
-        logger.info('Timeout:', `try to reload.`);
-      } else {
-        if (isLiving) {
-          logger.error(
-            'Timeout:',
-            `try to reload ${retryTimes} times but video can not be loaded.`
-          );
-        }
-        if (!api.isError) {
-          api.trigger('error', {
-            //基本上trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-            //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-            data: {},
-            message: locale.timeout,
-            type: TIMEOUT_ERROR,
-          });
-        }
-        this.retryReloadTime = 0;
-      }
-      this.isStalled = false;
-    }, timeout);
-  }
-  stalled() {
-    const api = this.api;
-    //stalled事件之后还会执行timeupdate事件，this.videoTimeout会被clear
-    //所以需要做判断处理。
-    api.on('stalled', e => {
-      this.currentTime = api.currentTime;
-      if (
-        !this.isStalled &&
-        !api.isError &&
-        api.playing &&
-        !api.ended &&
-        !api.reloading &&
-        !this.reducingDelay
-      ) {
-        logger.info(
-          'Stalled:',
-          'because of network problem,video now is stalled.'
+    // console.log(this.currentTime, api.currentTime, api.playing);
+    if (this.api.isError || this.api.ended) {
+      return;
+    }
+    if (this.currentTime !== api.currentTime) {
+      //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
+      return;
+    }
+    //超时最多尝试重载retryTimes
+    const isLiving = api.living || this.config.isLiving;
+    if (this.retryReloadTime < retryTimes && isLiving) {
+      //直播才做重载
+      this.retryReloadTime++;
+      // console.log(this.retryReloadTime);
+      dispatch({
+        type: `${videoNamespace}/reload`,
+      });
+      logger.info('Timeout:', `try to reload.`);
+    } else {
+      if (isLiving) {
+        logger.error(
+          'Timeout:',
+          `try to reload ${retryTimes} times but video can not be loaded.`
         );
-        this.isStalled = true;
-        //hls.js和flv.js在播放正常情况下也会stalled，跟原生的不一样
-        //不自动播放时也需要阻止stalled，导致的重新加载。
-        //flv视频播放结束后还会触发statlled
-        this.timeoutAction();
       }
-    });
+      if (!api.isError) {
+        api.trigger('error', {
+          //基本上trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+          //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+          data: {},
+          message: locale.timeout,
+          type: TIMEOUT_ERROR,
+        });
+      }
+      this.retryReloadTime = 0;
+    }
+    this.isStalled = false;
   }
   timeupdate() {
     const api = this.api;
@@ -273,16 +253,6 @@ class Events {
             },
           });
         }
-        if (this.currentTime !== api.currentTime) {
-          clearTimeout(this.videoTimeout);
-        }
-        if (this.isStalled && this.currentTime !== api.currentTime) {
-          this.isStalled = false;
-          //播放中取消，减少延时的状态
-          this.reducingDelay = false;
-        } else if (!api.reloading && !this.reducingDelay) {
-          this.timeoutAction();
-        }
         //直播延时变大处理
         //safari原生的hls，在直播延时处理失效，还没有解决办法，不过hls本来的延时就大，影响不大。
         //使用的hls.js和flv.js延时处理是正常的。
@@ -292,7 +262,8 @@ class Events {
           api.living &&
           api.buffered.length > 0 &&
           api.currentTime &&
-          livingMaxBuffer > 0
+          livingMaxBuffer > 0 &&
+          !api.isError
         ) {
           //livingMaxBuffer=0，相当于没设置，最好不要设置为0
           if (isHls) {
@@ -313,7 +284,6 @@ class Events {
             //标记正在减少延时状态
             this.reducingDelay = true;
             //同时超时重新计算
-            clearTimeout(this.videoTimeout);
             logger.log(
               'Delay Reduce',
               'Due to the high delay, there is a need to reduce the delay.'
@@ -331,7 +301,6 @@ class Events {
     const api = this.api;
     api.on('pause', e => {
       //清理timeupdate中的定时器。
-      clearTimeout(this.videoTimeout);
     });
   }
   error() {
@@ -339,6 +308,8 @@ class Events {
     const dispatch = this.dispatch;
     const locale = api.localization;
     api.on('error', data => {
+      //flv播放出错事件，可能没触发到trigger
+      clearInterval(api.clearFlvErrorInterval);
       this.reset();
       //有message和type的是hls.js等事件的错误
       api.isError = true;
@@ -365,7 +336,6 @@ class Events {
     const dispatch = this.dispatch;
     api.on('ended', () => {
       logger.info('Ended:', 'video is ended');
-      clearTimeout(this.videoTimeout);
       if (!api.living && !this.config.isLiving) {
         //直播是不会结束的
         //即使监控到end事件也不做处理
@@ -373,7 +343,8 @@ class Events {
           type: `${videoNamespace}/end`,
           payload: true,
         });
-      } else {
+      } else if (!isSafari()) {
+        //safari flv.js直播经常报ended事件。
         dispatch({
           type: `${videoNamespace}/reload`,
         });
@@ -449,6 +420,6 @@ class Events {
   }
 }
 
-export default function(payload) {
-  return new Events(payload);
+export default function(...params) {
+  return new Events(...params);
 }

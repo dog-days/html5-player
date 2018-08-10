@@ -24,7 +24,7 @@ import {
   MAX_VOLUME,
   SHOW_LOADING_LAZY_TIME,
   SHOW_ERROR_MESSAGE_LAZY_TIME,
-  VIDEO_TIMEOUT,
+  // VIDEO_TIMEOUT,
   // RETRY_TIMES,
 } from '../../utils/const';
 import fullscreenHelper from '../../utils/dom/fullscreen';
@@ -50,10 +50,10 @@ export default function() {
   let errorMessageTimeout;
   let showErrorMessageLazyTime = SHOW_ERROR_MESSAGE_LAZY_TIME;
   let _videoEvents;
-  let clearIntervalForPlay;
   let subtitleList;
+  let lastCurrentTime = 0;
   //init运行一次
-  let runOnce = true;
+  let isFirstRun = true;
   function getTracks() {
     const { tracks } = _config;
     subtitleList = [];
@@ -92,7 +92,6 @@ export default function() {
     reducers: {
       clear: function(state, { payload }) {
         _videoEvents && _videoEvents.reset();
-        clearInterval(clearIntervalForPlay);
         if (_api) {
           _api.pause();
           //移除事件监控
@@ -145,6 +144,11 @@ export default function() {
           if (!_config.preload) {
             //autoplay=false,preload=false
             _api.loadSource(_config.file);
+            //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
+            if ((!_api.living || _config.isLiving) && lastCurrentTime) {
+              //播放中途出错，重载需要载入上一个播放进度
+              _api.currentTime = lastCurrentTime;
+            }
             getTracks();
           }
           yield put({
@@ -167,24 +171,6 @@ export default function() {
       *play({ payload }, { put }) {
         if (_api.isError) {
           return;
-        }
-        const {
-          timeout = VIDEO_TIMEOUT,
-          // autoplay,
-          // retryTimes = RETRY_TIMES,
-        } = _config;
-        if (!clearIntervalForPlay && !_api.isError) {
-          //hls ts文件500等，然后点击播放后无提示问题。
-          const locale = _config.localization;
-          clearIntervalForPlay = setInterval(() => {
-            _dispatch({
-              type: `${namespace}/errorMessage`,
-              payload: {
-                message: locale.timeout,
-              },
-            });
-            //让timeout时间跟尝试重连的timeout保持最小时间一致。
-          }, timeout);
         }
         if (!_api.notAutoPlayViewHide) {
           //当autoplay为false，播放后，需要隐藏not-autoplay页面
@@ -214,38 +200,36 @@ export default function() {
         }
         _api.play();
         logger.info('Play Action', 'start playing');
-        if (_api.playing) {
+        yield put({
+          type: `${playPauseNamespace}/playPauseSaga`,
+          payload: true,
+        });
+        if (!_api.bufferTime) {
           yield put({
-            type: `${playPauseNamespace}/playPauseSaga`,
+            type: `loading`,
             payload: true,
           });
-          if (!_api.bufferTime) {
-            yield put({
-              type: `loading`,
-              payload: true,
-            });
-          } else if (
-            (!_api.loading && _api.bufferTime < _api.currentTime) ||
-            //readyState < 3代表视频就绪状态不足以播放。
-            _api.readyState < 3
-          ) {
-            yield put({
-              type: `loading`,
-              payload: true,
-            });
-          }
-          if (!payload || (payload && !payload.noControlbarAction)) {
-            //操作非controlbar的播放按钮，需要设置定时隐藏controlbar的状态
-            //如点击整个播放器进行播放
-            yield put({
-              type: `controlbarClearTimeout`,
-            });
-            yield put({
-              type: `controlbar`,
-              payload: false,
-              delayTime: _config.controlbarHideTime,
-            });
-          }
+        } else if (
+          (!_api.loading && _api.bufferTime < _api.currentTime) ||
+          //readyState < 3代表视频就绪状态不足以播放。
+          _api.readyState < 3
+        ) {
+          yield put({
+            type: `loading`,
+            payload: true,
+          });
+        }
+        if (!payload || (payload && !payload.noControlbarAction)) {
+          //操作非controlbar的播放按钮，需要设置定时隐藏controlbar的状态
+          //如点击整个播放器进行播放
+          yield put({
+            type: `controlbarClearTimeout`,
+          });
+          yield put({
+            type: `controlbar`,
+            payload: false,
+            delayTime: _config.controlbarHideTime,
+          });
         }
       },
       *pause({ payload }, { put }) {
@@ -364,8 +348,7 @@ export default function() {
         logger.info('Replay', `replay video when video is ended.`);
       },
       *time({ payload }, { put, select }) {
-        clearInterval(clearIntervalForPlay);
-        if (_api.isError) {
+        if (_api.isError && !_api.living) {
           yield put({
             type: `errorMessage`,
             payload: {
@@ -556,9 +539,6 @@ export default function() {
         },
         { put, select }
       ) {
-        if (!_config.selection) {
-          return;
-        }
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
         const selection = reduxStore.selection;
@@ -728,7 +708,6 @@ export default function() {
         }
       },
       errorMessage({ payload }, { put }) {
-        clearInterval(clearIntervalForPlay);
         clearTimeout(errorMessageTimeout);
         if (_api.ended) {
           return;
@@ -788,26 +767,12 @@ export default function() {
       },
       *reload({ payload }, { put }) {
         logger.info('Reload Video');
-        _api.reloading = true;
         _api.trigger('reload');
         //重置
         _api.reset();
         _videoEvents && _videoEvents.reset();
         //报错保存之前的播放进度
-        const tempCurrentTime = _api.currentTime;
-        _api.loadSource && _api.loadSource(util.joinUrlParams(_api.file, {}));
-        //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
-        if (!_api.living || _config.isLiving) {
-          _api.currentTime = tempCurrentTime;
-        }
-        _api.isError = false;
-        //重载后还原
-        clearInterval(clearIntervalForPlay);
-        clearIntervalForPlay = undefined;
-        yield put({
-          type: `loading`,
-          payload: true,
-        });
+        lastCurrentTime = _api.currentTime;
         yield put({
           type: `errorMessage`,
           payload: {
@@ -815,7 +780,12 @@ export default function() {
           },
         });
         yield put({
-          type: `play`,
+          type: `loading`,
+          payload: true,
+        });
+        _config.reload(() => {
+          _api.reloading = true;
+          _api.isError = false;
         });
       },
       *living(
@@ -978,14 +948,15 @@ export default function() {
         //初始化loading状态
         if (autoplay) {
           _api.loadSource(file);
+          //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
+          if ((!_api.living || _config.isLiving) && lastCurrentTime) {
+            //播放中途出错，重载需要载入上一个播放进度
+            _api.currentTime = lastCurrentTime;
+          }
           getTracks();
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
-          yield put({
-            type: `loading`,
-            payload: true,
-          });
           yield put({
             type: `play`,
           });
@@ -1010,7 +981,7 @@ export default function() {
             autoMuted: true,
           });
         }
-        if (_config.selection && runOnce) {
+        if (_config.selection && isFirstRun) {
           const payload = {
             begin: 0,
             //5分钟
@@ -1024,16 +995,17 @@ export default function() {
         }
         //防止事件没移除
         _api.off();
+        //等待video运行起来后运行，对外提供接口
+        const _outSideApi = outSideApi(payload, this.sagas);
+        initOverCallback && initOverCallback(_outSideApi);
         //----begin 事件处理
-        _videoEvents = videoEvents(payload);
+        //需要再 initOverCallback之后执行
+        _videoEvents = videoEvents(payload, isFirstRun);
         if (hlsjsEvents) {
           hlsjsEvents(payload);
         }
         //----end 事件处理
-        //等待video运行起来后运行，对外提供接口
-        const _outSideApi = outSideApi(payload, this.sagas);
-        initOverCallback && initOverCallback(_outSideApi);
-        runOnce = false;
+        isFirstRun = false;
       },
     },
   };

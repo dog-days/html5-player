@@ -17,7 +17,7 @@ export const MAX_VOLUME = 100;
 
 export const DEBUG = storage.get('debug');
 //视频超时，超时后会超时reload，尝试3次后，报错误信息。
-export const VIDEO_TIMEOUT = 1000 * 30;
+export const VIDEO_TIMEOUT = 1000 * 20;
 //默认的播放器纵横比
 export const ASPECT_RATIO = '16:9';
 //用户不活跃的时候，controlbar即将消失的时间
@@ -30,4 +30,4 @@ export const SHOW_LOADING_LAZY_TIME = 500;
 //延时展示错误信息的时间
 export const SHOW_ERROR_MESSAGE_LAZY_TIME = 1000;
 //尝试重连次数
-export const RETRY_TIMES = 2;
+export const RETRY_TIMES = 3;

@@ -34,12 +34,12 @@ export function isIE() {
   return isEdge() || isIETrident() || isMSIE();
 }
 
-// export function isSafari() {
-//   return (
-//     userAgentMatch(/safari/i) &&
-//     !userAgentMatch(/(?:Chrome|CriOS|chromium|android)/i)
-//   );
-// }
+export function isSafari() {
+  return (
+    userAgentMatch(/safari/i) &&
+    !userAgentMatch(/(?:Chrome|CriOS|chromium|android)/i)
+  );
+}
 
 // /** Matches iOS devices **/
 // export function isIOS() {

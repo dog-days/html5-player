@@ -148,7 +148,7 @@ export default class View extends React.Component {
     ready: false,
   };
   dispatch = this.props.dispatch;
-  init() {
+  init(callback) {
     const videoDOM = ReactDOM.findDOMNode(this.refs.video);
     this.videoDOM = videoDOM;
     let {
@@ -161,6 +161,7 @@ export default class View extends React.Component {
       selection,
       ...other
     } = this.props;
+
     if (selection === true) {
       selection = {};
     }
@@ -212,6 +213,14 @@ export default class View extends React.Component {
             playlist: this.context.playlist,
             historyDuration: this.context.historyDuration,
             activeItem: this.context.activeItem,
+            reload: callback => {
+              this.initWithEvent(() => {
+                callback && callback();
+                this.setState({
+                  randomKey: util.randomKey(),
+                });
+              });
+            },
             ...other,
           },
           api: provider.api,
@@ -227,6 +236,7 @@ export default class View extends React.Component {
           this.setState({
             ready: true,
           });
+          callback && callback();
         },
       });
     });
@@ -251,10 +261,6 @@ export default class View extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.file !== prevProps.file) {
-      // this.dispatch({
-      //   type: `${videoNamespace}/end`,
-      //   payload: false,
-      // });
       this.initWithEvent();
     }
   }
@@ -383,7 +389,7 @@ export default class View extends React.Component {
     return containerStyle;
   }
   render() {
-    const { ready } = this.state;
+    const { ready, randomKey } = this.state;
     let {
       file,
       autoplay,
@@ -423,7 +429,7 @@ export default class View extends React.Component {
     }
     return (
       <ContextMenu
-        key={file}
+        key={file + randomKey}
         ref="player-container"
         overflow={false}
         content={<ContextMenuView content={contextMenu} />}

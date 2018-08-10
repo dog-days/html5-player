@@ -85,16 +85,18 @@ export default class hlsAPI extends API {
           message = locale.fileCouldNotPlay;
           logger.error(errorTitle, `cannot Load ${data.context.url}`);
           type = LOAD_ERROR;
-          logger.error(
-            errorTitle,
-            `HTTP response code: ${data.response.code} ${data.response.text}`
-          );
-          if (data.response.code === 0) {
-            message = locale.fileCouldNotPlay;
+          if (data.response !== undefined) {
             logger.error(
               errorTitle,
-              'this might be a CORS issue, consider installing https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi Allow-Control-Allow-Origin Chrome Extension'
+              `HTTP response code: ${data.response.code} ${data.response.text}`
             );
+            if (data.response.code === 0) {
+              message = locale.fileCouldNotPlay;
+              logger.error(
+                errorTitle,
+                'this might be a CORS issue, consider installing https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi Allow-Control-Allow-Origin Chrome Extension'
+              );
+            }
           }
           break;
         case Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT:

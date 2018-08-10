@@ -7,6 +7,7 @@ import classnames from 'classnames';
 //内部依赖包
 import clearDecorator from './decorator/clear';
 import { namespace as loadingNamespace } from '../model/loading';
+import { namespace as errorMessageNamespace } from '../model/error-message';
 
 /**
  * 播放器加载状态的组件
@@ -14,6 +15,7 @@ import { namespace as loadingNamespace } from '../model/loading';
 @connect(state => {
   return {
     loading: state[loadingNamespace],
+    errorInfo: state[errorMessageNamespace],
   };
 })
 @clearDecorator([loadingNamespace])
@@ -30,7 +32,8 @@ export default class Loading extends React.Component {
   }
   render() {
     const { loading } = this.props;
-    if (!loading) {
+    const { message } = this.props.errorInfo;
+    if (!loading || message) {
       //这里不return false 是为了方便单元测试判断。
       return <div className={this.getClassName(true)} />;
     }
