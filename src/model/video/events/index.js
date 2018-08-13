@@ -32,6 +32,8 @@ class Events {
     this.ended();
     this.onSpaceAndVieoFocusEvent();
     const { timeout = VIDEO_TIMEOUT } = this.config;
+    //防止没被清理
+    clearInterval(this.timeoutInterval);
     this.timeoutInterval = setInterval(() => {
       //定时查看是否超时
       if (this.api.playing) {
@@ -161,7 +163,10 @@ class Events {
     if (this.api.isError || this.api.ended) {
       return;
     }
-    if (this.currentTime !== api.currentTime) {
+    if (
+      this.currentTime !== api.currentTime &&
+      this.currentTime !== undefined
+    ) {
       //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
       return;
     }
@@ -193,7 +198,6 @@ class Events {
       }
       this.retryReloadTime = 0;
     }
-    this.isStalled = false;
   }
   timeupdate() {
     const api = this.api;
