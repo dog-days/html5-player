@@ -1,3 +1,17 @@
+## 0.4.2(2018-08-13)
+
+#### Bug Fix
+
+- [解决selection无法取消问题，现在selection禁止seeking参数](https://github.com/dog-days/html5-player/commit/88b85cb54adc0b91356c3fa74ccd508a56af2f14)
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.4.1(2018-08-13)
 
 暂时去掉单元测试，这个单元测试不太合理。

@@ -649,7 +649,7 @@ player.on('loading', function(loading) {
     seekingDisabled: true,//seekingDisabled禁止seeking功能，
   });
   //取消selection
-  player.setSelection(flase);
+  player.setSelection(false);
   ```
 
 * hlsFragmentInfo
