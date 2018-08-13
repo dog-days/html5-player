@@ -1,3 +1,30 @@
+## 0.4.1(2018-08-13)
+
+暂时去掉单元测试，这个单元测试不太合理。
+
+#### Bug Fix
+
+- [fix util joinUrlParams same param bug](https://github.com/dog-days/html5-player/commit/a541ad779ce5d26ad22a985fef76bf5ae89542d4)
+- [fix isH5VideoSupported 无后缀名被拦截问题](https://github.com/dog-days/html5-player/commit/07bc901930d37a6f15cd95f869a7de557d29e1f2)
+- [fix error controlbar hide problem](https://github.com/dog-days/html5-player/commit/cb8440c809ad74f75acd8e70c8418403446d29a5)
+- [fix `//](https://github.com/dog-days/html5-player/commit/ecec21c2fec463f69ad720f759cc93d02165fa18)[www.test.com](http://www.test.com/) [模式的url在flv不生效问题`](https://github.com/dog-days/html5-player/commit/ecec21c2fec463f69ad720f759cc93d02165fa18)
+- [fix localization bug](https://github.com/dog-days/html5-player/commit/879efc69ca31dc78b5bbd43564fbb4ac4ce5f005)
+- [fix space key bug and provide api to cancel the feature](https://github.com/dog-days/html5-player/commit/6d19463fa02ef750a01bb03bb58b599ec18dd7e7)
+- 解决了延时问题
+- 解决了长时间播放画面停止不动，无提示，或者不重连的问题。
+
+#### Update
+
+- 自定义超时处理方式，删除之前的超时处理方式（很难控制）。
+- [add controlbar button with specific className](https://github.com/dog-days/html5-player/commit/5061a73b2b30dd44c70ac30e2c287f6d9d451eac)
+
+#### New Function
+
+- [对外提供controlbar隐藏时间接口](https://github.com/dog-days/html5-player/commit/674e9dcfce800272e46adf302882ea324112a84d)
+- [selection功能](https://github.com/dog-days/html5-player/commit/2c0e88ff941cf2581cbe8f349a38da465f334b00)，histroy player也有这个功能。
+- [新增多录像一起模式（跟fragment类似），即history player](https://github.com/dog-days/html5-player/commit/125879a7947aab83c545405bda2ba33f306f86b9)
+- [新增hls.js ts下载信息自定义事件](https://github.com/dog-days/html5-player/commit/c4bf8f4aef4a4145fa017347d97df8a8cc748413)
+
 ## 0.32(2018-05-10)
 
 #### Bug Fix

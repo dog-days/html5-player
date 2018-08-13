@@ -135,13 +135,16 @@ class View extends React.Component {
 //react jsx用法
 <Html5Player {...props} />
 //umd用法 html5Player(props)
+//历史视频使用方式
+<HistoryPlayer {...props} />
 ```
 
 参数如下：
 
 | props                    | 类型                                  | 说明                                                         | 默认值                  | 必填 |
 | :----------------------- | :------------------------------------ | :----------------------------------------------------------- | :---------------------- | :--- |
-| file                     | sting                                 | 视频文件路径                                                 | 无                      | 是   |
+| file                     | string                                | 视频文件路径                                                 | 无                      | 是   |
+| forceOpenHls，           | boolean                               | 强制使用hls.js，safari也会使用                               | 无                      | 否   |
 | isLiving                 | boolean                               | 强制设置为直播状态。safari 中 flv 无法获取直播状态，所以需要设置这个。 | false                   | 否   |
 | livingMaxBuffer          | float                                 | 直播最大缓存时间（秒），如果卡设置大一定的值，理论上是越小延时越小。(hls 需要而外加上 15 秒) | 2                       | 否   |
 | height                   | string <br />number                   | 播放器高度，不设置高度时，父元素的高度需要设置。             | 100%                    | 否   |
@@ -167,10 +170,10 @@ class View extends React.Component {
 | showLoadingLazyTime      | number                                | 延时展示 loading 的时间（毫秒）                              | 500                     | 否   |
 | showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                               | 1000                    | 否   |
 | contextMenu              | boolean<br />array<br />React Element | 鼠标右击菜单                                                 | 展示一行默认信息        | 否   |
-| timeout                  | number                                | 视频超时设置，5000ms 后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 5000                    | 否   |
-| retryTimes               | number                                | 网络差时，timeout 后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差 5 秒左右。 | 2                       | 否   |
+| timeout                  | number                                | 视频超时设置，10000ms 后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 10 * 1000               | 否   |
+| retryTimes               | number                                | 网络差时，timeout 后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差 5 秒左右。 | 1                       | 否   |
 | stretching               | string                                | 调整视频大小以适合播放器尺寸。                               | uniform                 | 否   |
-| selection                | object<br />boolean                   | 配合fragment使用，截取视频，请参考下面selection说明          | undefined               | 否   |
+| selection                | object<br />boolean                   | 配合fragment使用和历史视频，截取视频，请参考下面selection说明 | undefined               | 否   |
 | leftSelectionComponent   | react element                         | selection左边组件                                            | 无                      | 否   |
 | rightSelectionComponent  | react element                         | selection右边组件                                            | 无                      | 否   |
 
@@ -666,17 +669,102 @@ player.on('loading', function(loading) {
 
 * selection
 
-  selection操作，触发。
+  selection操作触发。
 
 * hlsFragmentInfo
 
-  返回hls ts的一些细信息，可以计算下载速度和带宽。
+  返回hls.js ts文件的一些细信息，可以计算下载速度和带宽。
 
   | 参数        | 类型   | 说明                     |
   | ----------- | ------ | ------------------------ |
   | requestTime | number | ts网络请求时间，单位毫秒 |
   | duration    | number | ts时长，单位秒           |
   | fileSize    | number | ts文件大小，单位bit      |
+
+#### 录像历史视频
+
+这个模式跟fragment效果差不多，不过这里是多个视频连在一起的（简单理解：有个视频播放列表）。
+
+props用法跟原来的player一样，不过多了个`props.historyList`，然后`props.file`不用理。
+
+例子：
+
+```jsx
+import React from 'react';
+import Player from 'html5-player/libs/history';
+
+export default class View extends React.Component {
+  state = {};
+  //录像断片处理
+  render() {
+    return (
+      <div className="demo-container">
+        <div className="player-container">
+          <Player
+            historyList={{
+              beginDate: '2018-07-28 00:00:00',
+              duration: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,
+              fragments: [
+                {
+                  begin: 0,
+                  end: 20,
+                },
+                {
+                  begin: 20,
+                  end: 20 + 654,
+                  file:
+                    'https://wowzaec2demo.streamlock.net/vod-multitrack/_definst_/smil:ElephantsDream/elephantsdream2.smil/playlist.m3u8?test=2',
+                },
+                {
+                  begin: 20 + 654,
+                  end: 20 + 654 + 12,
+                },
+                {
+                  begin: 20 + 654 + 12,
+                  end: 20 + 654 + 12 + 52,
+                  file:
+                    'https://media.w3.org/2010/05/sintel/trailer.mp4?test=2',
+                },
+                {
+                  begin: 20 + 654 + 12 + 52,
+                  end: 20 + 654 + 12 + 52 + 52,
+                  file:
+                    'https://media.w3.org/2010/05/sintel/trailer.mp4?test=3',
+                },
+                {
+                  begin: 20 + 654 + 12 + 52 + 52,
+                  end: 20 + 654 + 12 + 52 + 52 + 10,
+                },
+                {
+                  begin: 20 + 654 + 12 + 52 + 52 + 10,
+                  end: 20 + 654 + 12 + 52 + 52 + 10 + 654,
+                  file:
+                    'https://wowzaec2demo.streamlock.net/vod-multitrack/_definst_/smil:ElephantsDream/elephantsdream2.smil/playlist.m3u8',
+                },
+                {
+                  begin: 20 + 654 + 12 + 52 + 52 + 10 + 654,
+                  end: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,
+                },
+              ],
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+```
+
+**historyList结构**
+
+historyList的值可以是false，这样就是没有任何视频。
+
+| historyList | 类型                  | 说明                                                     | 必填 |
+| ----------- | --------------------- | -------------------------------------------------------- | ---- |
+| begin       | number                | 当前视频（或者断片）开始时间                             | 是   |
+| end         | number                | 当前视频（或者断片）结束时间                             | 是   |
+| file        | string \|\| undefined | 播放的链接，为undefined时，代表无视频（time-slider置灰） | 否   |
 
 ### 播放列表
 
