@@ -6,6 +6,8 @@
 
 > **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了 react 相关代码，如果使用 jsx 语法，那么用法大部分基本一致。当然建议使用 react 更好，如果使用 react、redux、redux-saga，除开这些依赖代码，html5-player 的代码，包括图片样式，gzip 后在 30KB 以内。**
 
+> umd功能暂时不做处理了，没怎么用到。
+
 ## 功能
 
 * 原生 H5 支持的视频源播放
@@ -15,12 +17,12 @@
 * 缩略图预览
 * 播放速度
 * 视频画质（清晰度，目前只支持hls.js的清晰度）
-* 视频断片功能（这个是个额外功能）
+* 视频断片功能（这个是个额外功能，包括fragment和history的）
 * 播放列表功能
 
 ## 兼容性
 
-兼容 IE10 以上，Edge、谷歌、火狐、Opera、Safari 等主流浏览器。但是由于需要支持 HLS 和 FLV，HLS 只兼容了 IE11。FLV 也是只兼容了到 IE11 和 Sarari 10 版本以上。
+兼容 IE10 以上，Edge、谷歌、火狐、Opera、Safari 等主流浏览器。但是由于需要支持 HLS 和 FLV，HLS 只兼容了 IE11。FLV 也是只兼容了到 IE11 和 Sarari 10 版本以上（但是目前IE11播放一些直播也不行，safari播放一些直播经常不断返回结束事件）。
 
 > 不支持音频文件的 UI，目前本项目只处理了视频 UI。
 
@@ -38,18 +40,17 @@
 npm i html5-player -S
 ```
 
-或者 clone 本项目，运行下面的命令
+### 启动demo
+
+clone 本项目，运行下面的命令
 
 ```sh
 npm install
-npm run build
-#npm run serve-umd-build 可以查看启动服务umd demo。
+npm start
 #npm run start 可以查看开发环境demo
 #npm run build-demo可以构建项目demo
 #npm run serve-demo-build 可以启动服务查看项目demo
 ```
-
-构建后的 js 文件生成在`dist`目录下，直接使用 dist 目录下的 html5Player.js，然后调用全局变量 window.html5Player 使用即可。
 
 ### 使用
 
@@ -80,36 +81,6 @@ class View extends React.Component {
     );
   }
 }
-```
-
-如果使用的是打包后的 html5Player.js，使用如下：
-
-```html
-<script src="/html5Player.js"></script>
-...
-<div id="test"></div>
-<script>
-  //html5Player是全局变量
-  //返回的是promise对象。
-  //打包后的html5-player，window.React可以直接使用。
-  html5Player({
-    //比react的props要多一个id
-    //元素id
-    id: 'test',
-    title: "这里是标题",
-    file: "/test.mp4",
-    //logo支持string，React Element和plainObject
-    logo: {
-      image: '/logo.png',
-      link: 'https://github.com/dog-days/html5-player',
-    },
-    //打包后的html5-player，window.React可以直接使用。
-    children: React.createElement('div',{},"这里是标题"),
-  }).then(player=>{
-    //player参数是实例化后的播放器，详情请看后续API
-  })
-</script>
-...
 ```
 
 **如果使用 flv 直播，需要设置 enableWorker，可以减少延时到 1 秒左右。 但是如果不是直播，不可以设置，否则会报错。**
@@ -669,7 +640,17 @@ player.on('loading', function(loading) {
 
 * selection
 
-  selection操作触发。
+  触发selection操作。
+
+  ```js
+  player.setSelection({
+    begin: 5,
+    end: 70,
+    seekingDisabled: true,//seekingDisabled禁止seeking功能，
+  });
+  //取消selection
+  player.setSelection(flase);
+  ```
 
 * hlsFragmentInfo
 
