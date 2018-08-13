@@ -112,9 +112,7 @@ class OutsideApi {
       };
       dispatch(action);
       //对外提供selection事件
-      this.api.trigger('selection', {
-        ...action.payload,
-      });
+      this.api.trigger('selection', action.payload);
     };
   }
   getProperty(outSideApi) {

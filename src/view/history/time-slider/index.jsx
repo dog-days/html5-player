@@ -60,7 +60,10 @@ export default class TimeSlider extends React.Component {
     window.historyVideoCurrentTime = 0;
   }
   onSliderChange = percent => {
-    let { activeItem, fragments, storage, sliderModel } = this.props;
+    let { activeItem, fragments, storage, sliderModel, selection } = this.props;
+    if (selection && selection.seekingDisabled) {
+      return false;
+    }
     const { duration: currentVideoDuration = 0 } = sliderModel;
     let duration = this.duration;
     if (currentVideoDuration > duration) {
@@ -192,9 +195,11 @@ export default class TimeSlider extends React.Component {
    * 在有fragment的前提下，渲染可以选择播放的操作按钮
    */
   renderSelection() {
-    let {
-      selection: { begin, end },
-    } = this.props;
+    const { selection } = this.props;
+    if (!selection) {
+      return false;
+    }
+    let { begin, end } = selection;
     let duration = this.duration;
     if (end > duration) {
       end = duration;
