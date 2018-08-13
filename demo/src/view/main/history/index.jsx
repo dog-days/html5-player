@@ -11,14 +11,15 @@ export default class View extends React.Component {
           {/* <button
             onClick={() => {
               const player = this.player;
-              // player.setSeeking(0);
-              this.setState({
-                selection: true,
-              });
-              player.setSelection({
-                begin: 5,
-                end: 170,
-              });
+              if (!this.a) {
+                this.a = true;
+                player.setSelection(false);
+              } else {
+                player.setSelection({
+                  begin: 5,
+                  end: 70,
+                });
+              }
             }}
           >
             test
@@ -26,10 +27,11 @@ export default class View extends React.Component {
           <Player
             videoCallback={player => {
               this.player = player;
-              // player.setSelection({
-              //   begin: 5,
-              //   end: 70,
-              // });
+              player.setSelection({
+                begin: 5,
+                end: 70,
+                seekingDisabled: true,
+              });
               player.on('selection', data => {
                 console.log(player.currentTime);
                 console.log(data);
