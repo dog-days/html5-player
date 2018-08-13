@@ -50,6 +50,13 @@ export default class Controlbar extends React.Component {
   static displayName = 'Controlbar';
   state = {};
   dispatch = this.props.dispatch;
+  componentWillUnmount() {
+    if (!this.context.isHistory) {
+      this.dispatch({
+        type: `${readyNamespace}/clear`,
+      });
+    }
+  }
   onMouseEnter = e => {
     e.stopPropagation();
     const { playing } = this.props;

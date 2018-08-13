@@ -176,10 +176,10 @@ class Events {
       //直播才做重载
       this.retryReloadTime++;
       // console.log(this.retryReloadTime);
+      logger.info('Timeout:', `try to reload.`);
       dispatch({
         type: `${videoNamespace}/reload`,
       });
-      logger.info('Timeout:', `try to reload.`);
     } else {
       if (isLiving) {
         logger.error(
