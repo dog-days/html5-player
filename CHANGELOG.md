@@ -20,6 +20,7 @@
 
 #### New Function
 
+- 添加flv解密功能
 - [对外提供controlbar隐藏时间接口](https://github.com/dog-days/html5-player/commit/674e9dcfce800272e46adf302882ea324112a84d)
 - [selection功能](https://github.com/dog-days/html5-player/commit/2c0e88ff941cf2581cbe8f349a38da465f334b00)，histroy player也有这个功能。
 - [新增多录像一起模式（跟fragment类似），即history player](https://github.com/dog-days/html5-player/commit/125879a7947aab83c545405bda2ba33f306f86b9)
