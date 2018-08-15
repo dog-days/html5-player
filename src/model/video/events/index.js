@@ -32,16 +32,18 @@ class Events {
     this.error();
     this.ended();
     this.onSpaceAndVieoFocusEvent();
-    const { timeout = VIDEO_TIMEOUT } = this.config;
-    //防止没被清理
+    this.setTimeoutInterval();
+    logger.info('Listening:', 'listening on h5 video events.');
+  }
+  setTimeoutInterval() {
     clearInterval(this.timeoutInterval);
+    const { timeout = VIDEO_TIMEOUT } = this.config;
     this.timeoutInterval = setInterval(() => {
       //定时查看是否超时
       if (this.api.playing) {
         this.timeoutAction();
       }
     }, timeout);
-    logger.info('Listening:', 'listening on h5 video events.');
   }
   reset() {
     this.currentTime = 0;
@@ -112,6 +114,8 @@ class Events {
     const { isLiving, defaultCurrentTime } = this.config;
     api.on('loadeddata', () => {
       this.isLoadeddata = true;
+      //视频载入后重新定时处理超时。
+      this.setTimeoutInterval();
       //设置重载状态false，这个视事件运行了，视频就可以播放了。
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
@@ -208,6 +212,7 @@ class Events {
     const dispatch = this.dispatch;
     let { livingMaxBuffer = LIVING_MAXBUFFER_TIME, isHls } = this.config;
     api.on('timeupdate', () => {
+      this.setTimeoutInterval();
       if (api.playing) {
         if (!api.living) {
           //直播不播放状态中不处理loading
@@ -318,8 +323,6 @@ class Events {
     const dispatch = this.dispatch;
     const locale = api.localization;
     api.on('error', data => {
-      //flv播放出错事件，可能没触发到trigger
-      clearInterval(api.clearFlvErrorInterval);
       this.reset();
       //有message和type的是hls.js等事件的错误
       api.isError = true;
