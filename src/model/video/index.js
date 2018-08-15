@@ -770,6 +770,7 @@ export default function() {
         _api.trigger('reload');
         //重置
         _api.reset();
+        _api.detachMedia && _api.detachMedia();
         _videoEvents && _videoEvents.reset();
         //报错保存之前的播放进度
         lastCurrentTime = _api.currentTime;

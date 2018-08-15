@@ -1,6 +1,8 @@
 import API from './api';
 import * as logger from '../utils/logger';
 
+let first = true;
+
 export default class flvAPI extends API {
   constructor(videoDOM, file, flvjs, flvConfig = {}) {
     let _this = super(videoDOM, file);
@@ -25,14 +27,10 @@ export default class flvAPI extends API {
       logger.success('Detach Media:', 'detach media for flv.js sucessfully.');
     }
   }
-  //首次运行
-  first = true;
   //载入视频源，这里不可以用箭头函数
   loadSource(file) {
     const flvjs = this.flvjs;
     if (flvjs) {
-      //如果已经有了实例化的播放器，先detach
-      this.detachMedia();
       const flvPlayer = flvjs.createPlayer(
         {
           type: 'flv',
@@ -46,31 +44,41 @@ export default class flvAPI extends API {
       flvPlayer.attachMediaElement(this);
       flvPlayer.load();
       logger.info('Source Loading :', 'loading flv video.');
-      if (this.first) {
-        this.first = false;
+      if (first) {
+        first = false;
+        //flv的log事件是全局的，这是个坑
+        //所以只能绑定一次。
         this.attachEvent();
       }
     }
   }
+  detachEvent() {
+    if (this.LoggingControlListener) {
+      this.flvjs.LoggingControl.removeLogListener(this.LoggingControlListener);
+    }
+  }
   attachEvent() {
-    const locale = this.localization;
+    // const locale = this.localization;
     const errorTitle = 'Flv.js Error,';
-    this.flvjs &&
-      this.flvjs.LoggingControl.addLogListener((type, str) => {
-        if (type === 'error') {
-          let message;
-          if (~str.indexOf('IOController')) {
-            logger.error(errorTitle, `load error`);
-            message = locale.fileCouldNotPlay;
-            //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-            //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-            this.event.trigger('error', {
-              data: str,
-              message,
-              type,
-            });
+    if (this.flvjs) {
+      this.LoggingControlListener = this.flvjs.LoggingControl.addLogListener(
+        (type, str) => {
+          if (type === 'error') {
+            // let message;
+            if (~str.indexOf('IOController')) {
+              logger.error(errorTitle, `load error`);
+              // message = locale.fileCouldNotPlay;
+              // //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+              // //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+              // this.event.trigger('error', {
+              //   data: str,
+              //   message,
+              //   type,
+              // });
+            }
           }
         }
-      });
+      );
+    }
   }
 }
