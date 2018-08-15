@@ -52,6 +52,10 @@ export default function() {
   let _videoEvents;
   let subtitleList;
   let lastCurrentTime = 0;
+  //后续存放公共的一些state
+  let _state = {
+    retryReloadTime: 0,
+  };
   //init运行一次
   let isFirstRun = true;
   function getTracks() {
@@ -1001,7 +1005,7 @@ export default function() {
         initOverCallback && initOverCallback(_outSideApi);
         //----begin 事件处理
         //需要再 initOverCallback之后执行
-        _videoEvents = videoEvents(payload, isFirstRun);
+        _videoEvents = videoEvents(payload, isFirstRun, _state);
         if (hlsjsEvents) {
           hlsjsEvents(payload);
         }

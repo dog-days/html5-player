@@ -16,8 +16,9 @@ import { isIE } from '../../../utils/browser';
 import contains from '../../../utils/dom/contains';
 
 class Events {
-  constructor(payload, isFirstRun) {
+  constructor(payload, isFirstRun, _state) {
     this.api = payload.api;
+    this._state = _state;
     this.dispatch = payload.dispatch;
     //是否是第一次运行
     this.isFirstRun = isFirstRun;
@@ -110,6 +111,7 @@ class Events {
     const dispatch = this.dispatch;
     const { isLiving, defaultCurrentTime } = this.config;
     api.on('loadeddata', () => {
+      this.isLoadeddata = true;
       //设置重载状态false，这个视事件运行了，视频就可以播放了。
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
@@ -150,14 +152,12 @@ class Events {
       api.reloading = false;
     });
   }
-  //尝试重载次数记录
-  retryReloadTime = 0;
   timeoutAction() {
     const api = this.api;
     const dispatch = this.dispatch;
     const locale = api.localization;
     const { retryTimes = RETRY_TIMES } = this.config;
-    // console.log(type, 'this.retryReloadTime', this.retryReloadTime);
+    // console.log(type, 'this._state.retryReloadTime', this._state.retryReloadTime);
     //处理超时
     // console.log(this.currentTime, api.currentTime, api.playing);
     if (this.api.isError || this.api.ended) {
@@ -170,18 +170,22 @@ class Events {
       //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
       return;
     }
-    //超时最多尝试重载retryTimes
+    //超时最多尝试重载retryTimes，如果没有载入过视频，不做重连
     const isLiving = api.living || this.config.isLiving;
-    if (this.retryReloadTime < retryTimes && isLiving) {
+    if (
+      this._state.retryReloadTime < retryTimes &&
+      isLiving &&
+      this.isLoadeddata
+    ) {
       //直播才做重载
-      this.retryReloadTime++;
+      this._state.retryReloadTime++;
       // console.log(this.retryReloadTime);
       logger.info('Timeout:', `try to reload.`);
       dispatch({
         type: `${videoNamespace}/reload`,
       });
     } else {
-      if (isLiving) {
+      if (isLiving && this.isLoadeddata) {
         logger.error(
           'Timeout:',
           `try to reload ${retryTimes} times but video can not be loaded.`
@@ -196,7 +200,7 @@ class Events {
           type: TIMEOUT_ERROR,
         });
       }
-      this.retryReloadTime = 0;
+      this._state.retryReloadTime = 0;
     }
   }
   timeupdate() {
@@ -294,8 +298,10 @@ class Events {
             );
           }
         }
-        //只要在播放，retryReloadTime就要设置为0。
-        this.retryReloadTime = 0;
+        if (api.currentTime) {
+          //只要在播放，retryReloadTime就要设置为0。
+          this._state.retryReloadTime = 0;
+        }
         //最后赋值，可以用来判断视频视频卡顿
         this.currentTime = api.currentTime;
       }
