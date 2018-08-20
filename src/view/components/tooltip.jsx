@@ -73,6 +73,10 @@ export default class Tooltip extends React.Component {
   getTargetStart() {
     const moveTargetDOM = this.moveTargetDOM;
     const rect = moveTargetDOM.getBoundingClientRect();
+    if (moveTargetDOM.offsetLeft > rect.left) {
+      //浏览器宽度不足，向左滚动，rect.left会是负数
+      return moveTargetDOM.offsetLeft;
+    }
     return rect.left;
   }
   calcValueByPos(position) {
