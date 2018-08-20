@@ -1,3 +1,18 @@
+## 0.4.5(2018-08-20)
+
+#### Bug Fix
+
+- 解决history selection 禁止seeking不生效问题
+- 解决浏览器宽度不够，向左滚动时slider不准确问题
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.4.5(2018-08-15)
 
 #### Bug Fix
