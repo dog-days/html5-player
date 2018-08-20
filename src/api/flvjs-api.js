@@ -1,5 +1,6 @@
 import API from './api';
 import * as logger from '../utils/logger';
+import { DEBUG } from '../utils//const';
 
 export default class flvAPI extends API {
   constructor(videoDOM, file, flvjs, flvConfig = {}) {
@@ -44,16 +45,18 @@ export default class flvAPI extends API {
       flvPlayer.load();
       logger.info('Source Loading :', 'loading flv video.');
       //flv的log事件是全局的，这是个坑
-      //所以只能绑定一次。
       this.attachEvent();
     }
   }
   detachEvent() {
-    if (this.LoggingControlListener) {
+    if (this.LoggingControlListener && DEBUG) {
       this.flvjs.LoggingControl.removeLogListener(this.LoggingControlListener);
     }
   }
   attachEvent() {
+    if (!DEBUG) {
+      return;
+    }
     // const locale = this.localization;
     const errorTitle = 'Flv.js Error,';
     if (this.flvjs) {

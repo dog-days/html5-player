@@ -357,10 +357,15 @@ class Events {
           payload: true,
         });
       } else if (!isSafari()) {
+        //直播有时候会遇到结束事件，那是因为转发切换触发结束事件
         //safari flv.js直播经常报ended事件。
-        dispatch({
-          type: `${videoNamespace}/reload`,
-        });
+        //等待两秒重新拉流，因为转发切换可能会有延时，播放链接不是立即就可以播放。
+        //真正直播结束的场景，目前不做考虑。
+        setTimeout(() => {
+          dispatch({
+            type: `${videoNamespace}/reload`,
+          });
+        }, 2000);
       }
     });
   }
