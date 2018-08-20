@@ -94,6 +94,9 @@ export default class Slider extends React.Component {
   getSliderStart() {
     const slider = this.sliderDOM;
     const rect = slider.getBoundingClientRect();
+    if (rect.left < slider.offsetLeft || rect.top < slider.offsetTop) {
+      return this.props.vertical ? slider.offsetTop : slider.offsetLeft;
+    }
     return this.props.vertical ? rect.top : rect.left;
   }
   calcValueByPos(position) {
