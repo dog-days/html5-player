@@ -582,6 +582,7 @@ export default function() {
           yield put({
             type: `${selectionNamespace}/dataReducer`,
             payload: {
+              ...selection,
               begin,
             },
           });
@@ -599,6 +600,7 @@ export default function() {
           yield put({
             type: `${selectionNamespace}/dataReducer`,
             payload: {
+              ...selection,
               end,
             },
           });

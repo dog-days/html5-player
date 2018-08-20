@@ -110,6 +110,10 @@ export default class TimeSlider extends React.Component {
     //end----处理当前video的进度
   };
   onMouseDown = e => {
+    const { selection } = this.props;
+    if (selection && selection.seekingDisabled) {
+      return false;
+    }
     this.hasbeenClick = true;
     this.dispatch({
       type: `${videoNamespace}/seekingState`,
@@ -120,6 +124,10 @@ export default class TimeSlider extends React.Component {
     });
   };
   onMouseUp = e => {
+    const { selection } = this.props;
+    if (selection && selection.seekingDisabled) {
+      return false;
+    }
     this.setState({
       isSliding: false,
     });
