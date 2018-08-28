@@ -1,6 +1,6 @@
 {
   "name": "html5-player",
-  "version": "0.4.6",
+  "version": "0.4.8",
   "description": "html5 video",
   "repository": "git@github.com:dog-days/html5-player.git",
   "homepage": "https://github.com/dog-days/html5-player.git",
@@ -68,7 +68,7 @@
     "create-i18n-excel": "react-router-controller-cli create-i18n-excel",
     "create-i18n-list": "react-router-controller-cli create-i18n-list",
     "build-publish":
-      "npm run test && npm run build-css && npm run transform && npm publish",
+      "node ./scripts/read-and-wirte-version.js && npm run test && npm run build-css && npm run transform && npm publish",
     "prettier": "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'",
     "transform":
       "rm -rf ./es && rm -rf ./libs && npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
@@ -82,7 +82,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "node ./scripts/read-and-wirte-version.js && lint-staged",
       "pre-push": "npm run test"
     }
   },
