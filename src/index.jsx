@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 //内部依赖包
+import './version';
 import Provider from './libs/provider/saga-model-provider';
 import modelList from './model-list';
 import View from './view';
