@@ -129,6 +129,10 @@ class Events {
         dispatch({
           type: `${videoNamespace}/play`,
         });
+      } else if (api.autoplay) {
+        dispatch({
+          type: `${videoNamespace}/play`,
+        });
       }
       dispatch({
         type: `${readyNamespace}/state`,

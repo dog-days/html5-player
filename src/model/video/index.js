@@ -965,7 +965,13 @@ export default function() {
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
           yield put({
-            type: `play`,
+            type: `loading`,
+            payload: true,
+          });
+          //controlbar播放按钮状态，只是切换状态，没有触发video播放，video loaded后才触发
+          yield put({
+            type: `${playPauseNamespace}/playPauseSaga`,
+            payload: true,
           });
           yield put({
             type: `controlbar`,
