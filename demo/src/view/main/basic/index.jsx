@@ -74,7 +74,7 @@ class View extends React.Component {
             }}
             title="这里是标题"
             file={file}
-            isLiving={true}
+            // isLiving={true}
             // autoplay
             //logo支持string，React Element和plainObject
             // logo={`${process.env.basename}/logo.png`}
