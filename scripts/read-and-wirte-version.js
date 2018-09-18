@@ -6,5 +6,5 @@ const version = require('../package.json').version;
 //向src/verison.js写入version信息。
 fs.writeFileSync(
   path.resolve(process.cwd(), 'src/version.js'),
-  `window.html5PlayerVersion = '${version}';`
+  `window.html5PlayerVersion = '${version}';\n`
 );
