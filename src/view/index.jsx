@@ -104,6 +104,7 @@ export default class View extends React.Component {
       PropTypes.object,
       PropTypes.element,
     ]),
+    LoadingMessageComponent: PropTypes.element,
   };
   static childContextTypes = {
     api: PropTypes.object,
@@ -412,6 +413,7 @@ export default class View extends React.Component {
       stretching = 'uniform',
       selection,
       customTimeSlider,
+      LoadingMessageComponent,
       children,
     } = this.props;
     if (selection && !this.context.isHistory) {
@@ -482,7 +484,7 @@ export default class View extends React.Component {
               )}
               <span>
                 {title && <Title title={title} />}
-                <Loading />
+                <Loading LoadingMessageComponent={LoadingMessageComponent} />
                 <End />
                 <ErrorMessage />
                 {!autoplay && <NotAutoPlay />}

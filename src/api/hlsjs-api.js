@@ -7,6 +7,7 @@ import {
   UNKNOWN_ERROR,
   FATAL_ERROR,
 } from '../utils/error-code';
+import { DEBUG } from '../utils//const';
 
 export default class hlsAPI extends API {
   constructor(videoDOM, file, Hls) {
@@ -45,7 +46,7 @@ export default class hlsAPI extends API {
       hls.loadSource(file);
       hls.attachMedia(this.videoDOM);
       logger.info('Source Loading :', 'loading hls video.');
-      if (this.first) {
+      if (this.first && DEBUG) {
         this.first = false;
         this.attachEvent();
       }
@@ -200,16 +201,19 @@ export default class hlsAPI extends API {
         default:
           break;
       }
-      if (message) {
-        //像buffer错误不用报错
-        this.event.trigger('error', {
-          //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-          //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-          data,
-          message,
-          type,
-        });
-      }
+      // console.log(message);
+      logger.error(errorTitle, type, message);
+      //不做hls事件错误处理，只做超时处理。
+      // if (message) {
+      //   //像buffer错误不用报错
+      //   this.event.trigger('error', {
+      //     //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+      //     //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+      //     data,
+      //     message,
+      //     type,
+      //   });
+      // }
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.MEDIA_ERROR:
@@ -222,13 +226,14 @@ export default class hlsAPI extends API {
             logger.error(errorTitle, 'fatal error:', data.details);
             message = locale.unknownError;
             type = FATAL_ERROR;
-            this.event.trigger('error', {
-              //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-              //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-              data,
-              message,
-              type,
-            });
+            //不做hls事件错误处理，只做超时处理。
+            // this.event.trigger('error', {
+            //   //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+            //   //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+            //   data,
+            //   message,
+            //   type,
+            // });
             hlsObj.destroy();
             break;
         }

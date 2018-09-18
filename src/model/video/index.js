@@ -58,6 +58,9 @@ export default function() {
   };
   //init运行一次
   let isFirstRun = true;
+  //是否是重连状态
+  //init函数运行完重置，不是根据dataloaded处理
+  let isReloading = false;
   function getTracks() {
     const { tracks } = _config;
     subtitleList = [];
@@ -109,13 +112,14 @@ export default function() {
     },
     sagas: {
       *loading({ payload }, { put }) {
-        _api.loading = payload;
-        if (payload && _api.isError) {
+        const loading = payload.loading;
+        _api.loading = loading;
+        if (loading && _api.isError) {
           //错误不展示loading，但是可以隐藏loading。
           return;
         }
         clearTimeout(loadingTimeout);
-        if (payload) {
+        if (loading) {
           loadingTimeout = setTimeout(() => {
             //使用setTimeout是为了防止视频很快就可以播放的情况，就不用展示loading。
             //否则就会对用户造成卡顿假像。
@@ -124,7 +128,7 @@ export default function() {
               payload,
             });
             logger.info('Loading Video:', 'video is not enough to be played');
-            _api.trigger('loading', payload);
+            _api.trigger('loading', loading);
           }, showLoadingLazyTime);
         } else {
           yield put({
@@ -132,7 +136,7 @@ export default function() {
             payload,
           });
           logger.info('Hide Loading:', 'video is enough to be played');
-          _api.trigger('loading', payload);
+          _api.trigger('loading', loading);
         }
         if (_api.isError) {
           yield {
@@ -211,7 +215,9 @@ export default function() {
         if (!_api.bufferTime) {
           yield put({
             type: `loading`,
-            payload: true,
+            payload: {
+              loading: true,
+            },
           });
         } else if (
           (!_api.loading && _api.bufferTime < _api.currentTime) ||
@@ -220,7 +226,9 @@ export default function() {
         ) {
           yield put({
             type: `loading`,
-            payload: true,
+            payload: {
+              loading: true,
+            },
           });
         }
         if (!payload || (payload && !payload.noControlbarAction)) {
@@ -250,7 +258,9 @@ export default function() {
           if (_api.loading) {
             yield put({
               type: `loading`,
-              payload: false,
+              payload: {
+                loading: false,
+              },
             });
           }
           //清理controlbar隐藏定时器
@@ -314,7 +324,9 @@ export default function() {
         if (_api.loading) {
           yield put({
             type: `loading`,
-            payload: false,
+            payload: {
+              loading: false,
+            },
           });
         }
         yield put({
@@ -419,7 +431,9 @@ export default function() {
             if (_api.notAutoPlayViewHide && !_config.autoplay) {
               yield put({
                 type: `loading`,
-                payload: true,
+                payload: {
+                  loading: true,
+                },
               });
             }
             selectionBeginPercent = selection.begin / fragment.duration;
@@ -506,14 +520,6 @@ export default function() {
             payload: false,
           });
         }
-        // if (!pause) {
-        //   if (_api.bufferTime < _api.currentTime) {
-        //     yield put({
-        //       type: `loading`,
-        //       payload: true,
-        //     });
-        //   }
-        // }
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
         if (!fragment || !fragment.data) {
@@ -756,7 +762,9 @@ export default function() {
               //如果还有loading，需要隐藏
               _dispatch({
                 type: `${namespace}/loading`,
-                payload: false,
+                payload: {
+                  loading: false,
+                },
               });
             }
             _dispatch({
@@ -773,6 +781,11 @@ export default function() {
       },
       *reload({ payload }, { put }) {
         logger.info('Reload Video');
+        let retryReloadTime = 1;
+        if (payload) {
+          retryReloadTime = payload.retryReloadTime;
+        }
+        isReloading = true;
         _api.trigger('reload');
         //重置
         _api.reset();
@@ -788,7 +801,12 @@ export default function() {
         });
         yield put({
           type: `loading`,
-          payload: true,
+          payload: {
+            loading: true,
+            message: _config.localization.reloading,
+            retryReloadTime,
+            type: 'reload',
+          },
         });
         _config.reload(() => {
           _api.reloading = true;
@@ -964,10 +982,15 @@ export default function() {
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;
           _api.notAutoPlayViewHide = true;
-          yield put({
-            type: `loading`,
-            payload: true,
-          });
+          if (!isReloading) {
+            //重连不处理
+            yield put({
+              type: `loading`,
+              payload: {
+                loading: true,
+              },
+            });
+          }
           //controlbar播放按钮状态，只是切换状态，没有触发video播放，video loaded后才触发
           yield put({
             type: `${playPauseNamespace}/playPauseSaga`,
@@ -1019,6 +1042,7 @@ export default function() {
         }
         //----end 事件处理
         isFirstRun = false;
+        isReloading = false;
       },
     },
   };

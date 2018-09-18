@@ -32,15 +32,24 @@ class Events {
     this.error();
     this.ended();
     this.onSpaceAndVieoFocusEvent();
-    this.setTimeoutInterval();
+    if (this.config.autoplay || !isFirstRun) {
+      //非第一次载入视频，都要运行超时处理，即重载都需要超时处理
+      this.setTimeoutInterval(true);
+    }
     logger.info('Listening:', 'listening on h5 video events.');
   }
-  setTimeoutInterval() {
+  /**
+   * 定时检查超时问题，视频播放中卡住超过设定时间，属于超时
+   * @param {boolean} withoutPlayingState 无playing状态
+   */
+  setTimeoutInterval(withoutPlayingState) {
     clearInterval(this.timeoutInterval);
     const { timeout = VIDEO_TIMEOUT } = this.config;
     this.timeoutInterval = setInterval(() => {
       //定时查看是否超时
-      if (this.api.playing) {
+      //404等非200或者不是正确的视频，刚开始会报错，并不会播放，所以刚开始不能被playing拦截
+      // console.log(this.api.playing, withoutPlayingState);
+      if (this.api.playing || withoutPlayingState) {
         this.timeoutAction();
       }
     }, timeout);
@@ -155,19 +164,18 @@ class Events {
       });
       dispatch({
         type: `${videoNamespace}/loading`,
-        payload: false,
+        payload: {
+          loading: false,
+        },
       });
       api.reloading = false;
     });
   }
   timeoutAction() {
     const api = this.api;
-    const dispatch = this.dispatch;
     const locale = api.localization;
-    const { retryTimes = RETRY_TIMES } = this.config;
-    // console.log(type, 'this._state.retryReloadTime', this._state.retryReloadTime);
-    //处理超时
-    // console.log(this.currentTime, api.currentTime, api.playing);
+    // const { retryTimes = RETRY_TIMES } = this.config;
+    // console.log(this.currentTime, api.currentTime, this.api.isError);
     if (this.api.isError || this.api.ended) {
       return;
     }
@@ -176,47 +184,22 @@ class Events {
       this.currentTime !== undefined
     ) {
       //视频在播放（视频状态为播放中，但是没有因为网络而卡顿），不处理
+      this.currentTime = api.currentTime;
       return;
     }
-    //超时最多尝试重载retryTimes，如果没有载入过视频，不做重连
-    const isLiving = api.living || this.config.isLiving;
-    if (
-      this._state.retryReloadTime < retryTimes &&
-      isLiving &&
-      this.isLoadeddata
-    ) {
-      //直播才做重载
-      this._state.retryReloadTime++;
-      // console.log(this.retryReloadTime);
-      logger.info('Timeout:', `try to reload.`);
-      dispatch({
-        type: `${videoNamespace}/reload`,
-      });
-    } else {
-      if (isLiving && this.isLoadeddata) {
-        logger.error(
-          'Timeout:',
-          `try to reload ${retryTimes} times but video can not be loaded.`
-        );
-      }
-      if (!api.isError) {
-        api.trigger('error', {
-          //基本上trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-          //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-          data: {},
-          message: locale.timeout,
-          type: TIMEOUT_ERROR,
-        });
-      }
-      this._state.retryReloadTime = 0;
-    }
+    api.trigger('error', {
+      //基本上trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+      //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+      data: {},
+      message: locale.timeout,
+      type: TIMEOUT_ERROR,
+    });
   }
   timeupdate() {
     const api = this.api;
     const dispatch = this.dispatch;
     let { livingMaxBuffer = LIVING_MAXBUFFER_TIME, isHls } = this.config;
     api.on('timeupdate', () => {
-      this.setTimeoutInterval();
       if (api.playing) {
         if (!api.living) {
           //直播不播放状态中不处理loading
@@ -227,7 +210,9 @@ class Events {
               //需要做判断，要不会被clearTimeout了
               dispatch({
                 type: `${videoNamespace}/loading`,
-                payload: true,
+                payload: {
+                  loading: true,
+                },
               });
             }
           } else if (
@@ -239,7 +224,9 @@ class Events {
             if (!api.loading) {
               dispatch({
                 type: `${videoNamespace}/loading`,
-                payload: true,
+                payload: {
+                  loading: true,
+                },
               });
             }
           } else if (
@@ -249,7 +236,9 @@ class Events {
           ) {
             dispatch({
               type: `${videoNamespace}/loading`,
-              payload: false,
+              payload: {
+                loading: false,
+              },
             });
           }
           //end----处理loading状态
@@ -257,7 +246,9 @@ class Events {
           //直播状态正在播放中如果发现loading，直接隐藏。
           dispatch({
             type: `${videoNamespace}/loading`,
-            payload: false,
+            payload: {
+              loading: false,
+            },
           });
         }
         //currentTime处理
@@ -311,8 +302,18 @@ class Events {
           //只要在播放，retryReloadTime就要设置为0。
           this._state.retryReloadTime = 0;
         }
-        //最后赋值，可以用来判断视频视频卡顿
-        this.currentTime = api.currentTime;
+        this.setTimeoutInterval();
+      }
+      //最后赋值，可以用来判断视频视频卡顿
+      this.currentTime = api.currentTime;
+      if (api.isError) {
+        //隐藏错误信息
+        dispatch({
+          type: `${videoNamespace}/errorMessage`,
+          payload: {
+            message: null,
+          },
+        });
       }
     });
   }
@@ -326,26 +327,55 @@ class Events {
     const api = this.api;
     const dispatch = this.dispatch;
     const locale = api.localization;
+    const { retryTimes = RETRY_TIMES } = this.config;
     api.on('error', data => {
-      this.reset();
-      //有message和type的是hls.js等事件的错误
-      api.isError = true;
-      let message = data.message;
-      if (!message) {
-        logger.error('H5 Video Error:', 'original h5 video error');
+      if (data && data.nativeEvent) {
+        //h5 原生报错截止不处理，只做超时处理。
+        return;
       }
-      if (!message) {
-        message = locale.fileCouldNotPlay;
+      const retryReloadTime = this._state.retryReloadTime;
+      if (retryReloadTime < retryTimes) {
+        this._state.retryReloadTime++;
+        logger.warn('Timeout:', `try to reload ${retryReloadTime + 1} times.`);
+        dispatch({
+          type: `${videoNamespace}/reload`,
+          payload: {
+            retryReloadTime: retryReloadTime + 1,
+          },
+        });
+      } else {
+        logger.error(
+          'Timeout:',
+          `try to reload ${retryTimes} times but video can not be loaded.`
+        );
+        this._state.retryReloadTime = 1;
+        this.reset();
+        //有message和type的是hls.js等事件的错误
+        api.isError = true;
+        let message = data.message;
+        if (!message) {
+          logger.error('H5 Video Error:', 'original h5 video error');
+        }
+        if (!message) {
+          message = locale.fileCouldNotPlay;
+        }
+        if (this.config.videoNotSupport) {
+          message = locale.videoNotSupport;
+        }
+        dispatch({
+          type: `${videoNamespace}/loading`,
+          payload: {
+            message: null,
+            retryReloadTime: 1,
+          },
+        });
+        dispatch({
+          type: `${videoNamespace}/errorMessage`,
+          payload: {
+            message,
+          },
+        });
       }
-      if (this.config.videoNotSupport) {
-        message = locale.videoNotSupport;
-      }
-      dispatch({
-        type: `${videoNamespace}/errorMessage`,
-        payload: {
-          message,
-        },
-      });
     });
   }
   ended() {

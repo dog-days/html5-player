@@ -245,6 +245,22 @@ button {
     cursor: default;
     color: @text-color;
   }
+  &-loading-message {
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin-top: 23px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  &-loading-view-message {
+    .html5-player-middle-button {
+      margin-top: -60px;
+    }
+  }
   &-end-view {
     background-color: @dark-color;
   }

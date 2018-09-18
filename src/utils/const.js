@@ -28,6 +28,6 @@ export const LIVING_MAXBUFFER_TIME = 6;
 //延时展示loading的时间
 export const SHOW_LOADING_LAZY_TIME = 500;
 //延时展示错误信息的时间
-export const SHOW_ERROR_MESSAGE_LAZY_TIME = 1000;
+export const SHOW_ERROR_MESSAGE_LAZY_TIME = 500;
 //尝试重连次数
-export const RETRY_TIMES = 2;
+export const RETRY_TIMES = 5;

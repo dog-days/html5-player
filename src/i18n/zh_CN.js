@@ -10,4 +10,5 @@ export default {
   subtitleOff: '关闭',
   autoQuality: '自动',
   pictureQuality: '画质',
+  reloading: '超时重连中...',
 };
