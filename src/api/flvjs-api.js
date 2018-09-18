@@ -26,6 +26,7 @@ export default class flvAPI extends API {
       this.flvPlayer = null;
       logger.success('Detach Media:', 'detach media for flv.js sucessfully.');
     }
+    this.videoDOM.src = '';
   }
   //载入视频源，这里不可以用箭头函数
   loadSource(file) {

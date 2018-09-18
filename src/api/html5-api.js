@@ -10,5 +10,8 @@ export default class html5API extends API {
     this.src = file;
     logger.info('Source Loading:', 'loading h5 video.');
   }
-  detachMedia() {}
+  detachMedia() {
+    //必须设置src为空，浏览原生播放器才会断流，原生hls就有这种问题
+    this.videoDOM.src = '';
+  }
 }

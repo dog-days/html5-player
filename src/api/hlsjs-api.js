@@ -35,6 +35,7 @@ export default class hlsAPI extends API {
       hls.destroy();
       logger.success('Detach Media:', 'detach media for hls.js sucessfully.');
     }
+    this.videoDOM.src = '';
   }
   //载入视频源，这里不可以用箭头函数
   loadSource(file) {
