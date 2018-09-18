@@ -22,7 +22,7 @@
 
 ## 兼容性
 
-兼容 IE10 以上，Edge、谷歌、火狐、Opera、Safari 等主流浏览器。但是由于需要支持 HLS 和 FLV，HLS 只兼容了 IE11。FLV 也是只兼容了到 IE11 和 Sarari 10 版本以上（但是目前IE11播放一些直播也不行，safari播放一些直播经常不断返回结束事件）。
+兼容 IE10 以上，Edge、谷歌、火狐、Opera、Safari 等主流浏览器。但是由于需要支持 HLS 和 FLV，HLS 只兼容了 IE11。FLV 也是只兼容了到 IE11 和 Sarari 10 版本以上（**但是目前IE11播放一些直播也不行，safari播放一些直播经常不断返回结束事件**）。
 
 > 不支持音频文件的 UI，目前本项目只处理了视频 UI。
 
@@ -98,6 +98,16 @@ class View extends React.Component {
 />
 ```
 
+### 版本查看
+
+```js
+window.html5PlayerVersion
+```
+
+## 播放器错误机制说明
+
+经过一系列的改进，最终发觉，还是自定义超时处理最合理，所有`html5-player`**只会报超时错误**，而且默认报误会重连，具体参数请参考`props参数`**timeout**和**retryTimes**。
+
 ## API
 
 ### 播放器 props 参数
@@ -139,14 +149,31 @@ class View extends React.Component {
 | playbackRateControls     | boolean                               | 是否开启 playebackRate 控制                                  | true                    | 否   |
 | videoCallback            | function                              | 打包的 js 没有这个属性，详细看后面播放器实例化 API           | 无                      | 否   |
 | showLoadingLazyTime      | number                                | 延时展示 loading 的时间（毫秒）                              | 500                     | 否   |
-| showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                               | 1000                    | 否   |
+| showErrorMessageLazyTime | number                                | 延时展示错误信息的时间（毫秒）                               | 500                     | 否   |
 | contextMenu              | boolean<br />array<br />React Element | 鼠标右击菜单                                                 | 展示一行默认信息        | 否   |
 | timeout                  | number                                | 视频超时设置，10000ms 后，直播会尝试重载，尝试`retryTimes`次后，展示超时信息。而非直播则`retryTimes * timeout`后展示展示超时信息，不自动重载。 | 10 * 1000               | 否   |
-| retryTimes               | number                                | 网络差时，timeout 后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差 5 秒左右。 | 1                       | 否   |
+| retryTimes               | number                                | timeout 后尝试，重新加载视频次数<br />理论上时间等于`retryTimes * timeout`后会展示超时信息，实际上，超时信息展示会大于 `retryTimes * timeout`，误差 5 秒左右。 | 5                       | 否   |
 | stretching               | string                                | 调整视频大小以适合播放器尺寸。                               | uniform                 | 否   |
 | selection                | object<br />boolean                   | 配合fragment使用和历史视频，截取视频，请参考下面selection说明 | undefined               | 否   |
 | leftSelectionComponent   | react element                         | selection左边组件                                            | 无                      | 否   |
 | rightSelectionComponent  | react element                         | selection右边组件                                            | 无                      | 否   |
+| LoadingMessageComponent  | react element                         | loading而外信息组件                                          |                         |      |
+
+#### props.LoadingMessageComponent
+
+这个组件有三个固定props，目前这个组件，只有重连状态的。
+
+| props          | 说明                      |
+| -------------- | ------------------------- |
+| count          | 重连次数                  |
+| type           | 类型，目前只有reload类型  |
+| loadingMessage | 默认的loading message文案 |
+
+```jsx
+function LoadingMessageComponent(props) {
+  return <span>超时第{props.count}次重连中...</span>;
+}
+```
 
 #### props.controls
 

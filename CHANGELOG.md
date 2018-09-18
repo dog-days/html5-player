@@ -1,8 +1,24 @@
+## 0.5.0(2018-09-18)
+
+#### Bug Fix
+
+- 解决safari和edge播放原生hls时，关闭没断流问题
+
+#### Update
+
+- 重写报错机制和解决超时在hls不执行问题
+- 让生成的vresion.js代码和prettier一致
+- 更新version来源
+
+#### New Function
+
+- `window.html5PlayerVersion`在浏览可查看版本
+
 ## 0.4.8(2018-08-30)
 
 #### Bug Fix
 
-- 
+无
 
 #### Update
 
