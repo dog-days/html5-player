@@ -1,7 +1,10 @@
 import React from 'react';
 import Html5Player from 'html5-player';
 // import { joinUrlParams } from '../../../../../src/utils/util';
-
+function LoadingMessage(props) {
+  console.log(props);
+  return <span>超时第{props.count}次重连中...</span>;
+}
 class View extends React.Component {
   state = {
     value:
@@ -45,6 +48,7 @@ class View extends React.Component {
             value={value}
           />
           <Html5Player
+            LoadingMessageComponent={<LoadingMessage />}
             flvConfig={{ enableWorker: true }}
             livingMaxBuffer={3}
             videoCallback={this.videoCallback}
@@ -53,7 +57,7 @@ class View extends React.Component {
             // playbackRates={[0.5, 1]}
             autoplay={true}
             // muted={true}
-            retryTimes={1}
+            retryTimes={5}
             controls={{
               capture: true,
               setting: true,
