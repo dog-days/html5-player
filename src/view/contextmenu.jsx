@@ -16,10 +16,10 @@ export default class ContextMenu extends React.Component {
           className={classnames('html5-player-list-container', className)}
           {...other}
         >
-          {process.NANPLAERVERSION && (
-            <li>Html5 Player v{process.NANPLAERVERSION}</li>
+          {window.html5PlayerVersion && (
+            <li>Html5 Player v{window.html5PlayerVersion}</li>
           )}
-          {!process.NANPLAERVERSION && <li>Html5 Player</li>}
+          {!window.html5PlayerVersion && <li>Html5 Player</li>}
         </ul>
       );
     } else if (React.isValidElement(content)) {
