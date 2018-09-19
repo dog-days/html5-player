@@ -1,3 +1,18 @@
+## 0.5.1(2018-09-19)
+
+#### Bug Fix
+
+- 解决autoplay=false，视频一开始就超时但不会重连问题
+- 解决localization设置问题（props.localization会覆盖全部默认的值，即使为空对象）
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.5.0(2018-09-18)
 
 #### Bug Fix

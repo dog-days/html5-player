@@ -106,7 +106,7 @@ window.html5PlayerVersion
 
 ## 播放器错误机制说明
 
-经过一系列的改进，最终发觉，还是自定义超时处理最合理，所有`html5-player`**只会报超时错误**，而且默认报误会重连，具体参数请参考`props参数`**timeout**和**retryTimes**。
+经过一系列的改进，最终发觉，还是自定义超时处理最合理，所以`html5-player`**只会报超时错误**，而且一开始的错误也会重连，具体参数请参考`props参数`**timeout**和**retryTimes**。
 
 ## API
 
@@ -173,6 +173,11 @@ window.html5PlayerVersion
 function LoadingMessageComponent(props) {
   return <span>超时第{props.count}次重连中...</span>;
 }
+
+<Html5Player
+  file="/test.mp4"
+  LoadingMessageComponent={<LoadingMessageComponent/>}
+/>
 ```
 
 #### props.controls
