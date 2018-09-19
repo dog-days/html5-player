@@ -124,11 +124,10 @@ export default class View extends React.Component {
     historyDuration: PropTypes.number,
     activeItem: PropTypes.number,
   };
-  constructor(props) {
-    super(props);
-    this.locale = {
+  get locale() {
+    return {
       ...localizationDefault,
-      ...props.localization,
+      ...this.props.localization,
     };
   }
   getChildContext() {
@@ -200,6 +199,7 @@ export default class View extends React.Component {
         payload: {
           dispatch: this.dispatch,
           config: {
+            ...other,
             isHls: util.isM3u8File(file),
             isFlv: util.isFlvFile(file),
             videoNotSupport,
@@ -222,7 +222,6 @@ export default class View extends React.Component {
                 });
               });
             },
-            ...other,
           },
           api: provider.api,
           hlsjsEvents: provider.hlsjsEvents,
