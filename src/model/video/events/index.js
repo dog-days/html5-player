@@ -16,12 +16,18 @@ import { isIE } from '../../../utils/browser';
 import contains from '../../../utils/dom/contains';
 
 class Events {
-  constructor(payload, isFirstRun, _state) {
+  /**
+   *
+   * @param {object} payload model vidoe/init的payload
+   * @param {boolean} isFirstPlay 是否是第一次播放视频
+   * @param {object} _state 存放一些状态，reload都不会改变的
+   */
+  constructor(payload, isFirstPlay, _state) {
     this.api = payload.api;
     this._state = _state;
     this.dispatch = payload.dispatch;
-    //是否是第一次运行
-    this.isFirstRun = isFirstRun;
+    //是否是第一次播放视频
+    this.isFirstPlay = isFirstPlay;
     this.config = payload.config;
     if (!this.api.hlsObj) {
       this.setOriginHlsSubtitle();
@@ -32,10 +38,7 @@ class Events {
     this.error();
     this.ended();
     this.onSpaceAndVieoFocusEvent();
-    if (this.config.autoplay || !isFirstRun) {
-      //非第一次载入视频，都要运行超时处理，即重载都需要超时处理
-      this.setTimeoutInterval(true);
-    }
+    this.setTimeoutInterval(true);
     logger.info('Listening:', 'listening on h5 video events.');
   }
   /**
@@ -134,7 +137,7 @@ class Events {
         //重置
         window.historyVideoCurrentTime = 0;
       }
-      if (!this.isFirstRun) {
+      if (!this.isFirstPlay) {
         dispatch({
           type: `${videoNamespace}/play`,
         });

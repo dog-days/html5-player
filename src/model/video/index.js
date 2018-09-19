@@ -39,6 +39,7 @@ export const namespace = 'video';
 export default function() {
   //model支持方法，也支持纯对象，由于存在多个播放器，有作用域问题
   //需要用到函数，函数返回的是纯对象，_api继承了整个video dom的对象，请参考src/api/api.js的说明。
+  let _initPayload;
   let _api;
   let _dispatch;
   let _config;
@@ -56,8 +57,9 @@ export default function() {
   let _state = {
     retryReloadTime: 0,
   };
-  //init运行一次
-  let isFirstRun = true;
+  //视频第一次播放,autoplay=false是，需要手动播放才算第一次播放
+  //只要触发了play就算首次播放，不需要视频成功播放（重连是属于播放器播放异常，每个实例化的播放器只有一次首次播放，重连不会重新计算）
+  let isFirstPlay = true;
   //是否是重连状态
   //init函数运行完重置，不是根据dataloaded处理
   let isReloading = false;
@@ -166,6 +168,9 @@ export default function() {
           yield put({
             type: `play`,
           });
+          //autoplay=flase时需要再手动播放后运行
+          _videoEvents = videoEvents(_initPayload, isFirstPlay, _state);
+          isFirstPlay = false;
         }
       },
       *hideNotAutoPlayView({ payload }, { put }) {
@@ -951,6 +956,7 @@ export default function() {
       },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {
+        _initPayload = payload;
         let { dispatch, api, hlsjsEvents, config } = payload;
         const {
           autoplay,
@@ -1017,7 +1023,7 @@ export default function() {
             autoMuted: true,
           });
         }
-        if (_config.selection && isFirstRun) {
+        if (_config.selection && isFirstPlay) {
           const payload = {
             begin: 0,
             //5分钟
@@ -1036,12 +1042,16 @@ export default function() {
         initOverCallback && initOverCallback(_outSideApi);
         //----begin 事件处理
         //需要再 initOverCallback之后执行
-        _videoEvents = videoEvents(payload, isFirstRun, _state);
+        if (autoplay || isReloading) {
+          //重连也需要运行
+          //autoplay=flase时需要再手动播放后运行
+          _videoEvents = videoEvents(payload, isFirstPlay, _state);
+          isFirstPlay = false;
+        }
         if (hlsjsEvents) {
           hlsjsEvents(payload);
         }
         //----end 事件处理
-        isFirstRun = false;
         isReloading = false;
       },
     },
