@@ -172,6 +172,7 @@ class Events {
         },
       });
       api.reloading = false;
+      this._state.retryReloadTime = 0;
     });
   }
   timeoutAction() {
@@ -306,6 +307,7 @@ class Events {
           this._state.retryReloadTime = 0;
         }
         this.setTimeoutInterval();
+        this._state.retryReloadTime = 0;
       }
       //最后赋值，可以用来判断视频视频卡顿
       this.currentTime = api.currentTime;
