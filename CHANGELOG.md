@@ -2,6 +2,8 @@
 
 #### Bug Fix
 
+- 解决非录像视频播放重连，没记录播放进度问题
+
 - 解决autoplay=false，视频一开始就超时但不会重连问题
 - 解决localization设置问题（props.localization会覆盖全部默认的值，即使为空对象）
 
