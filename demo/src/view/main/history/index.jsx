@@ -27,15 +27,15 @@ export default class View extends React.Component {
           <Player
             videoCallback={player => {
               this.player = player;
-              player.setSelection({
-                begin: 5,
-                end: 70,
-                seekingDisabled: true,
-              });
-              player.on('selection', data => {
-                console.log(player.currentTime);
-                console.log(data);
-              });
+              // player.setSelection({
+              //   begin: 5,
+              //   end: 70,
+              //   seekingDisabled: true,
+              // });
+              // player.on('selection', data => {
+              //   console.log(player.currentTime);
+              //   console.log(data);
+              // });
               // player.on('fragmentInfo', data => {
               //   console.log(data);
               // });
