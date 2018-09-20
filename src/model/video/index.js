@@ -52,10 +52,10 @@ export default function() {
   let showErrorMessageLazyTime = SHOW_ERROR_MESSAGE_LAZY_TIME;
   let _videoEvents;
   let subtitleList;
-  let lastCurrentTime = 0;
   //后续存放公共的一些state
   let _state = {
     retryReloadTime: 0,
+    lastCurrentTime: 0,
   };
   //视频第一次播放,autoplay=false是，需要手动播放才算第一次播放
   //只要触发了play就算首次播放，不需要视频成功播放（重连是属于播放器播放异常，每个实例化的播放器只有一次首次播放，重连不会重新计算）
@@ -154,11 +154,6 @@ export default function() {
           if (!_config.preload) {
             //autoplay=false,preload=false
             _api.loadSource(_config.file);
-            //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
-            if ((!_api.living || _config.isLiving) && lastCurrentTime) {
-              //播放中途出错，重载需要载入上一个播放进度
-              _api.currentTime = lastCurrentTime;
-            }
             getTracks();
           }
           yield put({
@@ -786,6 +781,10 @@ export default function() {
       },
       *reload({ payload }, { put }) {
         logger.info('Reload Video');
+        //报错保存之前的播放进度
+        if (!_state.lastCurrentTime) {
+          _state.lastCurrentTime = _api.currentTime;
+        }
         let retryReloadTime = 1;
         if (payload) {
           retryReloadTime = payload.retryReloadTime;
@@ -796,13 +795,15 @@ export default function() {
         _api.reset();
         _api.detachMedia && _api.detachMedia();
         _videoEvents && _videoEvents.reset();
-        //报错保存之前的播放进度
-        lastCurrentTime = _api.currentTime;
         yield put({
           type: `errorMessage`,
           payload: {
             message: null,
           },
+        });
+        yield put({
+          type: `controlbar`,
+          payload: false,
         });
         yield put({
           type: `loading`,
@@ -979,11 +980,7 @@ export default function() {
         //初始化loading状态
         if (autoplay) {
           _api.loadSource(file);
-          //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
-          if ((!_api.living || _config.isLiving) && lastCurrentTime) {
-            //播放中途出错，重载需要载入上一个播放进度
-            _api.currentTime = lastCurrentTime;
-          }
+
           getTracks();
           logger.info('Autoplay:', 'set the video to play automatically');
           _api.autoplay = autoplay;

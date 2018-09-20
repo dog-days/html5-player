@@ -122,6 +122,7 @@ class Events {
   }
   loadeddata() {
     const api = this.api;
+    const config = this.config;
     const dispatch = this.dispatch;
     const { isLiving, defaultCurrentTime } = this.config;
     api.on('loadeddata', () => {
@@ -131,7 +132,12 @@ class Events {
       //设置重载状态false，这个视事件运行了，视频就可以播放了。
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
-      if (defaultCurrentTime !== undefined) {
+      //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
+      if (!api.living && !config.isLiving && this._state.lastCurrentTime) {
+        //播放中途出错，重载需要载入上一个播放进度
+        api.currentTime = this._state.lastCurrentTime;
+        this._state.lastCurrentTime = 0;
+      } else if (defaultCurrentTime !== undefined) {
         // console.log(window.historyVideoCurrentTime);
         api.currentTime = window.historyVideoCurrentTime || defaultCurrentTime;
         //重置
