@@ -391,6 +391,7 @@ class Events {
             message,
           },
         });
+        api.detachMedia && api.detachMedia();
       }
     });
   }
