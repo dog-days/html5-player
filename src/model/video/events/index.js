@@ -210,6 +210,7 @@ class Events {
     const dispatch = this.dispatch;
     let { livingMaxBuffer = LIVING_MAXBUFFER_TIME, isHls } = this.config;
     api.on('timeupdate', () => {
+      //edge播放原生hls时，在这里会不断运行，即使网络断了
       if (api.playing) {
         if (!api.living) {
           //直播不播放状态中不处理loading
@@ -312,12 +313,14 @@ class Events {
           //只要在播放，retryReloadTime就要设置为0。
           this._state.retryReloadTime = 0;
         }
-        this.setTimeoutInterval();
+        if (this.currentTime !== api.currentTime) {
+          //需要判断currentTime，因为edge的hls视频即使出错停止了，也会运行timeupdate
+          this.setTimeoutInterval();
+        }
         this._state.retryReloadTime = 0;
       }
-      //最后赋值，可以用来判断视频视频卡顿
-      this.currentTime = api.currentTime;
-      if (api.isError) {
+      if (api.isError && this.currentTime !== api.currentTime) {
+        //需要判断currentTime，因为edge的hls视频即使出错停止了，也会运行timeupdate
         //隐藏错误信息
         dispatch({
           type: `${videoNamespace}/errorMessage`,
@@ -326,6 +329,8 @@ class Events {
           },
         });
       }
+      //最后赋值，可以用来判断视频视频卡顿
+      this.currentTime = api.currentTime;
     });
   }
   pause() {
