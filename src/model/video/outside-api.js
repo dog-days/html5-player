@@ -1,5 +1,6 @@
 import { namespace } from './index';
 import { namespace as selectionNamespace } from '../selection';
+import { namespace as historyNamespace } from '../history';
 
 //忽略的saga名，不忽略的saga名注意不要跟下面的properties重复
 const outSideSagas = [
@@ -49,7 +50,7 @@ class OutsideApi {
     return outSideApi;
   }
   getSagaFunction(outSideApi) {
-    const dispatch = this.dispatch;
+    let dispatch = this.dispatch;
     for (let k in this.sagas) {
       const sagaName = k.replace(`${namespace}/`, '');
       if (!!~outSideSagas.indexOf(sagaName)) {
@@ -75,12 +76,30 @@ class OutsideApi {
         }
         // eslint-disable-next-line
         outSideApi[funcName] = (...params) => {
-          const action = {
+          let action = {
             type: k,
           };
           switch (sagaName) {
             case 'seeking':
-              if (!this.config.isHistory) {
+              if (this.config.isHistory) {
+                action = {
+                  type: `${historyNamespace}/setSliderPercent`,
+                  payload: {
+                    percent: params[0],
+                  },
+                };
+                dispatch = (...args) => {
+                  this.dispatch({
+                    type: `${namespace}/seekingState`,
+                    payload: true,
+                  });
+                  this.dispatch(...args);
+                  this.dispatch({
+                    type: `${namespace}/seekingState`,
+                    payload: false,
+                  });
+                };
+              } else {
                 action.payload = { percent: params[0], pause: true };
               }
               break;
@@ -97,11 +116,7 @@ class OutsideApi {
                 action.payload = params[0];
               }
           }
-          if (this.config.isHistory && sagaName === 'seeking') {
-            console.warn('history cannot use seeking');
-          } else {
-            dispatch(action);
-          }
+          dispatch(action);
         };
       }
     }

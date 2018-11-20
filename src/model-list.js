@@ -19,4 +19,5 @@ export default [
   'picture-quality',
   'rotate',
   'selection',
+  'history',
 ];

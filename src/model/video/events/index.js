@@ -1,5 +1,6 @@
 import { namespace as readyNamespace } from '../../ready';
 import { namespace as videoNamespace } from '../../video';
+import { namespace as historyNamespace } from '../../history';
 import {
   HAVE_CURRENT_DATA,
   HAVE_FUTURE_DATA,
@@ -138,10 +139,7 @@ class Events {
         api.currentTime = this._state.lastCurrentTime;
         this._state.lastCurrentTime = 0;
       } else if (defaultCurrentTime !== undefined) {
-        // console.log(window.historyVideoCurrentTime);
-        api.currentTime = window.historyVideoCurrentTime || defaultCurrentTime;
-        //重置
-        window.historyVideoCurrentTime = 0;
+        api.currentTime = defaultCurrentTime;
       }
       if (!this.isFirstPlay) {
         dispatch({
@@ -264,8 +262,12 @@ class Events {
         }
         //currentTime处理
         if (!api.seekingState) {
+          let namespace = videoNamespace;
+          if (this.config.isHistory) {
+            namespace = historyNamespace;
+          }
           dispatch({
-            type: `${videoNamespace}/time`,
+            type: `${namespace}/time`,
             payload: {
               currentTime: api.ended ? api.duration : api.currentTime,
               duration: api.duration,
@@ -400,23 +402,29 @@ class Events {
     const dispatch = this.dispatch;
     api.on('ended', () => {
       logger.info('Ended:', 'video is ended');
-      if (!api.living && !this.config.isLiving) {
-        //直播是不会结束的
-        //即使监控到end事件也不做处理
-        dispatch({
-          type: `${videoNamespace}/end`,
-          payload: true,
+      if (this.config.isHistory) {
+        this.dispatch({
+          type: `${historyNamespace}/playNextVideo`,
         });
-      } else if (!isSafari()) {
-        //直播有时候会遇到结束事件，那是因为转发切换触发结束事件
-        //safari flv.js直播经常报ended事件。
-        //等待两秒重新拉流，因为转发切换可能会有延时，播放链接不是立即就可以播放。
-        //真正直播结束的场景，目前不做考虑。
-        setTimeout(() => {
+      } else {
+        if (!api.living && !this.config.isLiving) {
+          //直播是不会结束的
+          //即使监控到end事件也不做处理
           dispatch({
-            type: `${videoNamespace}/reload`,
+            type: `${videoNamespace}/end`,
+            payload: true,
           });
-        }, 2000);
+        } else if (!isSafari()) {
+          //直播有时候会遇到结束事件，那是因为转发切换触发结束事件
+          //safari flv.js直播经常报ended事件。
+          //等待两秒重新拉流，因为转发切换可能会有延时，播放链接不是立即就可以播放。
+          //真正直播结束的场景，目前不做考虑。
+          setTimeout(() => {
+            dispatch({
+              type: `${videoNamespace}/reload`,
+            });
+          }, 2000);
+        }
       }
     });
   }

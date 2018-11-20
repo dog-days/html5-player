@@ -57,6 +57,7 @@ export default function() {
     retryReloadTime: 0,
     lastCurrentTime: 0,
   };
+  let tempSeekingCurrentTime;
   //视频第一次播放,autoplay=false是，需要手动播放才算第一次播放
   //只要触发了play就算首次播放，不需要视频成功播放（重连是属于播放器播放异常，每个实例化的播放器只有一次首次播放，重连不会重新计算）
   let isFirstPlay = true;
@@ -108,7 +109,11 @@ export default function() {
           _api.detachMedia && _api.detachMedia();
           //重置
           _api.reset();
+          _api = undefined;
         }
+        //clear 正在setTimeout的定时器
+        controlbarClearTimeout && controlbarClearTimeout();
+        tempSeekingCurrentTime = undefined;
         return this.state || {};
       },
     },
@@ -455,7 +460,7 @@ export default function() {
             }
           });
           sliderPercent = selectionBeginPercent || percent;
-          this.tempCurrentTime = position - _api.videoGaps;
+          tempSeekingCurrentTime = position - _api.videoGaps;
         } else {
           const gapPosition = _api.currentTime + _api.videoGaps;
           fragmentData.forEach((v, k) => {
@@ -493,8 +498,8 @@ export default function() {
           _api.pause();
         }
         if (!payload) {
-          if (this.tempCurrentTime !== undefined) {
-            _api.currentTime = this.tempCurrentTime;
+          if (tempSeekingCurrentTime !== undefined) {
+            _api.currentTime = tempSeekingCurrentTime;
           }
           //seeking结束后，都播放视频。
           if (!_api.playing) {
@@ -510,7 +515,8 @@ export default function() {
         },
         { put, select }
       ) {
-        if (_api.readyState < 1) {
+        if (_api.readyState < 1 || isFirstPlay) {
+          //首次播放，不给seeking
           //视频未就绪进来，不给操作，要不会报错
           return;
         }
@@ -523,7 +529,7 @@ export default function() {
         const reduxStore = yield select();
         const fragment = reduxStore.fragment;
         if (!fragment || !fragment.data) {
-          this.tempCurrentTime = _api.duration * percent;
+          tempSeekingCurrentTime = _api.duration * percent;
           yield put({
             type: `${timeSliderNamespace}/timeSaga`,
             payload: {
@@ -953,7 +959,9 @@ export default function() {
         },
         { put }
       ) {
-        _api.historyCurrentTime = historyCurrentTime;
+        if (_api) {
+          _api.historyCurrentTime = historyCurrentTime;
+        }
       },
       //注意，回调函数中用不了put，改用dispatch，如果使用dispatch就需要绑上namespace
       *init({ payload, initOverCallback }, { put }) {

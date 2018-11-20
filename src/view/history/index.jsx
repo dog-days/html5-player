@@ -1,13 +1,23 @@
 //外部依赖包
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import isNumber from 'lodash/isNumber';
 import isEqual from 'lodash/isEqual';
 //内部依赖包
-import Player from '../../index';
+import clearDecorator from '../decorator/clear';
+import View from '../../view';
 import { ASPECT_RATIO } from '../../utils/const';
 import TimeSlider from './time-slider';
 
+import { namespace as historyNamespace } from '../../model/history';
+
+@connect(state => {
+  return {
+    historyState: state[historyNamespace],
+  };
+})
+@clearDecorator([historyNamespace])
 export default class HistoryPlayer extends React.Component {
   static displayName = 'HistoryPlayer ';
   static propTypes = {
@@ -19,118 +29,67 @@ export default class HistoryPlayer extends React.Component {
       PropTypes.element,
       PropTypes.string,
     ]),
-
-    //当前选择播放的视频源（播放列表中的某项）
-    activeItem: PropTypes.number,
+    defaultCurrentTime: PropTypes.number,
   };
   static childContextTypes = {
-    playlist: PropTypes.array,
-    activeItem: PropTypes.number,
-    setActiveItem: PropTypes.func,
     isHistory: PropTypes.bool,
     historyDuration: PropTypes.number,
   };
   getChildContext() {
     return {
-      playlist: this.fragments,
-      activeItem: this.activeItem,
-      setActiveItem: this.setActiveItem,
       isHistory: true,
-      historyDuration: this.duration,
+      historyDuration: this.duration(),
     };
   }
-  state = {
-    activeItem: this.getFirstActiveItem(),
-  };
+  state = {};
+  dispatch = this.props.dispatch;
+  componentWillMount() {
+    const { defaultCurrentTime } = this.props;
+    this.dispatch({
+      type: `${historyNamespace}/set`,
+      payload: {
+        fragments: this.fragments(),
+        duration: this.duration(),
+        defaultCurrentTime,
+      },
+    });
+  }
   componentWillReceiveProps(nextProps) {
-    this.storage.defaultCurrentTime = 0;
     if (!isEqual(nextProps.historyList, this.props.historyList)) {
       //historyList不一样，需要进行更新
-      this.historyListChanged = true;
+      const { defaultCurrentTime } = nextProps;
+      this.dispatch({
+        type: `${historyNamespace}/clear`,
+      });
+      this.dispatch({
+        type: `${historyNamespace}/set`,
+        payload: {
+          fragments: this.fragments(nextProps),
+          duration: this.duration(nextProps),
+          defaultCurrentTime,
+        },
+      });
     }
   }
-  //获取第一个可播放的activeItem
-  getFirstActiveItem() {
-    if (!this.props.historyList) {
-      return 0;
-    }
-    let activeItem = 0;
-    for (let k = 0; k < this.fragments.length; k++) {
-      const v = this.fragments[k];
-      if (v.file) {
-        activeItem = k;
-        break;
-      }
-    }
-    this.lastActiveItem = activeItem;
-    return activeItem;
-  }
-  get fragments() {
-    const { historyList } = this.props;
+  fragments(props) {
+    const { historyList } = props || this.props;
     const fragments =
       historyList && historyList.fragments && historyList.fragments;
     return fragments || [];
   }
-  get duration() {
-    const { historyList } = this.props;
+  duration(props) {
+    const { historyList } = props || this.props;
     return (historyList && historyList.duration) || 0;
   }
-  get file() {
-    return (
-      this.fragments[this.activeItem] && this.fragments[this.activeItem].file
-    );
-  }
-  get activeItem() {
-    if (this.historyListChanged) {
-      this.historyListChanged = false;
-      const activeItem = this.getFirstActiveItem();
-      return activeItem;
-    }
-    return this.lastActiveItem;
-  }
-  set activeItem(value) {
-    let k = 0;
-    if (!this.fragments[value]) {
-      return;
-    }
-    while (!this.fragments[value].file) {
-      k++;
-      if (value === this.fragments.length - 1) {
-        value = 0;
-      } else {
-        value++;
-      }
-      if (k > this.fragments.length) {
-        //最后一个视频是断点（即无视频）
-        // this.setState({ end: true });
-        break;
-      }
-    }
-    this.lastActiveItem = value;
-    this.setState({ activeItem: value });
-    //重置
-    this.storage.defaultCurrentTime = 0;
-    if (window.historyVideoCurrentTime) {
-      window.historyVideoCurrentTime = 0;
-    }
-  }
-  setActiveItem = value => {
-    this.activeItem = value;
-  };
-  //给timeSrlider，存放一些变量
-  storage = { defaultCurrentTime: 0 };
   renderSlider() {
     const {
       historyList: { beginDate },
     } = this.props;
     return (
       <TimeSlider
-        fragments={this.fragments}
-        duration={this.duration}
+        fragments={this.fragments()}
+        duration={this.duration()}
         beginDateTime={+new Date(beginDate.replace(/-/g, '/')) / 1000}
-        storage={this.storage}
-        activeItem={this.activeItem}
-        setActiveItem={this.setActiveItem}
       />
     );
   }
@@ -181,10 +140,13 @@ export default class HistoryPlayer extends React.Component {
       autoplay,
       controls,
       historyList,
+      historyState: { file, defaultCurrentVideoTime },
       ...other
     } = this.props;
+    //单个视频，也有defaultCurrentTime
+    delete other.defaultCurrentTime;
     const containerStyle = this.getContainerStyle();
-    if (!historyList || !this.file) {
+    if (!this.fragments()) {
       return (
         <div className="html5-player-container" style={containerStyle}>
           <div className="html5-player-error-message-container">
@@ -194,14 +156,17 @@ export default class HistoryPlayer extends React.Component {
         </div>
       );
     }
+    if (!file) {
+      return false;
+    }
     return (
-      <Player
+      <View
         {...other}
-        file={this.file}
+        file={file}
         controls={{ ...controls, timeSlider: false, time: false }}
         customTimeSlider={this.renderSlider()}
         autoplay={true}
-        defaultCurrentTime={this.storage.defaultCurrentTime}
+        defaultCurrentTime={defaultCurrentVideoTime}
       />
     );
   }

@@ -45,6 +45,7 @@ export default class Slider extends React.Component {
   }
   componentWillUnmount() {
     this.removeEvents();
+    this.removeEventsAfterMouseDown();
   }
   events = [];
   removeEvents() {

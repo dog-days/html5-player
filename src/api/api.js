@@ -152,6 +152,7 @@ export default class API {
   }
   //重置api一些值
   reset() {
+    this.currentTime = 0;
     this.videoGaps = 0;
   }
   /**
