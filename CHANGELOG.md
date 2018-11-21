@@ -1,8 +1,40 @@
-## 0.5.1(2018-09-19)
+## 0.5.3(2018-11-20)
 
 #### Bug Fix
 
-- 解决非录像视频播放重连，没记录播放进度问题
+无
+
+#### Update
+
+- 重写 `history player`
+- 对外提供 `history player` `setSeeking` API
+- 新增 `history player` `defaultCurrentTime` prop 配置
+
+#### New Function
+
+无
+
+## 0.5.2(2018-09-21)
+
+#### Bug Fix
+
+- 解决播放视频重连次数上限后，没有detach media的问题
+
+- 解决edge hls不重连和edge上重连次数到上限后，还会继续重连问题
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
+## 0.5.1(2018-09-20)
+
+#### Bug Fix
+
+- 解决非直播视频播放重连，没记录播放进度问题
 
 - 解决autoplay=false，视频一开始就超时但不会重连问题
 - 解决localization设置问题（props.localization会覆盖全部默认的值，即使为空对象）
