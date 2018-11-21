@@ -1,12 +1,13 @@
 {
   "name": "html5-player",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "html5 video",
   "repository": "git@github.com:dog-days/html5-player.git",
   "homepage": "https://github.com/dog-days/html5-player.git",
   "main": "libs",
   "dependencies": {
     "add-dom-event-listener": "^1.0.2",
+    "antd": "^1.0.0",
     "axios": "^0.17.1",
     "classnames": "^2.2.5",
     "downloadjs": "^1.4.7",
