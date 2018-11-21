@@ -8,39 +8,38 @@ export default class View extends React.Component {
     return (
       <div className="demo-container">
         <div className="player-container">
-          {/* <button
+          <button
             onClick={() => {
               const player = this.player;
-              if (!this.a) {
-                this.a = true;
+              player.setSeeking(0.7);
+              if (this.a) {
+                this.a = false;
                 player.setSelection(false);
               } else {
+                this.a = true;
                 player.setSelection({
-                  begin: 5,
-                  end: 70,
+                  begin: 100,
+                  end: 170,
+                  seekingDisabled: true,
                 });
               }
             }}
           >
             test
-          </button> */}
+          </button>
           <Player
             videoCallback={player => {
               this.player = player;
-              // player.setSelection({
-              //   begin: 5,
-              //   end: 70,
-              //   seekingDisabled: true,
-              // });
-              // player.on('selection', data => {
-              //   console.log(player.currentTime);
-              //   console.log(data);
-              // });
-              // player.on('fragmentInfo', data => {
-              //   console.log(data);
-              // });
+              player.on('selection', data => {
+                console.log(player.currentTime);
+                console.log(data);
+              });
+              player.on('fragmentInfo', data => {
+                console.log(data);
+              });
             }}
             selection={this.state.selection}
+            defaultCurrentTime={1400}
             historyList={{
               beginDate: '2018-07-28 00:00:00',
               duration: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,
