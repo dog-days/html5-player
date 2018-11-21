@@ -195,31 +195,40 @@ export default class TimeSlider extends React.Component {
         onlyShowCircleOnEnter
       >
         {selection && this.renderSelection()}
-        {fragments &&
-          fragments.map((v, k) => {
-            let gap = v.end - v.begin;
+        <div
+          style={{
+            overflow: 'hidden',
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+          }}
+        >
+          {fragments &&
+            fragments.map((v, k) => {
+              let gap = v.end - v.begin;
 
-            let width = gap / duration * 100 + '%';
-            if (fragments.length === k + 1) {
-              //这样才会覆盖整个slider
-              width = (gap / duration + 0.1) * 100 + '%';
-            }
-            const left = v.begin / duration * 100 + '%';
-            const style = {
-              left,
-              width,
-            };
-            return (
-              <div
-                key={k}
-                className={classnames({
-                  'html5-player-broken': !v.file,
-                  'html5-player-hasvideo': v.file,
-                })}
-                style={style}
-              />
-            );
-          })}
+              let width = gap / duration * 100 + '%';
+              if (fragments.length === k + 1) {
+                //这样才会覆盖整个slider
+                width = (gap / duration + 0.1) * 100 + '%';
+              }
+              const left = v.begin / duration * 100 + '%';
+              const style = {
+                left,
+                width,
+              };
+              return (
+                <div
+                  key={k}
+                  className={classnames({
+                    'html5-player-broken': !v.file,
+                    'html5-player-hasvideo': v.file,
+                  })}
+                  style={style}
+                />
+              );
+            })}
+        </div>
         <TimeTooltip duration={duration} beginDateTime={beginDateTime} />
       </Slider>
     );

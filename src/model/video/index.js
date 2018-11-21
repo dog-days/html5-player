@@ -109,7 +109,6 @@ export default function() {
           _api.detachMedia && _api.detachMedia();
           //重置
           _api.reset();
-          _api = undefined;
         }
         //clear 正在setTimeout的定时器
         controlbarClearTimeout && controlbarClearTimeout();
