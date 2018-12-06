@@ -1,8 +1,22 @@
+## 0.5.5(2018-12-26)
+
+#### Bug Fix
+
+* 解决历史视频 defaultCurrentTime 在第一个视频不生效的问题
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.5.4(2018-11-21)
 
 #### Bug Fix
 
-* fix time tooltip not show problem'
+* 解决 time tooltip 不显示问题
 
 #### Update
 
