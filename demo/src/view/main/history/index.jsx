@@ -39,7 +39,7 @@ export default class View extends React.Component {
               });
             }}
             selection={this.state.selection}
-            defaultCurrentTime={1400}
+            defaultCurrentTime={60}
             historyList={{
               beginDate: '2018-07-28 00:00:00',
               duration: 20 + 654 + 12 + 52 + 52 + 10 + 654 + 20,

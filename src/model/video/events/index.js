@@ -138,18 +138,32 @@ class Events {
         //播放中途出错，重载需要载入上一个播放进度
         api.currentTime = this._state.lastCurrentTime;
         this._state.lastCurrentTime = 0;
+        if (!this.isFirstPlay) {
+          dispatch({
+            type: `${videoNamespace}/play`,
+          });
+        } else if (api.autoplay) {
+          dispatch({
+            type: `${videoNamespace}/play`,
+          });
+        }
       } else if (defaultCurrentTime !== undefined) {
-        api.currentTime = defaultCurrentTime;
-      }
-      if (!this.isFirstPlay) {
         dispatch({
-          type: `${videoNamespace}/play`,
+          type: `${videoNamespace}/seekingState`,
+          payload: true,
         });
-      } else if (api.autoplay) {
         dispatch({
-          type: `${videoNamespace}/play`,
+          type: `${videoNamespace}/seeking`,
+          payload: {
+            percent: defaultCurrentTime / api.duration,
+          },
+        });
+        dispatch({
+          type: `${videoNamespace}/seekingState`,
+          payload: false,
         });
       }
+
       dispatch({
         type: `${readyNamespace}/state`,
       });

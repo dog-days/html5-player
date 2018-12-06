@@ -9,7 +9,7 @@ export default function() {
     currentVideoIndex: null,
     file: null,
     percent: 0,
-    defaultCurrentVideoTime: 0,
+    defaultCurrentVideoTime: undefined,
   };
   return {
     namespace,
@@ -39,6 +39,7 @@ export default function() {
           type: 'setSliderPercent',
           payload: {
             percent: historyCurrentTime / historyDuration,
+            shouldNotSeek: true,
           },
         });
       },
@@ -63,7 +64,12 @@ export default function() {
         });
       },
       *setSliderPercent({ payload }, { put, select }) {
-        let { percent, selectedIndex } = payload;
+        let {
+          percent,
+          selectedIndex,
+          shouldNotSeek = false,
+          hasDefaultCurrentTime,
+        } = payload;
         const {
           fragments,
           duration: historyDuration,
@@ -97,16 +103,17 @@ export default function() {
         const { duration: currentVideoDuration = 0 } = yield select(
           state => state[timeSliderNamespace]
         );
+        let defaultCurrentVideoTime;
+        if (prevVideoIndex !== currentVideoIndex || hasDefaultCurrentTime) {
+          defaultCurrentVideoTime = currentVideoTime;
+        }
         yield put({
           type: 'setState',
           payload: {
             percent,
             currentVideoIndex,
             file: fragments[currentVideoIndex].file,
-            defaultCurrentVideoTime:
-              prevVideoIndex !== currentVideoIndex
-                ? currentVideoTime
-                : undefined,
+            defaultCurrentVideoTime,
           },
         });
         // seek 当前播放视频
@@ -121,12 +128,14 @@ export default function() {
             //没有可继续播放是视频，需要重头播放
             currentVideoPercent = 0;
           }
-          yield put({
-            type: `${videoNamespace}/seeking`,
-            payload: {
-              percent: currentVideoPercent,
-            },
-          });
+          if (!shouldNotSeek) {
+            yield put({
+              type: `${videoNamespace}/seeking`,
+              payload: {
+                percent: currentVideoPercent,
+              },
+            });
+          }
         }
         //对外 API 设置 history 的 currentTime
         yield put({
@@ -161,6 +170,7 @@ export default function() {
             type: 'setSliderPercent',
             payload: {
               percent: defaultCurrentTime / historyDuration,
+              hasDefaultCurrentTime: true,
             },
           });
         }
@@ -202,7 +212,8 @@ function getVideoIndexBySliderPercent(
   const currentTime = sliderPercent * historyDuration;
   for (let k = 0; k < fragments.length; k++) {
     const v = fragments[k];
-    if (v.begin < currentTime && v.end > currentTime) {
+    // 左闭右合
+    if (v.begin <= currentTime && v.end > currentTime) {
       videoIndex = k;
       break;
     }
