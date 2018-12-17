@@ -133,6 +133,13 @@ class Events {
       //设置重载状态false，这个视事件运行了，视频就可以播放了。
       logger.info('Ready:', 'video is ready to played.');
       api.trigger('ready');
+      // 隐藏 controlbar
+      this.dispatch({
+        type: `${videoNamespace}/controlbar`,
+        payload: false,
+        delayTime: config.controlbarHideTime,
+        onControlbarEnter: false,
+      });
       //isLiving强制设置为直播状态。safari中flv无法获取直播状态，所以需要设置这个。
       if (!api.living && !config.isLiving && this._state.lastCurrentTime) {
         //播放中途出错，重载需要载入上一个播放进度
