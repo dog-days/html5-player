@@ -1,6 +1,6 @@
 {
   "name": "html5-player",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "html5 video",
   "repository": "git@github.com:dog-days/html5-player.git",
   "homepage": "https://github.com/dog-days/html5-player.git",
@@ -55,7 +55,8 @@
     "sinon-chai": "2.14.0"
   },
   "scripts": {
-    "build-css": "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
+    "build-css":
+      "lessc ./src/assets/css/common.less ./src/assets/css/style.css",
     "build-demo": "node ./scripts/build-demo.js",
     "build": "npm run test && node ./scripts/build-umd.js",
     "test": "",
@@ -66,28 +67,29 @@
     "use": "react-boilerplate-app-scripts use",
     "create-i18n-excel": "react-router-controller-cli create-i18n-excel",
     "create-i18n-list": "react-router-controller-cli create-i18n-list",
-    "build-publish": "node ./scripts/read-and-wirte-version.js && npm run test && npm run build-css && npm run transform && npm publish",
+    "build-publish":
+      "node ./scripts/read-and-wirte-version.js && npm run test && npm run build-css && npm run transform && npm publish",
     "prettier": "prettier --write './**/*(*.js|*.jsx|*.less|*.css)'",
-    "transform": "rm -rf ./es && rm -rf ./libs && npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
+    "transform":
+      "rm -rf ./es && rm -rf ./libs && npm run transform-es && npm run transform-default && cp -R ./src/assets ./libs && cp -R ./src/assets ./es",
     "transform-es": "rm -rf ./es && cross-env BABEL_ENV=es babel ./src -d es",
-    "transform-es-watch": "rm -rf ./es && cross-env BABEL_ENV=es babel ./src -d es -w",
-    "transform-default": "rm -rf ./libs && cross-env BABEL_ENV=production babel ./src -d libs",
-    "transform-default-watch": "rm -rf ./libs && cross-env BABEL_ENV=production babel ./src -d libs -w"
+    "transform-es-watch":
+      "rm -rf ./es && cross-env BABEL_ENV=es babel ./src -d es -w",
+    "transform-default":
+      "rm -rf ./libs && cross-env BABEL_ENV=production babel ./src -d libs",
+    "transform-default-watch":
+      "rm -rf ./libs && cross-env BABEL_ENV=production babel ./src -d libs -w"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "node ./scripts/read-and-wirte-version.js && git add ./src/version.js && lint-staged",
+      "pre-commit":
+        "node ./scripts/read-and-wirte-version.js && git add ./src/version.js && lint-staged",
       "pre-push": "npm run test"
     }
   },
   "lint-staged": {
-    "*.js|*.jsx": [
-      "eslint"
-    ],
-    "*.js|*.jsx|*.less|*.css": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.js|*.jsx": ["eslint"],
+    "*.js|*.jsx|*.less|*.css": ["prettier --write", "git add"]
   },
   "react-boilerplate-app-scripts": {
     "proxy": {
@@ -120,21 +122,11 @@
         ]
       },
       "production": {
-        "plugins": [
-          "transform-decorators-legacy",
-          "transform-runtime"
-        ],
-        "presets": [
-          "react",
-          "es2015",
-          "stage-0"
-        ]
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
+        "presets": ["react", "es2015", "stage-0"]
       },
       "es": {
-        "plugins": [
-          "transform-decorators-legacy",
-          "transform-runtime"
-        ],
+        "plugins": ["transform-decorators-legacy", "transform-runtime"],
         "presets": [
           "react",
           [
