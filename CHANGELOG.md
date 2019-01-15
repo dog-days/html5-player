@@ -1,3 +1,19 @@
+## 0.5.7(2010-01-15)
+
+升级 flv.ly.js（添加了一个 isCigLocalRecord 配置项）
+
+#### Bug Fix
+
+无
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.5.5(2018-12-26)
 
 #### Bug Fix
