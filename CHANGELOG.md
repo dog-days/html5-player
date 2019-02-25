@@ -1,3 +1,17 @@
+## 0.5.8(2010-02-25)
+
+#### Bug Fix
+
+* 解决 button 默认类型导致 form 表单提交问题
+
+#### Update
+
+无
+
+#### New Function
+
+无
+
 ## 0.5.7(2010-01-15)
 
 升级 flv.ly.js（添加了一个 isCigLocalRecord 配置项）
