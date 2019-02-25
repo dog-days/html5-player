@@ -196,7 +196,10 @@ export default class Controlbar extends React.Component {
             />
           )}
           {living && (
-            <button className="html5-player-small-button cursor-default html5-player-live-button">
+            <button
+              type="button"
+              className="html5-player-small-button cursor-default html5-player-live-button"
+            >
               <svg
                 className="html5-player-icon html5-player-live-icon"
                 aria-hidden="true"

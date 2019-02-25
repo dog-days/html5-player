@@ -54,7 +54,7 @@ export default class ErrorMessage extends React.Component {
         }}
       >
         <div className="html5-player-error-message-container">
-          <button onClick={this.reload}>
+          <button type="button" onClick={this.reload}>
             <svg
               className="html5-player-icon html5-player-replay-icon html5-player-reload "
               aria-hidden="true"

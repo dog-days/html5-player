@@ -25,6 +25,7 @@ export default class Next extends React.Component {
     }
     return (
       <button
+        type="button"
         className="html5-player-small-button float-left html5-player-next-button"
         onClick={this.onClick}
       >

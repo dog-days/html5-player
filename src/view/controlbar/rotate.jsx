@@ -37,6 +37,7 @@ export default class PlayPause extends React.Component {
   render() {
     return (
       <button
+        type="button"
         className="html5-player-small-button float-right html5-player-rotate-button"
         onClick={this.rotate}
       >

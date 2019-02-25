@@ -48,7 +48,11 @@ export default class End extends React.Component {
           e.stopPropagation();
         }}
       >
-        <button className="html5-player-middle-button" onClick={this.replay}>
+        <button
+          type="button"
+          className="html5-player-middle-button"
+          onClick={this.replay}
+        >
           <svg
             className="html5-player-icon html5-player-replay-icon"
             aria-hidden="true"

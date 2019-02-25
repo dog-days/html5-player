@@ -192,7 +192,10 @@ export default class Setting extends React.Component {
         content={this.renderContent()}
         toTargetGap={living ? 5 : 13}
       >
-        <button className="float-right html5-player-small-button html5-player-setting-button">
+        <button
+          type="button"
+          className="float-right html5-player-small-button html5-player-setting-button"
+        >
           <svg
             className="html5-player-icon html5-player-setting-icon"
             aria-hidden="true"

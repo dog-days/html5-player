@@ -131,6 +131,7 @@ export default class Volume extends React.Component {
         toTargetGap={toTargetGap}
       >
         <button
+          type="button"
           className="html5-player-small-button html5-player-volume-button"
           onClick={this.onMuteStateChange}
         >

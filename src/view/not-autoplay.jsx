@@ -46,6 +46,7 @@ export default class NotAutoPlay extends React.Component {
       >
         {show && (
           <button
+            type="button"
             className="html5-player-middle-button"
             onClick={e => {
               e.stopPropagation();
