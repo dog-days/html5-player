@@ -368,8 +368,9 @@ class Events {
     const locale = api.localization;
     const { retryTimes = RETRY_TIMES } = this.config;
     api.on('error', data => {
-      if (data && data.nativeEvent) {
-        //h5 原生报错截止不处理，只做超时处理。
+      if ((data && data.nativeEvent) || (data && data.parser === 'hls.js')) {
+        // h5 原生报错截止不处理，只做超时处理。
+        // hls.js 报错也不做处理
         return;
       }
       const retryReloadTime = this._state.retryReloadTime;

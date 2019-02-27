@@ -204,17 +204,17 @@ export default class hlsAPI extends API {
       }
       // console.log(message);
       logger.error(errorTitle, type, message);
-      //不做hls事件错误处理，只做超时处理。
-      // if (message) {
-      //   //像buffer错误不用报错
-      //   this.event.trigger('error', {
-      //     //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-      //     //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-      //     data,
-      //     message,
-      //     type,
-      //   });
-      // }
+      if (message) {
+        //像buffer错误不用报错
+        this.event.trigger('error', {
+          //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+          //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+          data,
+          message,
+          type,
+          parser: 'hls.js',
+        });
+      }
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.MEDIA_ERROR:
@@ -227,14 +227,14 @@ export default class hlsAPI extends API {
             logger.error(errorTitle, 'fatal error:', data.details);
             message = locale.unknownError;
             type = FATAL_ERROR;
-            //不做hls事件错误处理，只做超时处理。
-            // this.event.trigger('error', {
-            //   //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
-            //   //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
-            //   data,
-            //   message,
-            //   type,
-            // });
+            this.event.trigger('error', {
+              //一般trigger都是为了对外提供api，error是个比较特殊的情况，寄对外提供了事件，也对内提供了事件。
+              //如果只是对内不对外的话，不可以使用trigger处理事件，所有的都用redux。
+              data,
+              message,
+              type,
+              parser: 'hls.js',
+            });
             hlsObj.destroy();
             break;
         }
