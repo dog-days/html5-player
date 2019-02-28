@@ -1,1 +1,1 @@
-window.html5PlayerVersion = '0.5.9';
+window.html5PlayerVersion = '0.5.10';
