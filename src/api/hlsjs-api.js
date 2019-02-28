@@ -7,7 +7,6 @@ import {
   UNKNOWN_ERROR,
   FATAL_ERROR,
 } from '../utils/error-code';
-import { DEBUG } from '../utils//const';
 
 export default class hlsAPI extends API {
   constructor(videoDOM, file, Hls) {
@@ -47,7 +46,7 @@ export default class hlsAPI extends API {
       hls.loadSource(file);
       hls.attachMedia(this.videoDOM);
       logger.info('Source Loading :', 'loading hls video.');
-      if (this.first && DEBUG) {
+      if (this.first) {
         this.first = false;
         this.attachEvent();
       }
