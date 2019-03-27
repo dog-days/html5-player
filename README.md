@@ -2,11 +2,27 @@
 
 [![build status](https://travis-ci.org/dog-days/html5-player.svg?branch=master)](https://travis-ci.org/dog-days/html5-player) [![codecov](https://codecov.io/gh/dog-days/html5-player/branch/master/graph/badge.svg)](https://codecov.io/gh/dog-days/html5-player) [![npm package](https://badge.fury.io/js/html5-player.svg)](https://www.npmjs.org/package/html5-player) [![NPM downloads](http://img.shields.io/npm/dm/html5-player.svg)](https://npmjs.org/package/html5-player)
 
+**如果你使用了 webpack 4，请确保 requre.ensure 方法开启，如下配置：**
+
+`create-react-app` 创建的项目禁用了 `requre.ensure`。
+
+```js
+...
+module: {
+    strictExportPresence: true,
+    rules: [
+      { parser: { requireEnsure: true } },
+    ]
+...
+}
+...
+```
+
 本视频播放器使用了 react、redux、redux-saga 实现了支持原生 H5 Video 的所有格式，同时添加了对 HLS 和 FLV 的支持。为了减轻打包 js 文件，兼容了 preact 替换 react。
 
 > **不使用 react 的项目一样可以使用 html5-player，不过打包后的代码包含了 react 相关代码，如果使用 jsx 语法，那么用法大部分基本一致。当然建议使用 react 更好，如果使用 react、redux、redux-saga，除开这些依赖代码，html5-player 的代码，包括图片样式，gzip 后在 30KB 以内。**
 
-> umd功能暂时不做处理了，没怎么用到。
+> umd 功能暂时不做处理了，没怎么用到。
 
 ## 功能
 
